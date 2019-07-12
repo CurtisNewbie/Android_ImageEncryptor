@@ -2,6 +2,7 @@ package com.curtisnewbie.androidDev;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 // import fo logging in the Android Studio
@@ -29,14 +30,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // setup the layout for this activity
+        setContentView(R.layout.activity_main);
+
         // setup components of view
         pwInput = this.findViewById(R.id.pwInput);
         nameInput = this.findViewById(R.id.nameInput);
         loginBtn = this.findViewById(R.id.loginBtn);
-
-
-        // setup the layout for this activity
-        setContentView(R.layout.activity_main);
 
         // logging message
         Log.i(TAG, "running");
@@ -72,23 +72,29 @@ public class MainActivity extends AppCompatActivity {
     /**
      * when the button is clicked, the entered name and password is processed.
      *
-     * @param v current view (implicit object)
+     * @param view implicit view object
      */
-    public void onButtonClick(View v) {
+    public void addOnButtonClick(View view) {
 
-        // for testing only - verify name and password
-        final String NAME = "admin";
-        final String PW = "admin";
+                // for testing only - verify name and password
+                final String NAME = "admin";
+                final String PW = "admin";
 
-        // getText does not return String, it's a editable object, similar to StringBuilder.
-        String entName = nameInput.getText().toString().trim();
-        String entPW = pwInput.getText().toString().trim();
+                // getText does not return String, it's a editable object, similar to StringBuilder.
+                String entName = nameInput.getText().toString().trim();
+                String entPW = pwInput.getText().toString().trim();
 
-        // Show a message on the screen using Toast, similar to JOptionPane.
-        if (entName.equals(NAME) && entPW.equals(PW)) {
-            Toast.makeText(MainActivity.this, "Account Okay", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(MainActivity.this, "Account Not Okay", Toast.LENGTH_SHORT).show();
-        }
-    }
-}
+                // Show a message on the screen using Toast, similar to JOptionPane.
+                if (entName.equals(NAME) && entPW.equals(PW)) {
+//                    Toast.makeText(MainActivity.this, "Account Okay", Toast.LENGTH_SHORT).show();
+
+                    // Create an Intent obj as a new operation, the arg is the Action name in AnroidManifest.xml.
+                    Intent intent = new Intent(".ImageViewActivity");
+                    startActivity(intent);
+
+                } else {
+//                    Toast.makeText(MainActivity.this, "Account Not Okay", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+} // class
