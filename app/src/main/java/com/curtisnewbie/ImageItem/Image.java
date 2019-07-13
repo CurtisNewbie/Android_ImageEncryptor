@@ -7,7 +7,7 @@ public class Image {
     private byte[] encryptedData;
     private String name;
 
-    public Image(byte[] data, String name, Date date) {
+    public Image(byte[] data, String name) {
         this.encryptedData = data;
         this.name = name;
     }
