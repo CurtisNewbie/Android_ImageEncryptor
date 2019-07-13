@@ -13,6 +13,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.curtisnewbie.account.Account;
+
 public class MainActivity extends AppCompatActivity {
     // it is used in Logcat for logging
     public static final String TAG = "Encryption_Status";
@@ -76,24 +78,20 @@ public class MainActivity extends AppCompatActivity {
      */
     public void addOnButtonClick(View view) {
 
-                // for testing only - verify name and password
-                final String NAME = "admin";
-                final String PW = "admin";
+        // getText does not return String, it's a editable object, similar to StringBuilder.
+        String entName = nameInput.getText().toString().trim();
+        String entPW = pwInput.getText().toString().trim();
 
-                // getText does not return String, it's a editable object, similar to StringBuilder.
-                String entName = nameInput.getText().toString().trim();
-                String entPW = pwInput.getText().toString().trim();
+        // Show a message on the screen using Toast, similar to JOptionPane.
+        if (entName.equals(Account.TEST_NAME) && entPW.equals(Account.TEST_PW)) {
 
-                // Show a message on the screen using Toast, similar to JOptionPane.
-                if (entName.equals(NAME) && entPW.equals(PW)) {
+            // Create an Intent obj as a new operation, the arg is the Action name in AnroidManifest.xml.
+            Intent intent = new Intent(".ImageListActivity");
+            startActivity(intent);
 
-                    // Create an Intent obj as a new operation, the arg is the Action name in AnroidManifest.xml.
-                    Intent intent = new Intent(".ImageListActivity");
-                    startActivity(intent);
-
-                } else {
-                    Toast.makeText(MainActivity.this, "Account Not Okay", Toast.LENGTH_SHORT).show();
-                }
-            }
+        } else {
+            Toast.makeText(MainActivity.this, "Account Not Okay", Toast.LENGTH_SHORT).show();
+        }
+    }
 
 } // class
