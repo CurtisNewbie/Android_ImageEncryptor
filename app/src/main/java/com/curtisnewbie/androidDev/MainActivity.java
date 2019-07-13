@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.curtisnewbie.database.DataStorage;
 import com.curtisnewbie.database.DatabaseHelper;
 
 public class MainActivity extends AppCompatActivity {
@@ -21,7 +22,6 @@ public class MainActivity extends AppCompatActivity {
     private EditText pwInput;
     private EditText nameInput;
     private Button loginBtn;
-
     private DatabaseHelper db;
 
 
@@ -31,11 +31,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // create db for the first time
-        if (firstTimeRun) {
-            db = new DatabaseHelper(this);
-            firstTimeRun = false;
-        }
+
+        // getDb or iniDb if first time
+        db = DataStorage.getInstance(this).getDB();
 
         // setup the layout for this activity
         setContentView(R.layout.activity_main);
