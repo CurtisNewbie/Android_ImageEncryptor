@@ -86,14 +86,13 @@ public class MainActivity extends AppCompatActivity {
 
                 // Show a message on the screen using Toast, similar to JOptionPane.
                 if (entName.equals(NAME) && entPW.equals(PW)) {
-//                    Toast.makeText(MainActivity.this, "Account Okay", Toast.LENGTH_SHORT).show();
 
                     // Create an Intent obj as a new operation, the arg is the Action name in AnroidManifest.xml.
-                    Intent intent = new Intent(".ImageViewActivity");
+                    Intent intent = new Intent(".ImageListActivity");
                     startActivity(intent);
 
                 } else {
-//                    Toast.makeText(MainActivity.this, "Account Not Okay", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "Account Not Okay", Toast.LENGTH_SHORT).show();
                 }
             }
 
