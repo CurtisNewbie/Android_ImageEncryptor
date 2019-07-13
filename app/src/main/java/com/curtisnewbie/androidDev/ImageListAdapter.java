@@ -2,6 +2,7 @@ package com.curtisnewbie.androidDev;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +18,9 @@ import java.util.ArrayList;
 
 public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.ViewHolder> {
 
-    private ArrayList<Image> images = new ArrayList<>();
+    public static final String TAG = "RecyclerView";
+
+    private ArrayList<Image> images;
     private Context context;
 
     public ImageListAdapter(ArrayList<Image> encryptedImg, Context context) {
@@ -37,15 +40,24 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.View
 
     // loading resources for each item / holder
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
 
         // setup the name for each image item
         holder.getName().setText(images.get(position).getName());
 
-        // setup the onClickListener for the layout of eachItem
+        // setup the onClickListener for the layout of whole Recycler layout
         holder.getItem_layout().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+//                try {
+//                    Image image = images.get(holder.getAdapterPosition() - 1);
+//                    byte[] data = image.decrypt(Account.TEST_PW_CHAR);
+//                    TempDataStorage.getInstance().setTempData(data);
+//                } catch (IOException e) {
+//                    Log.e(TAG, Log.getStackTraceString(e));
+//                    TempDataStorage.getInstance().cleanTempData();
+//                }
+                Log.i(TAG, "data stored");
 
                 // jump to another Activity to see the view
                 Intent intent = new Intent(".ImageViewActivity");
@@ -76,8 +88,9 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.View
             return this.name;
         }
 
-        public RelativeLayout getItem_layout(){
+        public RelativeLayout getItem_layout() {
             return this.item_layout;
+
         }
     }
 }
