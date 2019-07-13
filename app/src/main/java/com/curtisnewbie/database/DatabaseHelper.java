@@ -54,6 +54,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
+    /**
+     * This is used to check credential
+     * @param name name
+     * @param pw password
+     * @return true/false indicating whether the credential is verified.
+     */
     public boolean checkCredential(String name, String pw) {
         SQLiteDatabase db = this.getReadableDatabase();
         // cursor is used to access the result
@@ -64,6 +70,5 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             return true;
         else
             return false;
-
     }
 }
