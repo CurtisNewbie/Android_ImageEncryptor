@@ -19,11 +19,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String CRED_NAME = "credential_name"; // TEXT
     private static final String CRED_PW = "credential_pw"; // TEXT
 
-    private static final String IMG_ID = "image_id"; // INTEGER
+    private static final String IMG_NAME = "image_name"; // TEXT
     private static final String IMG_DATA = "image_data"; // BLOB
-
-    private static final String GET_CREDENTIAL = "SELECT" + CRED_NAME + "," + CRED_PW +
-            "FROM" + CREDENTIAL_TABLE;
 
 
     private static final int VERSION = 1;
@@ -43,7 +40,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         // execute query for creating tables
         sqLiteDatabase.execSQL("CREATE TABLE " + CREDENTIAL_TABLE + "(" + CRED_ID + "INTEGER PRIMARY KEY AUTOINCREMENT," +
                 CRED_NAME + "TEXT NOT NULL, " + CRED_PW + "TEXT NOT NULL);");
-        sqLiteDatabase.execSQL("CREATE TABLE " + IMAGE_TABLE + "(" + IMG_ID + "INTEGER PRIMARY KEY AUTOINCREMENT," +
+        sqLiteDatabase.execSQL("CREATE TABLE " + IMAGE_TABLE + "(" + IMG_NAME + "TEXT PRIMARY KEY AUTOINCREMENT," +
                 IMG_DATA + "BOLB NOT NULL);");
         sqLiteDatabase.execSQL("INSERT INTO CREDENTIAL_TABLE (CRED_NAME, CRED_PW) VALUES ('admin', 'pw');");
 
@@ -56,19 +53,38 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     /**
      * This is used to check credential
+     *
      * @param name name
-     * @param pw password
+     * @param pw   password
      * @return true/false indicating whether the credential is verified.
      */
     public boolean checkCredential(String name, String pw) {
         SQLiteDatabase db = this.getReadableDatabase();
+
+        String query = "SELECT  credential_name , credential_pw FROM credential_table;";
+
         // cursor is used to access the result
-        Cursor curs = db.rawQuery(GET_CREDENTIAL, null);
+        Cursor curs = db.rawQuery(query, null);
 
         // only one user is needed.
         if (curs.getString(0).equals(name) && curs.getString(1).equals(pw))
             return true;
         else
             return false;
+    }
+
+    /**
+     * Get the encrypted data
+     * @param imgName image name as primary key
+     * @return byte[] of encrypted data
+     */
+    public byte[] getEncryptedImgData(String imgName) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT image_data FROM image_table WHERE image_name =" + imgName + ";";
+
+        // cursor is used to access the result
+        Cursor curs = db.rawQuery(query, null);
+        return curs.getBlob(0);
+
     }
 }
