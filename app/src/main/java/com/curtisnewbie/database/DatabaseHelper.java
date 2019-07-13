@@ -5,6 +5,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import java.util.ArrayList;
+
 /**
  * class for SQLite database connection and query processing
  */
@@ -75,6 +77,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     /**
      * Get the encrypted data
+     *
      * @param imgName image name as primary key
      * @return byte[] of encrypted data
      */
@@ -85,6 +88,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         // cursor is used to access the result
         Cursor curs = db.rawQuery(query, null);
         return curs.getBlob(0);
+    }
 
+    /**
+     * Get the list of title of images for RecyclerView
+     *
+     * @return ArrayList of titles
+     */
+    public ArrayList<String> getListOfImgTitle() {
+        ArrayList<String> listOfTitle = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT image_name FROM image_table;";
+
+        // cursor is used to access the result
+        Cursor curs = db.rawQuery(query, null);
+
+        while (curs.moveToNext()) {
+            listOfTitle.add(curs.getString(0));
+        }
+        return listOfTitle;
     }
 }
