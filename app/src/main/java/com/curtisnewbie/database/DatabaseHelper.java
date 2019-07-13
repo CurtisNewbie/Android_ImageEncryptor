@@ -1,6 +1,7 @@
-package com.curtisnewbie.dbconnect;
+package com.curtisnewbie.database;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
@@ -20,6 +21,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String IMG_ID = "image_id"; // INTEGER
     private static final String IMG_DATA = "image_data"; // BLOB
+
+    private static final String GET_CREDENTIAL = "SELECT" + CRED_NAME + "," + CRED_PW +
+            "FROM" + CREDENTIAL_TABLE;
 
 
     private static final int VERSION = 1;
@@ -41,11 +45,25 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 CRED_NAME + "TEXT NOT NULL, " + CRED_PW + "TEXT NOT NULL);");
         sqLiteDatabase.execSQL("CREATE TABLE " + IMAGE_TABLE + "(" + IMG_ID + "INTEGER PRIMARY KEY AUTOINCREMENT," +
                 IMG_DATA + "BOLB NOT NULL);");
+        sqLiteDatabase.execSQL("INSERT INTO CREDENTIAL_TABLE (CRED_NAME, CRED_PW) VALUES ('admin', 'pw');");
 
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
+
+    }
+
+    public boolean checkCredential(String name, String pw) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        // cursor is used to access the result
+        Cursor curs = db.rawQuery(GET_CREDENTIAL, null);
+
+        // only one user is needed.
+        if (curs.getString(0).equals(name) && curs.getString(1).equals(pw))
+            return true;
+        else
+            return false;
 
     }
 }
