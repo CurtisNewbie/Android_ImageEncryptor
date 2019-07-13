@@ -4,11 +4,18 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.res.Resources;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.curtisnewbie.ImageItem.Image;
+import com.curtisnewbie.ImageItem.TempDataStorage;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 /**
@@ -19,6 +26,8 @@ public class ImageListActivity extends AppCompatActivity {
     private RecyclerView recycleView;
     private RecyclerView.Adapter rAdapter;
     private RecyclerView.LayoutManager rManager;
+
+    public static final String TAG = "ImageList";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,9 +41,16 @@ public class ImageListActivity extends AppCompatActivity {
 
         // Test data
         ArrayList images = new ArrayList<Image>();
-        images.add(new Image(null, "ImgOne"));
-        images.add(new Image(null, "ImgTwo"));
-        images.add(new Image(null, "ImgThree"));
+        try {
+            InputStream in = getResources().getAssets().open("encrypted.txt");
+            byte[] tData = new byte[in.available()];
+            in.read(tData);
+            images.add(new Image(tData, "ImgOne"));
+            in.close();
+            Log.i(TAG, "data preped");
+        } catch (IOException e) {
+            Log.e(TAG, "Test data exception");
+        }
 
         // adapter that adapt inidividual items (activity_each_item.xml)
         rAdapter = new ImageListAdapter(images, this);
@@ -45,5 +61,17 @@ public class ImageListActivity extends AppCompatActivity {
         recycleView.setLayoutManager(rManager);
 
         Toast.makeText(ImageListActivity.this, "Login Successful", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        TempDataStorage.getInstance().cleanTempData();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        TempDataStorage.getInstance().cleanTempData();
     }
 }
