@@ -1,4 +1,4 @@
-package com.curtisnewbie.androidDev;
+package com.curtisnewbie.activities;
 
 import android.content.Context;
 import android.content.Intent;
@@ -46,21 +46,18 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.View
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
 
         // setup the name for each image item
-        holder.getName().setText(imagesName.get(position - 1));
+        holder.getName().setText(imagesName.get(position));
 
         // setup the onClickListener for the layout of whole Recycler layout
         holder.getItem_layout().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 // jump to another Activity to see the view
                 Intent intent = new Intent(".ImageViewActivity");
-                intent.putExtra(IMG_TITLE, imagesName.get(holder.getAdapterPosition() - 1));
+                intent.putExtra(IMG_TITLE, imagesName.get(holder.getAdapterPosition()));
                 context.startActivity(intent);
-
             }
         });
-
     }
 
     @Override
@@ -82,11 +79,11 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.View
 
         public TextView getName() {
             return this.name;
+
         }
 
         public RelativeLayout getItem_layout() {
             return this.item_layout;
-
         }
     }
 }

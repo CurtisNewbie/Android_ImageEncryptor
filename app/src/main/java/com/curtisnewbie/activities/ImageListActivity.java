@@ -1,4 +1,4 @@
-package com.curtisnewbie.androidDev;
+package com.curtisnewbie.activities;
 
 import android.os.Bundle;
 import android.widget.Toast;

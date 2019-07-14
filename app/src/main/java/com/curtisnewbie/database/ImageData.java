@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey;
 
 @Entity(tableName = "image_table")
 public class ImageData {
-
+    // not used
     public static final String IMG_TABLE_QUERY = "CREATE TABLE image_table (image_name TEXT PRIMARY KEY, image_data BLOB);";
 
     @PrimaryKey

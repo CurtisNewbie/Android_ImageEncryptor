@@ -1,12 +1,10 @@
-package com.curtisnewbie.androidDev;
+package com.curtisnewbie.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,11 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.curtisnewbie.database.AppDatabase;
 import com.curtisnewbie.database.Credential;
 import com.curtisnewbie.database.DataStorage;
-import com.curtisnewbie.database.ImageData;
-import com.curtisnewbie.database.TestDATA;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -50,16 +44,6 @@ public class MainActivity extends AppCompatActivity {
         pwInput = this.findViewById(R.id.pwInput);
         nameInput = this.findViewById(R.id.nameInput);
         loginBtn = this.findViewById(R.id.loginBtn);
-
-        // for testing
-        ImageData testImg = getTestData();
-        db.dao().addImageData(testImg);
-
-        // for login
-        Credential root = new Credential();
-        root.setCred_name("admin");
-        root.setCred_pw("password");
-        db.dao().addCredential(root);
     }
 
     /**
@@ -84,28 +68,6 @@ public class MainActivity extends AppCompatActivity {
             // Show a message on the screen using Toast, similar to JOptionPane.
             Toast.makeText(MainActivity.this, "Account Not Okay", Toast.LENGTH_SHORT).show();
         }
-    }
-
-    // for testing
-    public ImageData getTestData() {
-        // setup test data
-//        try {
-//            InputStream in = this.getAssets().open("encrypted.txt");
-            String bytes = TestDATA.str;
-            byte[] data = bytes.getBytes();
-//            in.read(data);
-//            in.close();
-
-            ImageData img = new ImageData();
-            img.setImage_data(data);
-            img.setImage_name("Encrypted Image 1");
-
-            return img;
-
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            return null;
-//        }
     }
 
     /**
