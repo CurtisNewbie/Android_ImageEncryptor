@@ -2,7 +2,6 @@ package com.curtisnewbie.androidDev;
 
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,25 +11,24 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.curtisnewbie.ImageItem.Image;
+import com.curtisnewbie.database.AppDatabase;
 import com.curtisnewbie.database.DataStorage;
-import com.curtisnewbie.database.DatabaseHelper;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.ViewHolder> {
 
     public static final String TAG = "RecyclerView";
     public static final String IMG_TITLE = "img_title";
 
-    private ArrayList<String> imagesName;
+    private List<String> imagesName;
     private Context context;
-    private DatabaseHelper db;
+    private AppDatabase db;
 
     public ImageListAdapter(Context context) {
         this.context = context;
         this.db = DataStorage.getInstance(null).getDB();
-        this.imagesName = db.getListOfImgTitle();
+        this.imagesName = db.dao().getListOfImgName();
     }
 
 

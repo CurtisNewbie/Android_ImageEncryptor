@@ -1,5 +1,6 @@
 package com.curtisnewbie.database;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
@@ -13,6 +14,7 @@ public class Credential {
     public static final String CRED_TABLE_QUERY = "CREATE TABLE cred_table (cred_name TEXT PRIMARY KEY AUTOINCREMENT, cred_pw TEXT);";
 
     @PrimaryKey
+    @NonNull
     private String cred_name;
 
     @ColumnInfo(name= "cred_pw")

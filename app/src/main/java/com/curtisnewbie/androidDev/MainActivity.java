@@ -6,18 +6,22 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.curtisnewbie.database.AppDatabase;
+import com.curtisnewbie.database.Credential;
 import com.curtisnewbie.database.DataStorage;
-import com.curtisnewbie.database.DatabaseHelper;
+import com.curtisnewbie.database.ImageData;
+import com.curtisnewbie.database.TestDATA;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-    boolean firstTimeRun = true;
 
     // it is used in Logcat for logging
     public static final String TAG = "Encryption_Status";
@@ -26,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
     private EditText pwInput;
     private EditText nameInput;
     private Button loginBtn;
-    private DatabaseHelper db;
+    private AppDatabase db;
 
 
     /* Brief: onCreate() -> onStart() -> Running -> onPause()/OnStop();
@@ -47,8 +51,15 @@ public class MainActivity extends AppCompatActivity {
         nameInput = this.findViewById(R.id.nameInput);
         loginBtn = this.findViewById(R.id.loginBtn);
 
-        db.setTestData(this);
+        // for testing
+        ImageData testImg = getTestData();
+        db.dao().addImageData(testImg);
 
+        // for login
+        Credential root = new Credential();
+        root.setCred_name("admin");
+        root.setCred_pw("password");
+        db.dao().addCredential(root);
     }
 
     /**
@@ -61,11 +72,9 @@ public class MainActivity extends AppCompatActivity {
         // getText does not return String, it's a editable object, similar to StringBuilder.
         String entName = nameInput.getText().toString().trim();
         String entPW = pwInput.getText().toString().trim();
-        Log.i(TAG, "Credential not checked");
-        // check credential
-        if (db.checkCredential(entName, entPW)) {
 
-            Log.i(TAG, "Credential checked");
+        // check credential
+        if (checkCredential(entName, entPW)) {
 
             // Create an Intent obj as a new operation, the arg is the Action name in AnroidManifest.xml.
             Intent intent = new Intent(".ImageListActivity");
@@ -75,6 +84,44 @@ public class MainActivity extends AppCompatActivity {
             // Show a message on the screen using Toast, similar to JOptionPane.
             Toast.makeText(MainActivity.this, "Account Not Okay", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    // for testing
+    public ImageData getTestData() {
+        // setup test data
+//        try {
+//            InputStream in = this.getAssets().open("encrypted.txt");
+            String bytes = TestDATA.str;
+            byte[] data = bytes.getBytes();
+//            in.read(data);
+//            in.close();
+
+            ImageData img = new ImageData();
+            img.setImage_data(data);
+            img.setImage_name("Encrypted Image 1");
+
+            return img;
+
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            return null;
+//        }
+    }
+
+    /**
+     * This is used to check credential
+     *
+     * @param name name
+     * @param pw   password
+     * @return true/false indicating whether the credential is verified.
+     */
+    private boolean checkCredential(String name, String pw) {
+        List<Credential> creds = db.dao().getListOfCred();
+
+        if(name.equals(creds.get(0).getCred_name()) && pw.equals(creds.get(0).getCred_pw()))
+            return true;
+        else
+            return false;
     }
 
 } // class

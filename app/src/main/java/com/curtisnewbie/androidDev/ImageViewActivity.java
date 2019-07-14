@@ -9,8 +9,8 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.curtisnewbie.ImageItem.Image;
+import com.curtisnewbie.database.AppDatabase;
 import com.curtisnewbie.database.DataStorage;
-import com.curtisnewbie.database.DatabaseHelper;
 
 import java.io.IOException;
 
@@ -21,7 +21,7 @@ public class ImageViewActivity extends AppCompatActivity {
 
     public static final String TAG = "ImageViewActivity";
     private ImageView imageView;
-    private DatabaseHelper db;
+    private AppDatabase db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,12 +33,12 @@ public class ImageViewActivity extends AppCompatActivity {
         String imageName = getIntent().getStringExtra(ImageListAdapter.IMG_TITLE);
 
         // get the data from the database
-        byte[] encryptedData = db.getEncryptedImgData(imageName);
+        byte[] encryptedData = db.dao().getImgData(imageName);
 
         // decrypt the data
         Image image = new Image(encryptedData);
         try {
-            byte[] data = image.decrypt(db.getDecryPW());
+            byte[] data = image.decrypt(db.dao().getListOfCred().get(0).getCred_pw().toCharArray());
 
             // show image
             Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);

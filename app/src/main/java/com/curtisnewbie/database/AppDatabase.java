@@ -10,8 +10,8 @@ import androidx.sqlite.db.SupportSQLiteOpenHelper;
 /**
  * This is the database implementing Room api
  */
-@Database(entities = {Credential.class, ImageData.class}, version = 1)
+@Database(entities = {Credential.class, ImageData.class}, version = 1, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
 
-    public abstract DaoInterface daoInterface();
+    public abstract DaoInterface dao();
 }

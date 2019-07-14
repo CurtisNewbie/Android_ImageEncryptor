@@ -1,5 +1,6 @@
 package com.curtisnewbie.database;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
@@ -10,6 +11,7 @@ public class ImageData {
     public static final String IMG_TABLE_QUERY = "CREATE TABLE image_table (image_name TEXT PRIMARY KEY, image_data BLOB);";
 
     @PrimaryKey
+    @NonNull
     private String image_name;
 
     @ColumnInfo(name = "image_data")
