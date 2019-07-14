@@ -13,19 +13,24 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.curtisnewbie.ImageItem.Image;
+import com.curtisnewbie.database.DataStorage;
+import com.curtisnewbie.database.DatabaseHelper;
 
 import java.util.ArrayList;
 
 public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.ViewHolder> {
 
     public static final String TAG = "RecyclerView";
+    public static final String IMG_TITLE = "img_title";
 
-    private ArrayList<Image> images;
+    private ArrayList<String> imagesName;
     private Context context;
+    private DatabaseHelper db;
 
-    public ImageListAdapter(ArrayList<Image> encryptedImg, Context context) {
-        this.images = encryptedImg;
+    public ImageListAdapter(Context context) {
         this.context = context;
+        this.db = DataStorage.getInstance(null).getDB();
+        this.imagesName = db.getListOfImgTitle();
     }
 
 
@@ -43,25 +48,18 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.View
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
 
         // setup the name for each image item
-        holder.getName().setText(images.get(position).getName());
+        holder.getName().setText(imagesName.get(position - 1));
 
         // setup the onClickListener for the layout of whole Recycler layout
         holder.getItem_layout().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                try {
-//                    Image image = images.get(holder.getAdapterPosition() - 1);
-//                    byte[] data = image.decrypt(Account.TEST_PW_CHAR);
-//                    TempDataStorage.getInstance().setTempData(data);
-//                } catch (IOException e) {
-//                    Log.e(TAG, Log.getStackTraceString(e));
-//                    TempDataStorage.getInstance().cleanTempData();
-//                }
-                Log.i(TAG, "data stored");
 
                 // jump to another Activity to see the view
                 Intent intent = new Intent(".ImageViewActivity");
+                intent.putExtra(IMG_TITLE, imagesName.get(holder.getAdapterPosition() - 1));
                 context.startActivity(intent);
+
             }
         });
 
@@ -69,7 +67,7 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.View
 
     @Override
     public int getItemCount() {
-        return images.size();
+        return imagesName.size();
     }
 
     // each view holder holds data of each item
