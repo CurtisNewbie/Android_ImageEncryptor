@@ -28,19 +28,6 @@ public class ImageListActivity extends AppCompatActivity {
         // set fix layout size of the recycle view to improve performance
         recycleView.setHasFixedSize(true);
 
-//        // Test data
-//        ArrayList images = new ArrayList<Image>();
-//        try {
-//            InputStream in = getResources().getAssets().open("encrypted.txt");
-//            byte[] tData = new byte[in.available()];
-//            in.read(tData);
-//            images.add(new Image(tData, "ImgOne"));
-//            in.close();
-//            Log.i(TAG, "data preped");
-//        } catch (IOException e) {
-//            Log.e(TAG, "Test data exception");
-//        }
-
         // adapter that adapt inidividual items (activity_each_item.xml)
         rAdapter = new ImageListAdapter(this);
         recycleView.setAdapter(rAdapter);

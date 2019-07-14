@@ -5,7 +5,7 @@
       <filter>
         <option name="logLevel" value="verbose" />
         <option name="logMessagePattern" value="" />
-        <option name="logTagPattern" value="RecyclerView|ImageList|ImageViewActivity" />
+        <option name="logTagPattern" value="RecyclerView|ImageList|ImageViewActivity|db" />
         <option name="name" value="Encryption_Status" />
         <option name="packageNamePattern" value="" />
         <option name="pid" value="" />
@@ -28,11 +28,24 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0f8898c2-b63a-43dc-b5e1-3fed7369520b" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.gradle/5.1.1/executionHistory/executionHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.1.1/executionHistory/executionHistory.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/5.1.1/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.1.1/executionHistory/executionHistory.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/5.1.1/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.1.1/fileHashes/fileHashes.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/5.1.1/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.1.1/fileHashes/fileHashes.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/5.1.1/javaCompile/classAnalysis.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.1.1/javaCompile/classAnalysis.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/5.1.1/javaCompile/javaCompile.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.1.1/javaCompile/javaCompile.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/assetWizardSettings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/assetWizardSettings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/caches/build_file_checksums.ser" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/caches/build_file_checksums.ser" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/caches/gradle_models.ser" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/caches/gradle_models.ser" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/app.iml" beforeDir="false" afterPath="$PROJECT_DIR$/app/app.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/assets/encrypted.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/ImageItem/Image.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/ImageItem/Image.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/androidDev/ImageListActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/androidDev/ImageListActivity.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/androidDev/MainActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/androidDev/MainActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/database/Credential.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/database/ImageData.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/dbconnect/DatabaseHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/database/DatabaseHelper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/database/DatabaseHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/database/DatabaseHelper.java" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -63,20 +76,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/androidDev/MainActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="171">
-              <caret line="11" selection-start-line="11" selection-end-line="11" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/account/Account.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="228">
-              <caret line="12" lean-forward="true" selection-start-line="12" selection-end-line="12" />
+            <state relative-caret-position="69">
+              <caret line="42" column="45" selection-start-line="42" selection-start-column="45" selection-end-line="42" selection-end-column="45" />
             </state>
           </provider>
         </entry>
@@ -84,8 +88,44 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/ImageItem/Image.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="285">
-              <caret line="29" column="25" lean-forward="true" selection-start-line="29" selection-start-column="25" selection-end-line="29" selection-end-column="25" />
+            <state relative-caret-position="-660">
+              <caret line="32" column="6" selection-start-line="32" selection-start-column="6" selection-end-line="32" selection-end-column="6" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/ImageItem/Decryptable.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="190">
+              <caret line="10" column="35" selection-start-line="10" selection-start-column="35" selection-end-line="10" selection-end-column="44" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/androidDev/ImageListActivity.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="319">
+              <caret line="30" column="68" selection-start-line="30" selection-start-column="68" selection-end-line="30" selection-end-column="68" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/androidDev/ImageViewActivity.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="243">
+              <caret line="31" column="51" selection-start-line="31" selection-start-column="51" selection-end-line="31" selection-end-column="51" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -96,30 +136,49 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/account/Authorisation.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="133">
-              <caret line="7" selection-start-line="7" selection-end-line="7" />
+            <state>
+              <caret column="1" selection-start-column="1" selection-end-column="1" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/database/DataStorage.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="152">
-              <caret line="8" lean-forward="true" selection-start-line="8" selection-end-line="8" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/database/DatabaseHelper.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="368">
-              <caret line="59" column="50" selection-start-line="59" selection-start-column="50" selection-end-line="59" selection-end-column="50" />
+            <state relative-caret-position="328">
+              <caret line="20" column="29" selection-start-line="20" selection-start-column="29" selection-end-line="20" selection-end-column="29" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#1214#1215#0" expanded="true" />
-                <element signature="e#1274#1275#0" expanded="true" />
+                <element signature="e#338#339#0" expanded="true" />
+                <element signature="e#363#364#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/database/DatabaseHelper.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="552">
+              <caret line="71" column="21" lean-forward="true" selection-start-line="71" selection-start-column="21" selection-end-line="71" selection-end-column="21" />
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="e#1219#1220#0" expanded="true" />
+                <element signature="e#1279#1280#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/androidDev/ImageListAdapter.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="214">
+              <caret line="20" column="13" selection-start-line="20" selection-start-column="13" selection-end-line="20" selection-end-column="13" />
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="e#1574#2354#0" expanded="true" />
+                <element signature="e#2353#2354#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -138,6 +197,7 @@
   <component name="FindInProjectRecents">
     <findStrings>
       <find>getName</find>
+      <find>log</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -165,19 +225,21 @@
         <option value="$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/account/Account.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/activity_image_view.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/ImageItem/TempData.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/ImageItem/Image.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/ImageItem/TempDataStorage.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/androidDev/ImageListActivity.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/androidDev/ImageListAdapter.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/androidDev/ImageViewActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/account/Authorisation.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/database/Credential.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/dbconnect/DatabaseHelper.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/database/ImageData.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/database/DatabaseHelper.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/database/TempDataStorage.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/database/DataStorage.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/androidDev/ImageListAdapter.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/ImageItem/Image.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/androidDev/ImageViewActivity.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/androidDev/ImageListActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/androidDev/MainActivity.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/database/DatabaseHelper.java" />
       </list>
     </option>
   </component>
@@ -320,11 +382,6 @@
             <path>
               <item name="AndroidDevelopmentTut" type="1abcf292:AndroidViewProjectNode" />
               <item name="app" type="feadf853:AndroidModuleNode" />
-              <item name="manifests" type="f94875db:AndroidManifestsGroupNode" />
-            </path>
-            <path>
-              <item name="AndroidDevelopmentTut" type="1abcf292:AndroidViewProjectNode" />
-              <item name="app" type="feadf853:AndroidModuleNode" />
               <item name="java" type="edd41e36:AndroidSourceTypeNode" />
             </path>
             <path>
@@ -332,13 +389,6 @@
               <item name="app" type="feadf853:AndroidModuleNode" />
               <item name="java" type="edd41e36:AndroidSourceTypeNode" />
               <item name="curtisnewbie" type="cbb59c9e:AndroidPsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="AndroidDevelopmentTut" type="1abcf292:AndroidViewProjectNode" />
-              <item name="app" type="feadf853:AndroidModuleNode" />
-              <item name="java" type="edd41e36:AndroidSourceTypeNode" />
-              <item name="curtisnewbie" type="cbb59c9e:AndroidPsiDirectoryNode" />
-              <item name="account" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="AndroidDevelopmentTut" type="1abcf292:AndroidViewProjectNode" />
@@ -346,37 +396,6 @@
               <item name="java" type="edd41e36:AndroidSourceTypeNode" />
               <item name="curtisnewbie" type="cbb59c9e:AndroidPsiDirectoryNode" />
               <item name="androidDev" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="AndroidDevelopmentTut" type="1abcf292:AndroidViewProjectNode" />
-              <item name="app" type="feadf853:AndroidModuleNode" />
-              <item name="java" type="edd41e36:AndroidSourceTypeNode" />
-              <item name="curtisnewbie" type="cbb59c9e:AndroidPsiDirectoryNode" />
-              <item name="database" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="AndroidDevelopmentTut" type="1abcf292:AndroidViewProjectNode" />
-              <item name="app" type="feadf853:AndroidModuleNode" />
-              <item name="java" type="edd41e36:AndroidSourceTypeNode" />
-              <item name="curtisnewbie" type="cbb59c9e:AndroidPsiDirectoryNode" />
-              <item name="ImageItem" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="AndroidDevelopmentTut" type="1abcf292:AndroidViewProjectNode" />
-              <item name="app" type="feadf853:AndroidModuleNode" />
-              <item name="res" type="d4f16f75:AndroidResFolderNode" />
-            </path>
-            <path>
-              <item name="AndroidDevelopmentTut" type="1abcf292:AndroidViewProjectNode" />
-              <item name="app" type="feadf853:AndroidModuleNode" />
-              <item name="res" type="d4f16f75:AndroidResFolderNode" />
-              <item name="layout" type="ddeffd01:AndroidResFolderTypeNode" />
-            </path>
-            <path>
-              <item name="AndroidDevelopmentTut" type="1abcf292:AndroidViewProjectNode" />
-              <item name="app" type="feadf853:AndroidModuleNode" />
-              <item name="res" type="d4f16f75:AndroidResFolderNode" />
-              <item name="values" type="ddeffd01:AndroidResFolderTypeNode" />
             </path>
             <path>
               <item name="AndroidDevelopmentTut" type="1abcf292:AndroidViewProjectNode" />
@@ -397,8 +416,10 @@
     <property name="settings.editor.selected.configurable" value="editor.preferences.fonts.default" />
   </component>
   <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
+    <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\Curtis\git\AndroidDevelopmentTut\app\src\main\res\drawable" />
+      <recent name="C:\Users\Curtis\git\AndroidDevelopmentTut\app\src\main\assets" />
+      <recent name="C:\Users\Curtis\git\AndroidDevelopmentTut\app\libs" />
     </key>
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
       <recent name="com.curtisnewbie.androidDev" />
@@ -411,10 +432,9 @@
     <key name="android.template.parentActivityClass">
       <recent name="" />
     </key>
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\Users\Curtis\git\AndroidDevelopmentTut\app\src\main\res\drawable" />
+    <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\Curtis\git\AndroidDevelopmentTut\app\src\main\assets" />
-      <recent name="C:\Users\Curtis\git\AndroidDevelopmentTut\app\libs" />
+      <recent name="C:\Users\Curtis\git\AndroidDevelopmentTut\app\src\main\res\drawable" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -530,12 +550,12 @@
       <window_info anchor="bottom" id="Messages" order="0" weight="0.32729805" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32729805" />
       <window_info anchor="bottom" id="TODO" order="2" sideWeight="0.49933067" weight="0.32729805" />
-      <window_info anchor="bottom" id="Terminal" order="3" sideWeight="0.8406961" weight="0.04178273" />
+      <window_info anchor="bottom" id="Terminal" order="3" sideWeight="0.8406961" weight="0.7869081" />
       <window_info anchor="bottom" x="468" y="604" width="999" height="188" id="Event Log" order="4" sideWeight="0.24364123" side_tool="true" weight="0.24930362" />
       <window_info anchor="bottom" id="Version Control" order="5" sideWeight="0.4986613" weight="0.74094707" />
-      <window_info anchor="bottom" id="Build" order="6" sideWeight="0.49464524" weight="0.054597702" />
-      <window_info anchor="bottom" id="Android Profiler" order="7" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Logcat" order="8" sideWeight="0.75635874" weight="0.054597702" />
+      <window_info anchor="bottom" id="Build" order="6" sideWeight="0.49464524" weight="0.61281335" />
+      <window_info anchor="bottom" id="Android Profiler" order="7" />
+      <window_info active="true" anchor="bottom" id="Logcat" order="8" sideWeight="0.75635874" visible="true" weight="0.04178273" />
       <window_info anchor="bottom" id="Debug" order="9" />
       <window_info anchor="bottom" id="Run" order="10" sideWeight="0.49732262" weight="0.20194986" />
       <window_info anchor="right" id="Capture Analysis" order="0" />
@@ -591,14 +611,6 @@
     </option>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_imageview.xml" />
-    <entry file="file://$PROJECT_DIR$/app/build/generated/source/buildConfig/debug/com/curtisnewbie/androidDev/BuildConfig.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="57">
-          <caret line="5" column="19" selection-start-line="5" selection-start-column="19" selection-end-line="5" selection-end-column="19" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/customer/Account.java" />
     <entry file="jar://$USER_HOME$/AppData/Local/Android/Sdk/platforms/android-29/android.jar!/android/widget/EditText.class">
       <provider selected="true" editor-type-id="text-editor">
@@ -705,23 +717,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/ImageItem/Decryptable.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="190">
-          <caret line="10" column="64" selection-start-line="10" selection-start-column="64" selection-end-line="10" selection-end-column="64" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/assets/encrypted.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="361">
-          <caret line="19" column="51" lean-forward="true" selection-start-line="19" selection-start-column="51" selection-end-line="19" selection-end-column="51" />
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://$USER_HOME$/AppData/Local/Android/Sdk/platforms/android-29/android.jar!/android/content/Intent.class">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="221">
@@ -739,27 +734,6 @@
     <entry file="file://$PROJECT_DIR$/app/src/test/java/com/curtisnewbie/androidDev/ExampleUnitTest.java">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/ImageItem/TempDataStorage.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="513">
-          <caret line="30" column="31" selection-start-line="30" selection-start-column="31" selection-end-line="30" selection-end-column="31" />
-          <folding>
-            <element signature="e#593#594#0" expanded="true" />
-            <element signature="e#629#630#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/androidDev/ImageListAdapter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="836">
-          <caret line="58" column="19" selection-start-line="58" selection-start-column="19" selection-end-line="58" selection-end-column="19" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/AndroidManifest.xml">
       <provider editor-type-id="android-manifest" />
       <provider selected="true" editor-type-id="text-editor">
@@ -775,20 +749,6 @@
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/androidDev/ImageViewActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="171">
-          <caret line="9" lean-forward="true" selection-start-line="9" selection-end-line="9" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/androidDev/ImageListActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="528">
-          <caret line="77" lean-forward="true" selection-start-line="77" selection-end-line="77" />
         </state>
       </provider>
     </entry>
@@ -811,14 +771,7 @@
     <entry file="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="152">
-          <caret line="8" lean-forward="true" selection-start-line="8" selection-end-line="8" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/account/Authorisation.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="133">
-          <caret line="7" selection-start-line="7" selection-end-line="7" />
+          <caret line="8" selection-start-line="8" selection-end-line="8" />
         </state>
       </provider>
     </entry>
@@ -866,32 +819,114 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/ImageItem/Image.java">
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/database/TempDataStorage.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="285">
-          <caret line="29" column="25" lean-forward="true" selection-start-line="29" selection-start-column="25" selection-end-line="29" selection-end-column="25" />
+        <state relative-caret-position="152">
+          <caret line="8" column="17" selection-start-line="8" selection-start-column="17" selection-end-line="8" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/ImageItem/Decryptable.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="190">
+          <caret line="10" column="35" selection-start-line="10" selection-start-column="35" selection-end-line="10" selection-end-column="44" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/database/DatabaseHelper.java">
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/androidDev/ImageListAdapter.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="368">
-          <caret line="59" column="50" selection-start-line="59" selection-start-column="50" selection-end-line="59" selection-end-column="50" />
+        <state relative-caret-position="214">
+          <caret line="20" column="13" selection-start-line="20" selection-start-column="13" selection-end-line="20" selection-end-column="13" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#1214#1215#0" expanded="true" />
-            <element signature="e#1274#1275#0" expanded="true" />
+            <element signature="e#1574#2354#0" expanded="true" />
+            <element signature="e#2353#2354#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/androidDev/ImageViewActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="243">
+          <caret line="31" column="51" selection-start-line="31" selection-start-column="51" selection-end-line="31" selection-end-column="51" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/ImageItem/Image.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-660">
+          <caret line="32" column="6" selection-start-line="32" selection-start-column="6" selection-end-line="32" selection-end-column="6" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$USER_HOME$/AppData/Local/Android/Sdk/platforms/android-29/android.jar!/android/database/sqlite/SQLiteDatabase.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="221">
+          <caret line="221" column="18" selection-start-line="221" selection-start-column="18" selection-end-line="221" selection-end-column="18" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/account/Authorisation.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret column="1" selection-start-column="1" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/androidDev/ImageListActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="319">
+          <caret line="30" column="68" selection-start-line="30" selection-start-column="68" selection-end-line="30" selection-end-column="68" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/database/DataStorage.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="328">
+          <caret line="20" column="29" selection-start-line="20" selection-start-column="29" selection-end-line="20" selection-end-column="29" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#338#339#0" expanded="true" />
+            <element signature="e#363#364#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/assets/encrypted.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="57">
+          <caret line="3" column="23" lean-forward="true" selection-start-line="3" selection-start-column="23" selection-end-line="3" selection-end-column="23" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/androidDev/MainActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="171">
-          <caret line="11" selection-start-line="11" selection-end-line="11" />
+        <state relative-caret-position="69">
+          <caret line="42" column="45" selection-start-line="42" selection-start-column="45" selection-end-line="42" selection-end-column="45" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/database/DatabaseHelper.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="552">
+          <caret line="71" column="21" lean-forward="true" selection-start-line="71" selection-start-column="21" selection-end-line="71" selection-end-column="21" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#1219#1220#0" expanded="true" />
+            <element signature="e#1279#1280#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

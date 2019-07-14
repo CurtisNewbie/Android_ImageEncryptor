@@ -2,6 +2,7 @@ package com.curtisnewbie.androidDev;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -11,6 +12,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.curtisnewbie.database.DataStorage;
 import com.curtisnewbie.database.DatabaseHelper;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 public class MainActivity extends AppCompatActivity {
     boolean firstTimeRun = true;
@@ -42,6 +46,9 @@ public class MainActivity extends AppCompatActivity {
         pwInput = this.findViewById(R.id.pwInput);
         nameInput = this.findViewById(R.id.nameInput);
         loginBtn = this.findViewById(R.id.loginBtn);
+
+        db.setTestData(this);
+
     }
 
     /**
@@ -54,9 +61,11 @@ public class MainActivity extends AppCompatActivity {
         // getText does not return String, it's a editable object, similar to StringBuilder.
         String entName = nameInput.getText().toString().trim();
         String entPW = pwInput.getText().toString().trim();
-
+        Log.i(TAG, "Credential not checked");
         // check credential
         if (db.checkCredential(entName, entPW)) {
+
+            Log.i(TAG, "Credential checked");
 
             // Create an Intent obj as a new operation, the arg is the Action name in AnroidManifest.xml.
             Intent intent = new Intent(".ImageListActivity");

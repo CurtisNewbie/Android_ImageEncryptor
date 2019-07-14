@@ -1,10 +1,16 @@
 package com.curtisnewbie.database;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
+import com.curtisnewbie.androidDev.MainActivity;
+
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 /**
@@ -13,13 +19,13 @@ import java.util.ArrayList;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "student.db";
-    private static final String CREDENTIAL_TABLE = "credential_table";
+    private static final String CREDENTIAL_TABLE = "cred_table";
     private static final String IMAGE_TABLE = "image_table";
 
 
-    private static final String CRED_ID = "credential_id"; // INTEGER
-    private static final String CRED_NAME = "credential_name"; // TEXT
-    private static final String CRED_PW = "credential_pw"; // TEXT
+    private static final String CRED_ID = "cred_id"; // INTEGER
+    private static final String CRED_NAME = "cred_name"; // TEXT
+    private static final String CRED_PW = "cred_pw"; // TEXT
 
     private static final String IMG_NAME = "image_name"; // TEXT
     private static final String IMG_DATA = "image_data"; // BLOB
@@ -30,7 +36,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     /**
      * This is used to create database.
      *
-     * @param context
+     * @param context Context object
      */
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, VERSION);
@@ -40,12 +46,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
 
         // execute query for creating tables
-        sqLiteDatabase.execSQL("CREATE TABLE " + CREDENTIAL_TABLE + "(" + CRED_ID + "INTEGER PRIMARY KEY AUTOINCREMENT," +
-                CRED_NAME + "TEXT NOT NULL, " + CRED_PW + "TEXT NOT NULL);");
-        sqLiteDatabase.execSQL("CREATE TABLE " + IMAGE_TABLE + "(" + IMG_NAME + "TEXT PRIMARY KEY AUTOINCREMENT," +
-                IMG_DATA + "BOLB NOT NULL);");
-        sqLiteDatabase.execSQL("INSERT INTO CREDENTIAL_TABLE (CRED_NAME, CRED_PW) VALUES ('admin', 'pw');");
+        sqLiteDatabase.execSQL("CREATE TABLE cred_table (cred_id INTEGER PRIMARY KEY AUTOINCREMENT, cred_name TEXT, cred_pw TEXT);");
 
+        sqLiteDatabase.execSQL("CREATE TABLE image_table (image_name TEXT PRIMARY KEY, image_data BLOB);");
+
+        // ContentValues is for storing the data that are inserted into the table
+        ContentValues content = new ContentValues();
+        content.put(CRED_NAME, "admin");
+        content.put(CRED_PW, "password");
+        long result = sqLiteDatabase.insert(CREDENTIAL_TABLE, null, content);
     }
 
     @Override
@@ -63,16 +72,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public boolean checkCredential(String name, String pw) {
         SQLiteDatabase db = this.getReadableDatabase();
 
-        String query = "SELECT  credential_name , credential_pw FROM credential_table;";
+        String query = "SELECT cred_name, cred_pw FROM cred_table";
 
         // cursor is used to access the result
         Cursor curs = db.rawQuery(query, null);
 
+        curs.moveToNext();
         // only one user is needed.
-        if (curs.getString(0).equals(name) && curs.getString(1).equals(pw))
+        if (curs.getString(0).equals(name) && curs.getString(1).equals(pw)) {
+            curs.close();
             return true;
-        else
+        } else {
+            curs.close();
             return false;
+        }
     }
 
     /**
@@ -83,11 +96,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      */
     public byte[] getEncryptedImgData(String imgName) {
         SQLiteDatabase db = this.getReadableDatabase();
-        String query = "SELECT image_data FROM image_table WHERE image_name =" + imgName + ";";
+        String query = "SELECT image_data FROM image_table WHERE image_name = '" + imgName + "'";
 
         // cursor is used to access the result
         Cursor curs = db.rawQuery(query, null);
-        return curs.getBlob(0);
+        byte[] bytes = curs.getBlob(0);
+        curs.close();
+        return bytes;
     }
 
     /**
@@ -106,6 +121,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         while (curs.moveToNext()) {
             listOfTitle.add(curs.getString(0));
         }
+        curs.close();
         return listOfTitle;
     }
 
@@ -117,11 +133,40 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public char[] getDecryPW() {
         SQLiteDatabase db = this.getReadableDatabase();
 
-        String query = "SELECT credential_pw FROM credential_table;";
+        String query = "SELECT cred_pw FROM cred_table;";
 
         // cursor is used to access the result
         Cursor curs = db.rawQuery(query, null);
-
+        curs.close();
         return curs.getString(0).toCharArray();
     }
+
+    // for testing
+    public void setTestData(Context context) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Log.i("db", "dbTest");
+        // setup test data
+        try {
+            InputStream in = context.getAssets().open("encrypted.txt");
+            byte[] data = new byte[in.available()];
+            in.read(data);
+            in.close();
+
+
+            Log.i("db", "dbTest1");
+
+            // ContentValues is for storing the data that are inserted into the table
+            ContentValues content = new ContentValues();
+            content.put("image_name", "Image_One");
+            content.put("image_data", data);
+            long result = db.insert(IMAGE_TABLE, null, content);
+            Log.i("db", "dbTest2");
+            if (result == -1)
+                Log.i("db", "dbTest-1");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
 }

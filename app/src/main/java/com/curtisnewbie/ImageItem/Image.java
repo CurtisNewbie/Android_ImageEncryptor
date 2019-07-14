@@ -29,13 +29,16 @@ public class Image extends ImgCryptoSpec implements Decryptable {
     }
 
     /**
+     * Decrypt the data, but this image does not store the decrypted data.
+     *
      * @param pw password
-     * @return
+     * @return byte[] of decrypted data
      * @throws IOException
      * @throws FileNotFoundException
      */
     @Override
     public byte[] decrypt(char[] pw) throws IOException {
+
         // inputStream for reading encrypted data
         InputStream byteIn = new ByteArrayInputStream(encryptedData);
         try {
