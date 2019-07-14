@@ -22,17 +22,10 @@ import javax.crypto.spec.PBEParameterSpec;
 public class Image extends ImgCryptoSpec implements Decryptable {
 
     private byte[] encryptedData;
-    private String name;
 
-    public Image(byte[] data, String name) {
+    public Image(byte[] encryptedData) {
         this.salt = new byte[ImgCryptoSpec.SALT_SIZE];
-        this.encryptedData = data;
-        this.name = name;
-
-    }
-
-    public String getName() {
-        return this.name;
+        this.encryptedData = encryptedData;
     }
 
     /**
@@ -100,8 +93,6 @@ public class Image extends ImgCryptoSpec implements Decryptable {
         } catch (InvalidKeyException e) {
             return null;
         }
-
-
     }
 
 
