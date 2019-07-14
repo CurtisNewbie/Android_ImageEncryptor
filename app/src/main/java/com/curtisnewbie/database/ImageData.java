@@ -13,7 +13,7 @@ public class ImageData {
     private String image_name;
 
     @ColumnInfo(name = "image_data")
-    private String image_data;
+    private byte[] image_data;
 
 
     public String getImage_name() {
@@ -24,11 +24,11 @@ public class ImageData {
         this.image_name = image_name;
     }
 
-    public String getImage_data() {
+    public byte[] getImage_data() {
         return image_data;
     }
 
-    public void setImage_data(String image_data) {
+    public void setImage_data(byte[] image_data) {
         this.image_data = image_data;
     }
 }
