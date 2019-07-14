@@ -28,7 +28,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0f8898c2-b63a-43dc-b5e1-3fed7369520b" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/ImgCrypto/Image.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/5.1.1/executionHistory/executionHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.1.1/executionHistory/executionHistory.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/5.1.1/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.1.1/executionHistory/executionHistory.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/5.1.1/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.1.1/fileHashes/fileHashes.bin" afterDir="false" />
@@ -37,26 +36,7 @@
       <change beforePath="$PROJECT_DIR$/.gradle/5.1.1/javaCompile/javaCompile.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.1.1/javaCompile/javaCompile.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/build/generated/source/buildConfig/androidTest/debug/com/curtisnewbie/activities/test/BuildConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/build/generated/source/buildConfig/androidTest/debug/com/curtisnewbie/activities/test/BuildConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/build/generated/source/buildConfig/debug/com/curtisnewbie/activities/BuildConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/build/generated/source/buildConfig/debug/com/curtisnewbie/activities/BuildConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/androidTest/java/com/curtisnewbie/androidDev/ExampleInstrumentedTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/androidTest/java/com/curtisnewbie/activities/ExampleInstrumentedTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/assets/encrypted.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/ImageItem/Decryptable.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/ImageItem/Image.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/ImageItem/ImgCryptoSpec.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/account/Account.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/account/Authorisation.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/androidDev/ImageListActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/activities/ImageListActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/androidDev/ImageListAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/activities/ImageListAdapter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/androidDev/ImageViewActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/activities/ImageViewActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/androidDev/MainActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/activities/MainActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/database/AppDatabase.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/database/AppDatabase.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/database/DataStorage.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/database/DataStorage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/database/DatabaseHelper.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/database/ImageData.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/database/ImageData.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/database/TestDATA.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/test/java/com/curtisnewbie/androidDev/ExampleUnitTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/test/java/com/curtisnewbie/activities/ExampleUnitTest.java" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -90,8 +70,11 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/activities/MainActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="152">
-              <caret line="8" lean-forward="true" selection-start-line="8" selection-end-line="8" />
+            <state relative-caret-position="193">
+              <caret line="17" column="13" selection-start-line="17" selection-start-column="13" selection-end-line="17" selection-end-column="13" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -100,7 +83,7 @@
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/database/Credential.java">
           <provider selected="true" editor-type-id="text-editor">
             <state>
-              <caret column="31" lean-forward="true" selection-start-column="31" selection-end-column="31" />
+              <caret column="31" selection-start-column="31" selection-end-column="31" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -111,8 +94,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/database/AppDatabase.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="133">
-              <caret line="7" column="3" lean-forward="true" selection-start-line="7" selection-start-column="3" selection-end-line="7" selection-end-column="3" />
+            <state relative-caret-position="114">
+              <caret line="6" column="23" selection-start-line="6" selection-start-column="23" selection-end-line="6" selection-end-column="23" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -133,10 +116,19 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/database/DataStorage.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="53">
+              <caret line="8" column="39" selection-start-line="8" selection-start-column="39" selection-end-line="8" selection-end-column="39" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/activities/ImageListActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="342">
-              <caret line="18" column="49" lean-forward="true" selection-start-line="18" selection-start-column="49" selection-end-line="18" selection-end-column="49" />
+            <state relative-caret-position="171">
+              <caret line="9" column="3" selection-start-line="9" selection-start-column="3" selection-end-line="9" selection-end-column="3" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -160,7 +152,7 @@
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/activities/ImageListAdapter.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="150">
-              <caret line="19" lean-forward="true" selection-start-line="19" selection-end-line="19" />
+              <caret line="19" selection-start-line="19" selection-end-line="19" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="method#getName#0;class#ViewHolder#0;class#ImageListAdapter#0" />
@@ -222,8 +214,6 @@
         <option value="$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/database/DaoInterface.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/ImageItem/Decryptable.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/androidDev/MainActivity.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/database/AppDatabase.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/database/DataStorage.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/database/ImageData.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/ImageItem/ImgCryptoSpec.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/ImageItem/Image.java" />
@@ -233,6 +223,8 @@
         <option value="$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/database/Credential.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/androidDev/ImageListActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/activities/ImageListActivity.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/database/AppDatabase.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/database/DataStorage.java" />
       </list>
     </option>
   </component>
@@ -570,12 +562,12 @@
       <window_info id="Captures" order="8" sideWeight="0.50145346" side_tool="true" weight="0.32931727" />
       <window_info id="UI Designer" order="9" />
       <window_info anchor="bottom" id="Messages" order="0" weight="0.32729805" />
-      <window_info active="true" anchor="bottom" id="Find" order="1" visible="true" weight="0.045801528" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.045801528" />
       <window_info anchor="bottom" id="TODO" order="2" sideWeight="0.49933067" weight="0.32729805" />
       <window_info anchor="bottom" id="Terminal" order="3" sideWeight="0.8406961" weight="0.045801528" />
       <window_info anchor="bottom" x="468" y="604" width="999" height="188" id="Event Log" order="4" sideWeight="0.24364123" side_tool="true" weight="0.24930362" />
       <window_info anchor="bottom" id="Version Control" order="5" sideWeight="0.4986613" weight="0.74094707" />
-      <window_info anchor="bottom" id="Build" order="6" sideWeight="0.49464524" weight="0.21832061" />
+      <window_info active="true" anchor="bottom" id="Build" order="6" sideWeight="0.49464524" visible="true" weight="0.0778626" />
       <window_info anchor="bottom" id="Android Profiler" order="7" />
       <window_info anchor="bottom" id="Logcat" order="8" sideWeight="0.75635874" weight="0.045801528" />
       <window_info anchor="bottom" id="Debug" order="9" />
@@ -911,16 +903,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/database/DataStorage.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="342">
-          <caret line="31" column="29" selection-start-line="31" selection-start-column="29" selection-end-line="31" selection-end-column="29" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/ImageItem/ImgCryptoSpec.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="38">
@@ -952,10 +934,30 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/database/Credential.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret column="31" selection-start-column="31" selection-end-column="31" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/activities/ImageListActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="171">
+          <caret line="9" column="3" selection-start-line="9" selection-start-column="3" selection-end-line="9" selection-end-column="3" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/activities/ImageListAdapter.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="150">
-          <caret line="19" lean-forward="true" selection-start-line="19" selection-end-line="19" />
+          <caret line="19" selection-start-line="19" selection-end-line="19" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="method#getName#0;class#ViewHolder#0;class#ImageListAdapter#0" />
@@ -975,38 +977,28 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/activities/MainActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="152">
-          <caret line="8" lean-forward="true" selection-start-line="8" selection-end-line="8" />
+        <state relative-caret-position="193">
+          <caret line="17" column="13" selection-start-line="17" selection-start-column="13" selection-end-line="17" selection-end-column="13" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/database/AppDatabase.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="133">
-          <caret line="7" column="3" lean-forward="true" selection-start-line="7" selection-start-column="3" selection-end-line="7" selection-end-column="3" />
+        <state relative-caret-position="114">
+          <caret line="6" column="23" selection-start-line="6" selection-start-column="23" selection-end-line="6" selection-end-column="23" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/database/Credential.java">
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/database/DataStorage.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret column="31" lean-forward="true" selection-start-column="31" selection-end-column="31" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/curtisnewbie/activities/ImageListActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="342">
-          <caret line="18" column="49" lean-forward="true" selection-start-line="18" selection-start-column="49" selection-end-line="18" selection-end-column="49" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+        <state relative-caret-position="53">
+          <caret line="8" column="39" selection-start-line="8" selection-start-column="39" selection-end-line="8" selection-end-column="39" />
         </state>
       </provider>
     </entry>

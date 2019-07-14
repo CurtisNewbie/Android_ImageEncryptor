@@ -6,7 +6,7 @@ import android.util.Log;
 
 import androidx.room.Room;
 
-import com.curtisnewbie.ImageItem.Image;
+import com.curtisnewbie.ImgCrypto.Image;
 
 import java.io.IOException;
 import java.io.InputStream;
