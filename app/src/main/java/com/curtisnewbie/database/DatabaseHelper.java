@@ -108,4 +108,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
         return listOfTitle;
     }
+
+    /**
+     * Get the password
+     *
+     * @return password
+     */
+    public char[] getDecryPW() {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String query = "SELECT credential_pw FROM credential_table;";
+
+        // cursor is used to access the result
+        Cursor curs = db.rawQuery(query, null);
+
+        return curs.getString(0).toCharArray();
+    }
 }
