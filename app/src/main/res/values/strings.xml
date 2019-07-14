@@ -5,4 +5,5 @@
     <string name="programme_title">Image Encryption</string>
     <string name="hint_pw">Password</string>
     <string name="btn_login">Login</string>
+    <string name="add_img_name">Add Image</string>
 </resources>

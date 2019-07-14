@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="Gradle: com.github.TutorialsAndroid:FilePicker:v4.0.19@aar">
+    <CLASSES>
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/42641d054ebf048350efb4007d7d083c/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/42641d054ebf048350efb4007d7d083c/jars/classes.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.TutorialsAndroid/FilePicker/v4.0.19/9a59a60d3ce941f9a360653ae3e7975102e8a6f5/FilePicker-v4.0.19-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
