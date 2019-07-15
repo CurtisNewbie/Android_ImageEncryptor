@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
         loginBtn = this.findViewById(R.id.loginBtn);
 
         Toast.makeText(this, "If this is the first time you use this app, you will " +
-                "register your account. :D", Toast.LENGTH_LONG);
+                "register your account. :D", Toast.LENGTH_LONG).show();
     }
 
     /**
