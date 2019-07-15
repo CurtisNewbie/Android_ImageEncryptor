@@ -35,8 +35,8 @@ public class ImageViewActivity extends AppCompatActivity {
         byte[] encryptedData = db.dao().getImgData(imageName);
 
         // decrypt the data
-//        pw = getIntent().getStringExtra(DataStorage.PW_TAG);
-        byte[] data = Image.decrypt(encryptedData, "pw");
+        pw = getIntent().getStringExtra(DataStorage.PW_TAG);
+        byte[] data = Image.decrypt(encryptedData, pw);
 
         // show image
         try {
