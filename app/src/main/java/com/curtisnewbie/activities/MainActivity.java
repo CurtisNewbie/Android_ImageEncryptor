@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -54,6 +55,9 @@ public class MainActivity extends AppCompatActivity {
         pwInput = this.findViewById(R.id.pwInput);
         nameInput = this.findViewById(R.id.nameInput);
         loginBtn = this.findViewById(R.id.loginBtn);
+
+        Toast.makeText(this, "If this is the first time you use this app, you will " +
+                "register your account. :D", Toast.LENGTH_LONG);
     }
 
     /**
