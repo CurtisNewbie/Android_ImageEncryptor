@@ -9,12 +9,23 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.curtisnewbie.ImgCrypto.Image;
+import com.curtisnewbie.database.AppDatabase;
+import com.curtisnewbie.database.DataStorage;
+import com.curtisnewbie.database.ImageData;
 import com.developer.filepicker.controller.DialogSelectionListener;
 import com.developer.filepicker.model.DialogConfigs;
 import com.developer.filepicker.model.DialogProperties;
 import com.developer.filepicker.view.FilePickerDialog;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Shows a list of images
@@ -28,13 +39,15 @@ public class ImageListActivity extends AppCompatActivity {
     private DialogProperties properties;
     private FilePickerDialog dialog;
 
+    private List<File> selectedFiles;
+
     public static final String TAG = "ImageList";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_list);
-
+        selectedFiles = null;
         recycleView = findViewById(R.id.recycleView);
         addImgBtn = findViewById(R.id.addImgBtn);
 
@@ -83,9 +96,40 @@ public class ImageListActivity extends AppCompatActivity {
             @Override
             public void onSelectedFilePaths(String[] files) {
                 //files is the array of the paths of files selected by the Application User.
+
+                selectedFiles = new LinkedList<>();
+                for (String path : files) {
+                        selectedFiles.add(new File(path));
+                }
+
+                // encrypt the files, store them to the db
+                if (selectedFiles != null) {
+                    AppDatabase db = DataStorage.getInstance(null).getDB();
+                    for (File file : selectedFiles) {
+                        try {
+                            InputStream in = new FileInputStream(file);
+                            byte[] rawData = new byte[in.available()];
+                            in.read(rawData);
+                            in.close();
+
+                            // testing using the temp pw.
+                            byte[] encryptedData = Image.encrypt(rawData, "password");
+                            ImageData img = new ImageData();
+                            img.setImage_name(file.getName());
+                            img.setImage_data(encryptedData);
+
+                            db.dao().addImageData(img);
+                        } catch (FileNotFoundException e) {
+                            Toast.makeText(ImageListActivity.this, "Fail to find file:" + file.getName(), Toast.LENGTH_SHORT).show();
+                        } catch (IOException e) {
+                            Toast.makeText(ImageListActivity.this, "Fail to read from file:" + file.getName(), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                }
+
             }
         });
-
 
 
     }
