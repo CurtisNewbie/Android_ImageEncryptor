@@ -8,6 +8,7 @@ import androidx.room.Room;
 
 import com.curtisnewbie.ImgCrypto.Image;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -40,6 +41,12 @@ public class DataStorage  {
 
     public static DataStorage getInstance(Context context) {
         if(dataStorage == null) {
+
+            // check if local one exists
+            File tempDb = context.getDatabasePath("mydatabase.db");
+            if(tempDb.exists()){
+                // -=======================Need code to convert existing db to room db
+            }
             dataStorage = new DataStorage();
             dataStorage.iniDatabase(context);
             return dataStorage;
