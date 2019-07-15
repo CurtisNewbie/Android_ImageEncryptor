@@ -10,21 +10,26 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.curtisnewbie.database.AppDatabase;
-import com.curtisnewbie.database.Credential;
 import com.curtisnewbie.database.DataStorage;
 
-import java.util.List;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity {
 
-    // it is used in Logcat for logging
     public static final String TAG = "Encryption_Status";
+    private static final String CRED_PATH = "cred.txt";
 
     // UI components of this activity.
     private EditText pwInput;
     private EditText nameInput;
     private Button loginBtn;
     private AppDatabase db;
+    private String password;
 
 
     /* Brief: onCreate() -> onStart() -> Running -> onPause()/OnStop();
@@ -62,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
 
             // Create an Intent obj as a new operation, the arg is the Action name in AnroidManifest.xml.
             Intent intent = new Intent(".ImageListActivity");
+            intent.putExtra(DataStorage.PW_TAG, this.password);
             startActivity(intent);
 
         } else {
@@ -70,6 +76,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
     /**
      * This is used to check credential
      *
@@ -77,13 +84,51 @@ public class MainActivity extends AppCompatActivity {
      * @param pw   password
      * @return true/false indicating whether the credential is verified.
      */
-    private boolean checkCredential(String name, String pw) {
-        List<Credential> creds = db.dao().getListOfCred();
+    public boolean checkCredential(String name, String pw) {
+        File cred = new File(this.getFilesDir(), CRED_PATH);
+        if (cred.exists()) {
+            try {
+                // read the bytes from existing files
+                FileInputStream in = this.openFileInput(CRED_PATH);
+                byte[] credBytes = new byte[in.available()];
+                in.read(credBytes);
+                in.close();
 
-        if(name.equals(creds.get(0).getCred_name()) && pw.equals(creds.get(0).getCred_pw()))
+                byte[] enteredCred = DataStorage.hashingCred(name, pw);
+                if (Arrays.equals(enteredCred,credBytes)) {
+                    this.password = pw;
+                    return true;
+                } else {
+                    return false;
+                }
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            if(register(name, pw))
+                return true;
+            else
+                return false;
+        }
+        return false;
+    }
+
+    private boolean register(String name, String pw) {
+        try {
+            OutputStream out = this.openFileOutput(CRED_PATH, MODE_PRIVATE);
+            byte[] hashedCred = DataStorage.hashingCred(name,pw);
+            out.write(hashedCred);
+            out.close();
+            this.password = pw;
             return true;
-        else
-            return false;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
 } // class

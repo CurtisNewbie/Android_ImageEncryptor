@@ -21,6 +21,7 @@ public class ImageViewActivity extends AppCompatActivity {
     public static final String TAG = "ImageViewActivity";
     private ImageView imageView;
     private AppDatabase db;
+    private String pw;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,8 +35,8 @@ public class ImageViewActivity extends AppCompatActivity {
         byte[] encryptedData = db.dao().getImgData(imageName);
 
         // decrypt the data
-        String pw = db.dao().getListOfCred().get(0).getCred_pw();
-        byte[] data = Image.decrypt(encryptedData, pw);
+//        pw = getIntent().getStringExtra(DataStorage.PW_TAG);
+        byte[] data = Image.decrypt(encryptedData, "pw");
 
         // show image
         try {

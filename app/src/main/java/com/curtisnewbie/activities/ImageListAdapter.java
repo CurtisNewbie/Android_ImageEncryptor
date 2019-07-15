@@ -24,8 +24,10 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.View
     private List<String> imagesName;
     private Context context;
     private AppDatabase db;
+    private String pw;
 
-    public ImageListAdapter(Context context) {
+    public ImageListAdapter(Context context, String pw) {
+        this.pw = pw;
         this.context = context;
         this.db = DataStorage.getInstance(null).getDB();
         this.imagesName = db.dao().getListOfImgName();
@@ -55,6 +57,7 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.View
                 // jump to another Activity to see the view
                 Intent intent = new Intent(".ImageViewActivity");
                 intent.putExtra(IMG_TITLE, imagesName.get(holder.getAdapterPosition()));
+                intent.putExtra(DataStorage.PW_TAG, pw);
                 context.startActivity(intent);
             }
         });

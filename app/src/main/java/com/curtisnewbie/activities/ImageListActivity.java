@@ -1,5 +1,6 @@
 package com.curtisnewbie.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -23,7 +24,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
+import java.io.OutputStream;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -38,6 +39,7 @@ public class ImageListActivity extends AppCompatActivity {
     private Button addImgBtn;
     private DialogProperties properties;
     private FilePickerDialog dialog;
+    private String pw;
 
     private List<File> selectedFiles;
 
@@ -47,6 +49,7 @@ public class ImageListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_list);
+        pw = getIntent().getStringExtra(DataStorage.PW_TAG);
         selectedFiles = null;
         recycleView = findViewById(R.id.recycleView);
         addImgBtn = findViewById(R.id.addImgBtn);
@@ -55,7 +58,7 @@ public class ImageListActivity extends AppCompatActivity {
         recycleView.setHasFixedSize(true);
 
         // adapter that adapt inidividual items (activity_each_item.xml)
-        rAdapter = new ImageListAdapter(this);
+        rAdapter = new ImageListAdapter(this, pw);
         recycleView.setAdapter(rAdapter);
 
         // linear manager
@@ -96,7 +99,6 @@ public class ImageListActivity extends AppCompatActivity {
             @Override
             public void onSelectedFilePaths(String[] files) {
                 //files is the array of the paths of files selected by the Application User.
-
                 selectedFiles = new LinkedList<>();
                 for (String path : files) {
                         selectedFiles.add(new File(path));
@@ -112,22 +114,27 @@ public class ImageListActivity extends AppCompatActivity {
                             in.read(rawData);
                             in.close();
 
-                            // testing using the temp pw.
-                            byte[] encryptedData = Image.encrypt(rawData, "password");
+                            // encrypt
+                            byte[] encryptedData = Image.encrypt(rawData, pw);
                             ImageData img = new ImageData();
                             img.setImage_name(file.getName());
                             img.setImage_data(encryptedData);
-
                             db.dao().addImageData(img);
+
+                            // output the encrypted file to asset folder
+                            OutputStream out = ImageListActivity.this.openFileOutput(file.getName() + ".txt", MODE_PRIVATE);
+                            out.write(encryptedData);
+                            out.close();
                         } catch (FileNotFoundException e) {
                             Toast.makeText(ImageListActivity.this, "Fail to find file:" + file.getName(), Toast.LENGTH_SHORT).show();
                         } catch (IOException e) {
                             Toast.makeText(ImageListActivity.this, "Fail to read from file:" + file.getName(), Toast.LENGTH_SHORT).show();
                         }
                     }
-
                 }
-
+                Intent intent = getIntent();
+                intent.putExtra(DataStorage.PW_TAG, pw);
+                startActivity(intent);
             }
         });
 
