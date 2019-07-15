@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
 
         } else {
             // Show a message on the screen using Toast, similar to JOptionPane.
-            Toast.makeText(MainActivity.this, "Account Not Okay", Toast.LENGTH_SHORT).show();
+            Toast.makeText(MainActivity.this, "Account Incorrect", Toast.LENGTH_SHORT).show();
         }
     }
 
