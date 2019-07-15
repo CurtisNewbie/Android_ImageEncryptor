@@ -13,6 +13,9 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
 
+/**
+ * Class for image encryption and decryption
+ */
 public class Image {
 
     /*
@@ -21,6 +24,13 @@ public class Image {
     protected static final String HASHING_ALGORITHM = "SHA-256";
     protected static final String ENCRYPTION_STANDARD = "AES";
 
+    /**
+     * Encrypt using SHA-256 & AES
+     *
+     * @param data image data
+     * @param pw   password
+     * @return encrypted byte[]
+     */
     public static byte[] encrypt(byte[] data, String pw) {
         SecretKeySpec keySpec = createKey(pw);
         try {
@@ -42,7 +52,14 @@ public class Image {
         return null;
     }
 
-    public static byte[] decrypt (byte[] data, String pw) {
+    /**
+     * Decrypt using SHA-256 & AES
+     *
+     * @param data encryptedData
+     * @param pw   password
+     * @return original data byte[]
+     */
+    public static byte[] decrypt(byte[] data, String pw) {
         SecretKeySpec keySpec = createKey(pw);
         try {
             Cipher cipher = Cipher.getInstance(ENCRYPTION_STANDARD);

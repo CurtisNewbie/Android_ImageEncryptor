@@ -17,18 +17,27 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Singleton Class for temp data storage and sharing. I will use db in the future.
+ * Singleton Class for the room database and local data reading.
  */
 public class DataStorage {
 
     private AppDatabase db = null;
     private static DataStorage dataStorage = null;
+
+    /**
+     * Used for passing password with intent between activities
+     */
     public static final String PW_TAG = "pw";
 
     public AppDatabase getDB() {
         return db;
     }
 
+    /**
+     * build a new database and load local encrypted data/images
+     *
+     * @param context
+     */
     private void iniDatabase(Context context) {
         // create db for the first time
         this.db = Room.databaseBuilder(context, AppDatabase.class, "mydatabase.db").allowMainThreadQueries().build();
@@ -59,7 +68,7 @@ public class DataStorage {
      * Get local Encrypted Data
      *
      * @param context context
-     * @return list of ImageData obj
+     * @return list of ImageData obj (encrypted data)
      */
     private List<ImageData> getLocalEncryptedData(Context context) {
         // directory
@@ -93,10 +102,17 @@ public class DataStorage {
             return null;
     }
 
+    /**
+     * Hashing the name as well as the password for authentication. It uses SHA-256 hashing algorithm.
+     *
+     * @param name
+     * @param pw
+     * @return the hashed credential
+     */
     public static byte[] hashingCred(String name, String pw) {
         final String HASHING_ALGORITHM = "SHA-256";
         try {
-            String cred = name + ":" + pw;
+            String cred = name + pw;
             byte[] credBytes = cred.getBytes("UTF-8");
 
             // digest the credBytes

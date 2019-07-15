@@ -29,35 +29,48 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Shows a list of images
+ * Shows a list of images, this uses the recyclerView to show list of 'items/smaller views'.
  */
 public class ImageListActivity extends AppCompatActivity {
 
+    // recyclerView
     private RecyclerView recycleView;
     private RecyclerView.Adapter rAdapter;
     private RecyclerView.LayoutManager rManager;
+
+    // components
     private Button addImgBtn;
     private DialogProperties properties;
-    private FilePickerDialog dialog;
-    private String pw;
 
+    // FilePicker - the dialog that allows users to select file.
+    private FilePickerDialog dialog;
     private List<File> selectedFiles;
 
+    // password passed to this activitiy
+    private String pw;
+
+    // tag used for putExtras for refreshing this activity.
     public static final String TAG = "ImageList";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_list);
+
+        // get password when refreshing this activity
         pw = getIntent().getStringExtra(DataStorage.PW_TAG);
         selectedFiles = null;
+
         recycleView = findViewById(R.id.recycleView);
         addImgBtn = findViewById(R.id.addImgBtn);
 
         // set fix layout size of the recycle view to improve performance
         recycleView.setHasFixedSize(true);
 
-        // adapter that adapt inidividual items (activity_each_item.xml)
+        /*
+         adapter that adapt inidividual items (activity_each_item.xml);
+         and passing password to the adapter for decrypting images.
+          */
         rAdapter = new ImageListAdapter(this, pw);
         recycleView.setAdapter(rAdapter);
 
@@ -65,7 +78,7 @@ public class ImageListActivity extends AppCompatActivity {
         rManager = new LinearLayoutManager(this);
         recycleView.setLayoutManager(rManager);
 
-        //initiate file picker
+        // initiate file picker variables
         iniFilePicker();
         addImgBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -78,12 +91,13 @@ public class ImageListActivity extends AppCompatActivity {
         Toast.makeText(ImageListActivity.this, "Login Successful", Toast.LENGTH_SHORT).show();
     }
 
+    /**
+     * initialise file picker (variables) - the dialogue for selecting files.
+     */
     private void iniFilePicker() {
 
         // Dialogue Properties
         properties = new DialogProperties();
-
-        // setup properties
         properties.selection_mode = DialogConfigs.SINGLE_MODE;
         properties.selection_type = DialogConfigs.FILE_SELECT;
         properties.root = new File(DialogConfigs.DEFAULT_DIR);
@@ -101,7 +115,7 @@ public class ImageListActivity extends AppCompatActivity {
                 //files is the array of the paths of files selected by the Application User.
                 selectedFiles = new LinkedList<>();
                 for (String path : files) {
-                        selectedFiles.add(new File(path));
+                    selectedFiles.add(new File(path));
                 }
 
                 // encrypt the files, store them to the db
@@ -109,12 +123,13 @@ public class ImageListActivity extends AppCompatActivity {
                     AppDatabase db = DataStorage.getInstance(null).getDB();
                     for (File file : selectedFiles) {
                         try {
+                            // read the selected images
                             InputStream in = new FileInputStream(file);
                             byte[] rawData = new byte[in.available()];
                             in.read(rawData);
                             in.close();
 
-                            // encrypt
+                            // encrypt selected images
                             byte[] encryptedData = Image.encrypt(rawData, pw);
                             ImageData img = new ImageData();
                             img.setImage_name(file.getName());
@@ -122,16 +137,20 @@ public class ImageListActivity extends AppCompatActivity {
                             db.dao().addImageData(img);
 
                             // output the encrypted file to asset folder
-                            OutputStream out = ImageListActivity.this.openFileOutput(file.getName() + ".txt", MODE_PRIVATE);
+                            OutputStream out = ImageListActivity.this.openFileOutput(file.getName()
+                                    + ".txt", MODE_PRIVATE);
                             out.write(encryptedData);
                             out.close();
                         } catch (FileNotFoundException e) {
-                            Toast.makeText(ImageListActivity.this, "Fail to find file:" + file.getName(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ImageListActivity.this, "Fail to find file:"
+                                    + file.getName(), Toast.LENGTH_SHORT).show();
                         } catch (IOException e) {
-                            Toast.makeText(ImageListActivity.this, "Fail to read from file:" + file.getName(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ImageListActivity.this, "Fail to read from file:"
+                                    + file.getName(), Toast.LENGTH_SHORT).show();
                         }
                     }
                 }
+                // refresh the activity
                 Intent intent = getIntent();
                 intent.putExtra(DataStorage.PW_TAG, pw);
                 startActivity(intent);

@@ -16,14 +16,31 @@ import com.curtisnewbie.database.DataStorage;
 
 import java.util.List;
 
+/**
+ * Adapter for each data set (ViewHolder) in the recyclerView
+ */
 public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.ViewHolder> {
 
-    public static final String TAG = "RecyclerView";
+    /**
+     * string for putExtra when navigating to imageViewActvity
+     */
     public static final String IMG_TITLE = "img_title";
 
+    /**
+     * List of name of image shown for each item view in the recyclerView.
+     */
     private List<String> imagesName;
+
     private Context context;
+
+    /**
+     * RoomDatabase
+     */
     private AppDatabase db;
+
+    /**
+     * pw passed to this adapter, it will be passed to imageViewActivity for decryption
+     */
     private String pw;
 
     public ImageListAdapter(Context context, String pw) {
@@ -33,17 +50,17 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.View
         this.imagesName = db.dao().getListOfImgName();
     }
 
-
     // this method is for inflating the view of each item.
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.acitivity_each_item, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.acitivity_each_item,
+                parent, false);
         ViewHolder viewHolder = new ViewHolder(view);
         return viewHolder;
     }
 
-    // loading resources for each item / holder
+    // loading resources for each ViewHolder
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
 
@@ -56,6 +73,8 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.View
             public void onClick(View view) {
                 // jump to another Activity to see the view
                 Intent intent = new Intent(".ImageViewActivity");
+
+                // pass password to it for decryption
                 intent.putExtra(IMG_TITLE, imagesName.get(holder.getAdapterPosition()));
                 intent.putExtra(DataStorage.PW_TAG, pw);
                 context.startActivity(intent);
@@ -65,6 +84,7 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.View
 
     @Override
     public int getItemCount() {
+        // for the recyclerView to understand how many to show
         return imagesName.size();
     }
 

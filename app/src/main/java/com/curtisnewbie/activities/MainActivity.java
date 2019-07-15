@@ -19,6 +19,9 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Arrays;
 
+/**
+ * Activity for login page
+ */
 public class MainActivity extends AppCompatActivity {
 
     public static final String TAG = "Encryption_Status";
@@ -28,18 +31,20 @@ public class MainActivity extends AppCompatActivity {
     private EditText pwInput;
     private EditText nameInput;
     private Button loginBtn;
+
+    /**
+     * RoomDatabase
+     */
     private AppDatabase db;
+
+    // the password is set here only when the credential is checked.
     private String password;
 
-
-    /* Brief: onCreate() -> onStart() -> Running -> onPause()/OnStop();
-     Starting point of the activity life cycle
-     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // getDb or iniDb if first time
+        // getDb (or iniDb if first time)
         db = DataStorage.getInstance(this).getDB();
 
         // setup the layout for this activity
@@ -53,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * when the button is clicked, the entered name and password is processed.
+     * This is a listener method for loginBtn.
      *
      * @param view implicit view object
      */
@@ -65,26 +71,30 @@ public class MainActivity extends AppCompatActivity {
         // check credential
         if (checkCredential(entName, entPW)) {
 
-            // Create an Intent obj as a new operation, the arg is the Action name in AnroidManifest.xml.
+            // Remove credential
+            nameInput.setText("");
+            pwInput.setText("");
+
+            // jumps to ImageListActivity and passing the password to it.
             Intent intent = new Intent(".ImageListActivity");
             intent.putExtra(DataStorage.PW_TAG, this.password);
             startActivity(intent);
 
         } else {
-            // Show a message on the screen using Toast, similar to JOptionPane.
             Toast.makeText(MainActivity.this, "Account Incorrect", Toast.LENGTH_SHORT).show();
         }
     }
 
 
     /**
-     * This is used to check credential
+     * This is used to check credential by comparing hashed name and password.
      *
-     * @param name name
-     * @param pw   password
+     * @param name name login name
+     * @param pw   password login password
      * @return true/false indicating whether the credential is verified.
      */
     public boolean checkCredential(String name, String pw) {
+        // same dir as the openFileOutput() method
         File cred = new File(this.getFilesDir(), CRED_PATH);
         if (cred.exists()) {
             try {
@@ -94,8 +104,10 @@ public class MainActivity extends AppCompatActivity {
                 in.read(credBytes);
                 in.close();
 
+                // hash the password
                 byte[] enteredCred = DataStorage.hashingCred(name, pw);
-                if (Arrays.equals(enteredCred,credBytes)) {
+                // compare the hash rather than the actual password
+                if (Arrays.equals(enteredCred, credBytes)) {
                     this.password = pw;
                     return true;
                 } else {
@@ -107,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         } else {
-            if(register(name, pw))
+            if (register(name, pw))
                 return true;
             else
                 return false;
@@ -115,10 +127,17 @@ public class MainActivity extends AppCompatActivity {
         return false;
     }
 
+    /**
+     * Register a new credential, by storing the hashed byte[] data locally.
+     *
+     * @param name name
+     * @param pw   password
+     * @return true/false indicating whether the hashed credential data are created and stored.
+     */
     private boolean register(String name, String pw) {
         try {
             OutputStream out = this.openFileOutput(CRED_PATH, MODE_PRIVATE);
-            byte[] hashedCred = DataStorage.hashingCred(name,pw);
+            byte[] hashedCred = DataStorage.hashingCred(name, pw);
             out.write(hashedCred);
             out.close();
             this.password = pw;
@@ -131,4 +150,4 @@ public class MainActivity extends AppCompatActivity {
         return false;
     }
 
-} // class
+}
