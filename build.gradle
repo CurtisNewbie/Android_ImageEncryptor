@@ -19,6 +19,7 @@ allprojects {
         google()
         jcenter()
         // [https://android-arsenal.com/details/1/7663] - File picker
+        // [https://github.com/chrisbanes/PhotoView] - Photo View
         maven { url 'https://jitpack.io' }
     }
 }
