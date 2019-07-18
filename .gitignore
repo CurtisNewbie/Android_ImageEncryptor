@@ -35,7 +35,7 @@ release/
 .idea/libraries
 
 #gradle build
-.gradle
+.gradle/
 /build/
 
 # Ignore Gradle GUI config
