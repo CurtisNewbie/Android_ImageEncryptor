@@ -34,23 +34,6 @@ public class ImageViewActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_view);
         imageView = this.findViewById(R.id.imageView);
-        imageView.setClickable(true);
-        imageView.setOnClickListener(new View.OnClickListener(){
-
-            @Override
-            public void onClick(View view) {
-
-                // create dialogue for a zoomable PhotoView object.
-                AlertDialog.Builder mBuilder = new AlertDialog.Builder(ImageViewActivity.this);
-                View mView = getLayoutInflater().inflate(R.layout.dialogue_zoomable_layout, null);
-
-                PhotoView photoView = mView.findViewById(R.id.zoomView);
-                photoView.setImageBitmap(bitmap);
-                mBuilder.setView(mView);
-                AlertDialog mDialog = mBuilder.create();
-                mDialog.show();
-            }
-        });
 
         // room database
         db = DataStorage.getInstance(null).getDB();
@@ -65,7 +48,12 @@ public class ImageViewActivity extends AppCompatActivity {
 
         // show image
         try {
-            bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
+            // required size
+            int reqWidth = imageView.getMaxWidth();
+            int reqHeight = imageView.getMaxHeight();
+
+            // decode and downscale if needed to avoid OutOfMemory exception
+            Bitmap bitmap = decodeBitmapWithScaling(data, reqWidth, reqHeight);
             imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
             imageView.setImageBitmap(bitmap);
         } catch (Exception e) {
@@ -73,9 +61,64 @@ public class ImageViewActivity extends AppCompatActivity {
             Toast.makeText(this, "Decryption Failed", Toast.LENGTH_SHORT).show();
         }
 
+        // create dialogue that contains a zoomable PhotoView when the imageView is clicked
+        imageView.setClickable(true);
+        imageView.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+
+                // create dialogue for a zoomable PhotoView object.
+                AlertDialog.Builder mBuilder = new AlertDialog.Builder(ImageViewActivity.this);
+                View mView = getLayoutInflater().inflate(R.layout.dialogue_zoomable_layout, null);
+
+                PhotoView zoomView = mView.findViewById(R.id.zoomView);
+                zoomView.setImageBitmap(bitmap);
+                mBuilder.setView(mView);
+                AlertDialog mDialog = mBuilder.create();
+                mDialog.show();
+            }
+        });
+
+
     }
 
+    /**
+     * Decode the data into bitmap based on the required size. It downscale
+     * the image if necessary to avoid OutOfMemory issue.
+     *
+     * @param data data of the image
+     * @param reqWidth required width
+     * @param reqHeight required height
+     * @return bitmap that is decoded.
+     */
+    private Bitmap decodeBitmapWithScaling(byte[] data, int reqWidth, int reqHeight) {
 
+        // memory not yet allocated
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+
+        BitmapFactory.decodeByteArray(data, 0, data.length, options);
+
+        // for getting the outWidth and outHeight
+        int imgWidth = options.outWidth;
+        int imgHeight = options.outHeight;
+
+        // check whether it needs to be downscaled.
+        int inSampleSize = 1;
+        if (imgWidth > reqWidth || imgHeight > reqHeight) {
+
+            inSampleSize = 2;
+
+            if (imgWidth / inSampleSize > reqWidth && imgHeight / inSampleSize > reqHeight) {
+                inSampleSize *= 2;
+            }
+
+        }
+        options.inJustDecodeBounds = false;
+        options.inSampleSize = inSampleSize;
+        return BitmapFactory.decodeByteArray(data, 0, data.length, options);
+    }
 
 }
 
