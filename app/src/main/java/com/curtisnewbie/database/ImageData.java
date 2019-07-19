@@ -14,7 +14,7 @@ public class ImageData {
     @NonNull
     private String image_name;
 
-    @ColumnInfo(name = "path")
+    @ColumnInfo(name = "image_path")
     private String image_path;
 
 
