@@ -15,7 +15,7 @@ public class ImageData {
     private String image_name;
 
     @ColumnInfo(name = "path")
-    private String path;
+    private String image_path;
 
 
     public String getImage_name() {
@@ -26,12 +26,11 @@ public class ImageData {
         this.image_name = image_name;
     }
 
-
-    public String getPath() {
-        return path;
+    public String getImage_path() {
+        return image_path;
     }
 
-    public void setPath(String path) {
-        this.path = path;
+    public void setImage_path(String image_path) {
+        this.image_path = image_path;
     }
 }

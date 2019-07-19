@@ -21,6 +21,6 @@ public interface DaoInterface {
     @Query("SELECT image_name FROM image_table")
     List<String> getListOfImgName();
 
-    @Query("SELECT image_data FROM image_table WHERE image_name = :imgName")
+    @Query("SELECT path FROM image_table WHERE image_name = :imgName")
     byte[] getImgData(String imgName);
 }
