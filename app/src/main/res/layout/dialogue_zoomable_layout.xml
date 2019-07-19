@@ -8,5 +8,5 @@
         android:id="@+id/zoomView"
         android:layout_width="387dp"
         android:layout_height="530dp"
-        android:scaleType="fitCenter"/>
+        android:scaleType="centerCrop"/>
 </LinearLayout>

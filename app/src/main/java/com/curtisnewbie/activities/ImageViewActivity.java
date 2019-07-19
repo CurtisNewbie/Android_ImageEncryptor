@@ -18,6 +18,12 @@ import com.curtisnewbie.database.AppDatabase;
 import com.curtisnewbie.database.DataStorage;
 import com.github.chrisbanes.photoview.PhotoView;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Path;
+
 /**
  * Show the image that is selected from the ImageListActivity
  */
@@ -40,34 +46,42 @@ public class ImageViewActivity extends AppCompatActivity {
 
         // get the data from the database
         String imageName = getIntent().getStringExtra(ImageListAdapter.IMG_TITLE);
-        byte[] encryptedData = db.dao().getImgData(imageName);
+        byte[] encryptedData = loadEncryptedData(db.dao().getImgPath(imageName));
 
-        // decrypt the data
-        pw = getIntent().getStringExtra(DataStorage.PW_TAG);
-        byte[] data = Image.decrypt(encryptedData, pw);
+        if (encryptedData != null) {
+            // decrypt the data
+            pw = getIntent().getStringExtra(DataStorage.PW_TAG);
+            byte[] data = Image.decrypt(encryptedData, pw);
 
-        // show image
-        try {
-            // required size
-            int reqWidth = imageView.getMaxWidth();
-            int reqHeight = imageView.getMaxHeight();
+            // show image
+            try {
+                // required size
+                int reqWidth = imageView.getMaxWidth();
+                int reqHeight = imageView.getMaxHeight();
 
-            // decode and downscale if needed to avoid OutOfMemory exception
-            Bitmap bitmap = decodeBitmapWithScaling(data, reqWidth, reqHeight);
-            imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
-            imageView.setImageBitmap(bitmap);
-        } catch (Exception e) {
-            e.printStackTrace();
-            Toast.makeText(this, "Decryption Failed", Toast.LENGTH_SHORT).show();
+                // decode and downscale if needed to avoid OutOfMemory exception
+                Bitmap bitmap = decodeBitmapWithScaling(data, reqWidth, reqHeight);
+                imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+                imageView.setImageBitmap(bitmap);
+
+                setupZoomableView();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                Toast.makeText(this, "Decryption Failed", Toast.LENGTH_SHORT).show();
+            }
         }
+    }
 
-        // create dialogue that contains a zoomable PhotoView when the imageView is clicked
+    /**
+     * Create dialogue that contains a zoomable PhotoView when the imageView is clicked
+     */
+    private void setupZoomableView() {
         imageView.setClickable(true);
         imageView.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
-
                 // create dialogue for a zoomable PhotoView object.
                 AlertDialog.Builder mBuilder = new AlertDialog.Builder(ImageViewActivity.this);
                 View mView = getLayoutInflater().inflate(R.layout.dialogue_zoomable_layout, null);
@@ -79,16 +93,14 @@ public class ImageViewActivity extends AppCompatActivity {
                 mDialog.show();
             }
         });
-
-
     }
 
     /**
      * Decode the data into bitmap based on the required size. It downscale
      * the image if necessary to avoid OutOfMemory issue.
      *
-     * @param data data of the image
-     * @param reqWidth required width
+     * @param data      data of the image
+     * @param reqWidth  required width
      * @param reqHeight required height
      * @return bitmap that is decoded.
      */
@@ -118,6 +130,28 @@ public class ImageViewActivity extends AppCompatActivity {
         options.inJustDecodeBounds = false;
         options.inSampleSize = inSampleSize;
         return BitmapFactory.decodeByteArray(data, 0, data.length, options);
+    }
+
+    /**
+     * Load the encrypted data from the local file dir
+     *
+     * @param path file path
+     * @return encrypted data
+     */
+    private byte[] loadEncryptedData(String path) {
+
+        try {
+            // read each file
+            InputStream in = new FileInputStream(new File(path));
+            Log.i("path" , path);
+            byte[] data = new byte[in.available()];
+            in.read(data);
+            in.close();
+            return data;
+        } catch (IOException e) {
+            Log.i("getLocalEncryptedData", e.toString() + e.getMessage());
+        }
+        return null;
     }
 
 }

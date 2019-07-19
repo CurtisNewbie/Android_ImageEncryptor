@@ -65,10 +65,11 @@ public class DataStorage {
     }
 
     /**
-     * Get local Encrypted Data
+     * Get local Encrypted Data (only file name and path). Actual data are not loaded
+     * due to the memory issue.
      *
      * @param context context
-     * @return list of ImageData obj (encrypted data)
+     * @return list of ImageData obj (encrypted)
      */
     private List<ImageData> getLocalEncryptedData(Context context) {
         // directory
@@ -79,21 +80,12 @@ public class DataStorage {
 
         for (File file : files) {
             if (!file.getName().equals("cred.txt")) {
-                try {
-                    // read each file
-                    InputStream in = new FileInputStream(file);
-                    byte[] data = new byte[in.available()];
-                    in.read(data);
-                    in.close();
 
-                    // store each ImageData obj to the list.
-                    ImageData img = new ImageData();
-                    img.setImage_data(data);
-                    img.setImage_name(file.getName());
-                    imgData.add(img);
-                } catch (IOException e) {
-                    Log.i("getLocalEncryptedData", e.toString() + e.getMessage());
-                }
+                // store each ImageData obj to the list.
+                ImageData img = new ImageData();
+                img.setImage_path(file.getPath());
+                img.setImage_name(file.getName());
+                imgData.add(img);
             }
         }
         if (imgData != null)
