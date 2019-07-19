@@ -14,8 +14,8 @@ public class ImageData {
     @NonNull
     private String image_name;
 
-    @ColumnInfo(name = "image_data")
-    private byte[] image_data;
+    @ColumnInfo(name = "path")
+    private String path;
 
 
     public String getImage_name() {
@@ -26,11 +26,12 @@ public class ImageData {
         this.image_name = image_name;
     }
 
-    public byte[] getImage_data() {
-        return image_data;
+
+    public String getPath() {
+        return path;
     }
 
-    public void setImage_data(byte[] image_data) {
-        this.image_data = image_data;
+    public void setPath(String path) {
+        this.path = path;
     }
 }
