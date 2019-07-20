@@ -3,6 +3,7 @@ package com.curtisnewbie.activities;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
@@ -56,14 +57,17 @@ public class ImageViewActivity extends AppCompatActivity {
             // show image
             try {
                 // required size
-                int reqWidth = imageView.getMaxWidth();
-                int reqHeight = imageView.getMaxHeight();
+                DisplayMetrics displayMetrics = new DisplayMetrics();
+                getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+                int reqHeight = displayMetrics.heightPixels;
+                int reqWidth = displayMetrics.widthPixels;
 
                 // decode and downscale if needed to avoid OutOfMemory exception
-                Bitmap bitmap = decodeBitmapWithScaling(data, reqWidth, reqHeight);
+                bitmap = decodeBitmapWithScaling(data, reqWidth, reqHeight);
                 imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
                 imageView.setImageBitmap(bitmap);
 
+                // setup dialogue for zoomable PhotoView
                 setupZoomableView();
 
             } catch (Exception e) {
@@ -87,7 +91,9 @@ public class ImageViewActivity extends AppCompatActivity {
                 View mView = getLayoutInflater().inflate(R.layout.dialogue_zoomable_layout, null);
 
                 PhotoView zoomView = mView.findViewById(R.id.zoomView);
+
                 zoomView.setImageBitmap(bitmap);
+
                 mBuilder.setView(mView);
                 AlertDialog mDialog = mBuilder.create();
                 mDialog.show();
@@ -143,13 +149,13 @@ public class ImageViewActivity extends AppCompatActivity {
         try {
             // read each file
             InputStream in = new FileInputStream(new File(path));
-            Log.i("path" , path);
+
             byte[] data = new byte[in.available()];
             in.read(data);
             in.close();
             return data;
         } catch (IOException e) {
-            Log.i("getLocalEncryptedData", e.toString() + e.getMessage());
+            e.printStackTrace();
         }
         return null;
     }

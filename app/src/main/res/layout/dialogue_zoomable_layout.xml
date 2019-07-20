@@ -6,7 +6,7 @@
 
     <com.github.chrisbanes.photoview.PhotoView
         android:id="@+id/zoomView"
-        android:layout_width="387dp"
-        android:layout_height="530dp"
-        android:scaleType="centerCrop"/>
+        android:layout_width="342dp"
+        android:layout_height="510dp"
+        android:scaleType="centerCrop" />
 </LinearLayout>
