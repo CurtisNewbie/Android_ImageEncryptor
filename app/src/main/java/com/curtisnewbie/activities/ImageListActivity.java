@@ -132,14 +132,15 @@ public class ImageListActivity extends AppCompatActivity {
                             // encrypt selected images and output the encrypted file to asset folder
                             byte[] encryptedData = Image.encrypt(rawData, pw);
                             OutputStream out = ImageListActivity.this.openFileOutput(file.getName()
-                                    + ".txt", MODE_PRIVATE);
+                                    , MODE_PRIVATE);
                             out.write(encryptedData);
                             out.close();
 
                             // store name and path in database
                             ImageData img = new ImageData();
                             img.setImage_name(file.getName());
-                            img.setImage_path(file.getPath());
+                            img.setImage_path(ImageListActivity.this.getFilesDir().getPath() + "//" + file.getName());
+
                             db.dao().addImageData(img);
                         } catch (FileNotFoundException e) {
                             Toast.makeText(ImageListActivity.this, "Fail to find file:"
