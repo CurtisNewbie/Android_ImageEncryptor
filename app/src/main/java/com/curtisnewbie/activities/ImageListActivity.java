@@ -10,10 +10,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.curtisnewbie.ImgCrypto.Image;
+import com.curtisnewbie.daoThread.AddImgThread;
 import com.curtisnewbie.database.AppDatabase;
 import com.curtisnewbie.database.DataStorage;
 import com.curtisnewbie.database.ImageData;
+import com.curtisnewbie.imgCrypto.Image;
 import com.developer.filepicker.controller.DialogSelectionListener;
 import com.developer.filepicker.model.DialogConfigs;
 import com.developer.filepicker.model.DialogProperties;
@@ -25,6 +26,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -98,7 +100,7 @@ public class ImageListActivity extends AppCompatActivity {
 
         // Dialogue Properties
         properties = new DialogProperties();
-        properties.selection_mode = DialogConfigs.SINGLE_MODE;
+        properties.selection_mode = DialogConfigs.MULTI_MODE;
         properties.selection_type = DialogConfigs.FILE_SELECT;
         properties.root = new File(DialogConfigs.DEFAULT_DIR);
         properties.error_dir = new File(DialogConfigs.DEFAULT_DIR);
@@ -119,45 +121,80 @@ public class ImageListActivity extends AppCompatActivity {
                 }
 
                 // encrypt the files, store them to the db
-                if (selectedFiles != null) {
-                    AppDatabase db = DataStorage.getInstance(null).getDB();
-                    for (File file : selectedFiles) {
-                        try {
-                            // read the selected images
-                            InputStream in = new FileInputStream(file);
-                            byte[] rawData = new byte[in.available()];
-                            in.read(rawData);
-                            in.close();
-
-                            // encrypt selected images and output the encrypted file to asset folder
-                            byte[] encryptedData = Image.encrypt(rawData, pw);
-                            OutputStream out = ImageListActivity.this.openFileOutput(file.getName()
-                                    , MODE_PRIVATE);
-                            out.write(encryptedData);
-                            out.close();
-
-                            // store name and path in database
-                            ImageData img = new ImageData();
-                            img.setImage_name(file.getName());
-                            img.setImage_path(ImageListActivity.this.getFilesDir().getPath() + "//" + file.getName());
-
-                            db.dao().addImageData(img);
-                        } catch (FileNotFoundException e) {
-                            Toast.makeText(ImageListActivity.this, "Fail to find file:"
-                                    + file.getName(), Toast.LENGTH_SHORT).show();
-                        } catch (IOException e) {
-                            Toast.makeText(ImageListActivity.this, "Fail to read from file:"
-                                    + file.getName(), Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                }
-                // refresh the activity
-                Intent intent = getIntent();
-                intent.putExtra(DataStorage.PW_TAG, pw);
-                startActivity(intent);
+                encryptFile(selectedFiles);
+                refreshIntent();
             }
         });
+    }
 
+    /**
+     * Read images (original), encrypt them using the given pw, writing the (encrypted) images data
+     * into local internal storage and them load them into the database.
+     *
+     * @param files list of image files that are not encrypted.
+     */
+    private void encryptFile(List<File> files) {
+        ArrayList<Thread> threads = new ArrayList<>();
+        AppDatabase db = DataStorage.getInstance(null).getDB();
 
+        for (File file : selectedFiles) {
+            try {
+                // read the selected images
+                InputStream in = new FileInputStream(file);
+                byte[] rawData = new byte[in.available()];
+                in.read(rawData);
+                in.close();
+
+                // encrypt selected images and output the encrypted file to asset folder
+                byte[] encryptedData = Image.encrypt(rawData, pw);
+                OutputStream out = ImageListActivity.this.openFileOutput(file.getName()
+                        , MODE_PRIVATE);
+                out.write(encryptedData);
+                out.close();
+
+                // store name and path in database
+                ImageData img = new ImageData();
+                img.setImage_name(file.getName());
+                img.setImage_path(ImageListActivity.this.getFilesDir().getPath() + "//" + file.getName());
+
+                threads.add(new AddImgThread(img, db));
+            } catch (FileNotFoundException e) {
+                Toast.makeText(ImageListActivity.this, "Fail to find file:"
+                        + file.getName(), Toast.LENGTH_SHORT).show();
+            } catch (IOException e) {
+                Toast.makeText(ImageListActivity.this, "Fail to read from file:"
+                        + file.getName(), Toast.LENGTH_SHORT).show();
+            }
+        }
+        exeThreads(threads);
+    }
+
+    /**
+     * Create a new intent of ImageListActivity and pass the password to this intent.
+     */
+    private void refreshIntent() {
+        // refresh the activity
+        Intent intent = getIntent();
+        intent.putExtra(DataStorage.PW_TAG, pw);
+        startActivity(intent);
+    }
+
+    /**
+     * Start and join the given list of threads.
+     *
+     * @param threads list of threads.
+     */
+    private void exeThreads(ArrayList<Thread> threads) {
+        for (Thread t : threads) {
+            t.start();
+        }
+
+        for (Thread t : threads) {
+            try {
+                t.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

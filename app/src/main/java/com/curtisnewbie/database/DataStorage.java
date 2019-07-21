@@ -2,14 +2,12 @@ package com.curtisnewbie.database;
 
 
 import android.content.Context;
-import android.util.Log;
 
 import androidx.room.Room;
 
+import com.curtisnewbie.daoThread.AddImgThread;
+
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -40,12 +38,15 @@ public class DataStorage {
      */
     private void iniDatabase(Context context) {
         // create db for the first time
-        this.db = Room.databaseBuilder(context, AppDatabase.class, "mydatabase.db").allowMainThreadQueries().build();
+        this.db = Room.databaseBuilder(context, AppDatabase.class, "mydatabase.db").build();
 
         // for getting local encrypted images
         List<ImageData> localImg = getLocalEncryptedData(context);
-        for (ImageData img : localImg)
-            db.dao().addImageData(img);
+
+        if (localImg != null) {
+            // this is a thread
+            new AddImgThread(localImg, db).start();
+        }
     }
 
     public static DataStorage getInstance(Context context) {
@@ -88,7 +89,7 @@ public class DataStorage {
                 imgData.add(img);
             }
         }
-        if (imgData != null)
+        if (imgData != null && imgData.size() != 0)
             return imgData;
         else
             return null;
@@ -119,5 +120,4 @@ public class DataStorage {
         }
         return null;
     }
-
 }

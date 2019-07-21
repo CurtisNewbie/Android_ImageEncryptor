@@ -4,9 +4,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.util.Log;
-import android.view.MotionEvent;
-import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -14,7 +11,8 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.curtisnewbie.ImgCrypto.Image;
+import com.curtisnewbie.imgCrypto.Image;
+import com.curtisnewbie.daoThread.GetImgPathThread;
 import com.curtisnewbie.database.AppDatabase;
 import com.curtisnewbie.database.DataStorage;
 import com.github.chrisbanes.photoview.PhotoView;
@@ -23,7 +21,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Path;
 
 /**
  * Show the image that is selected from the ImageListActivity
@@ -35,6 +32,7 @@ public class ImageViewActivity extends AppCompatActivity {
     private AppDatabase db;
     private String pw;
     private Bitmap bitmap;
+    private String imgPath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +45,16 @@ public class ImageViewActivity extends AppCompatActivity {
 
         // get the data from the database
         String imageName = getIntent().getStringExtra(ImageListAdapter.IMG_TITLE);
-        byte[] encryptedData = loadEncryptedData(db.dao().getImgPath(imageName));
+
+        Thread t = new GetImgPathThread(this, db, imageName);
+        t.start();
+        try {
+            t.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        byte[] encryptedData = loadEncryptedData(imgPath);
 
         if (encryptedData != null) {
             // decrypt the data
@@ -158,6 +165,10 @@ public class ImageViewActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public synchronized void setImgPath(String imgPath){
+        this.imgPath = imgPath;
     }
 
 }
