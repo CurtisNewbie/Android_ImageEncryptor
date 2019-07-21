@@ -42,7 +42,7 @@ public class DataStorage {
      */
     private void iniDatabase(Context context) {
         // create db for the first time
-        this.db = Room.databaseBuilder(context, AppDatabase.class, "mydatabase.db").allowMainThreadQueries().build();
+        this.db = Room.databaseBuilder(context, AppDatabase.class, "mydatabase.db").build();
 
         // for getting local encrypted images
         List<ImageData> localImg = getLocalEncryptedData(context);

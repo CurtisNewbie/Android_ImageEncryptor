@@ -15,6 +15,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.curtisnewbie.ImgCrypto.Image;
+import com.curtisnewbie.daoThread.GetImgPathThread;
 import com.curtisnewbie.database.AppDatabase;
 import com.curtisnewbie.database.DataStorage;
 import com.github.chrisbanes.photoview.PhotoView;
@@ -35,6 +36,7 @@ public class ImageViewActivity extends AppCompatActivity {
     private AppDatabase db;
     private String pw;
     private Bitmap bitmap;
+    private String imgPath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +49,16 @@ public class ImageViewActivity extends AppCompatActivity {
 
         // get the data from the database
         String imageName = getIntent().getStringExtra(ImageListAdapter.IMG_TITLE);
-        byte[] encryptedData = loadEncryptedData(db.dao().getImgPath(imageName));
+
+        Thread t = new GetImgPathThread(this, db, imageName);
+        t.start();
+        try {
+            t.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        byte[] encryptedData = loadEncryptedData(imgPath);
 
         if (encryptedData != null) {
             // decrypt the data
@@ -158,6 +169,10 @@ public class ImageViewActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public synchronized void setImgPath(String imgPath){
+        this.imgPath = imgPath;
     }
 
 }
