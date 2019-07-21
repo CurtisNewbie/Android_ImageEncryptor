@@ -11,6 +11,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.curtisnewbie.daoThread.GetListNameThread;
 import com.curtisnewbie.database.AppDatabase;
 import com.curtisnewbie.database.DataStorage;
 
@@ -47,7 +48,14 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.View
         this.pw = pw;
         this.context = context;
         this.db = DataStorage.getInstance(null).getDB();
-        this.imagesName = db.dao().getListOfImgName();
+
+        Thread t = new GetListNameThread(this, db);
+        t.start();
+        try {
+            t.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     // this method is for inflating the view of each item.
@@ -86,6 +94,10 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.View
     public int getItemCount() {
         // for the recyclerView to understand how many to show
         return imagesName.size();
+    }
+
+    public synchronized void setImageNames(List<String> imagesName){
+        this.imagesName = imagesName;
     }
 
     // each view holder holds data of each item
