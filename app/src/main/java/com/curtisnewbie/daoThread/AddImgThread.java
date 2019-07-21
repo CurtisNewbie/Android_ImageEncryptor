@@ -10,6 +10,7 @@ public class AddImgThread extends Thread {
 
     public AddImgThread(ImageData img, AppDatabase db){
         this.img = img;
+        this.db = db;
     }
 
     @Override
