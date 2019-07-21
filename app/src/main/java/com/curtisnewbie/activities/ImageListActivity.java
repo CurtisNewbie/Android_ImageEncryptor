@@ -151,14 +151,16 @@ public class ImageListActivity extends AppCompatActivity {
                                     + file.getName(), Toast.LENGTH_SHORT).show();
                         }
                     }
+                    refreshIntent();
                 }
-                // refresh the activity
-                Intent intent = getIntent();
-                intent.putExtra(DataStorage.PW_TAG, pw);
-                startActivity(intent);
             }
         });
+    }
 
-
+    private void refreshIntent(){
+        // refresh the activity
+        Intent intent = getIntent();
+        intent.putExtra(DataStorage.PW_TAG, pw);
+        startActivity(intent);
     }
 }
