@@ -10,7 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.curtisnewbie.ImgCrypto.Image;
+import com.curtisnewbie.imgCrypto.Image;
 import com.curtisnewbie.daoThread.AddImgThread;
 import com.curtisnewbie.database.AppDatabase;
 import com.curtisnewbie.database.DataStorage;

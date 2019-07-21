@@ -1,4 +1,4 @@
-package com.curtisnewbie.ImgCrypto;
+package com.curtisnewbie.imgCrypto;
 
 import android.util.Log;
 

@@ -4,9 +4,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.util.Log;
-import android.view.MotionEvent;
-import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -14,7 +11,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.curtisnewbie.ImgCrypto.Image;
+import com.curtisnewbie.imgCrypto.Image;
 import com.curtisnewbie.daoThread.GetImgPathThread;
 import com.curtisnewbie.database.AppDatabase;
 import com.curtisnewbie.database.DataStorage;
@@ -24,7 +21,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Path;
 
 /**
  * Show the image that is selected from the ImageListActivity
