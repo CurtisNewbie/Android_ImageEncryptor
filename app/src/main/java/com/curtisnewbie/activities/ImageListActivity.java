@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.curtisnewbie.ImgCrypto.Image;
+import com.curtisnewbie.daoThread.AddImgThread;
 import com.curtisnewbie.database.AppDatabase;
 import com.curtisnewbie.database.DataStorage;
 import com.curtisnewbie.database.ImageData;
@@ -141,7 +142,7 @@ public class ImageListActivity extends AppCompatActivity {
                             img.setImage_name(file.getName());
                             img.setImage_path(ImageListActivity.this.getFilesDir().getPath() + "//" + file.getName());
 
-                            db.dao().addImageData(img);
+                            new AddImgThread(img, db).start();
                         } catch (FileNotFoundException e) {
                             Toast.makeText(ImageListActivity.this, "Fail to find file:"
                                     + file.getName(), Toast.LENGTH_SHORT).show();
