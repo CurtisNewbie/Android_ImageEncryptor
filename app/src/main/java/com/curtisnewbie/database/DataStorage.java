@@ -2,16 +2,12 @@ package com.curtisnewbie.database;
 
 
 import android.content.Context;
-import android.util.Log;
 
 import androidx.room.Room;
 
-import com.curtisnewbie.daoThread.IniDBThread;
+import com.curtisnewbie.daoThread.AddImgThread;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -49,7 +45,7 @@ public class DataStorage {
 
         if (localImg != null) {
             // this is a thread
-            new IniDBThread(localImg, db).start();
+            new AddImgThread(localImg, db).start();
         }
     }
 
