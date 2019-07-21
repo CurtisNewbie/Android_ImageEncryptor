@@ -6,6 +6,8 @@ import android.util.Log;
 
 import androidx.room.Room;
 
+import com.curtisnewbie.daoThread.IniDBThread;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -44,8 +46,11 @@ public class DataStorage {
 
         // for getting local encrypted images
         List<ImageData> localImg = getLocalEncryptedData(context);
-        for (ImageData img : localImg)
-            db.dao().addImageData(img);
+
+        if (localImg != null) {
+            // this is a thread
+            new IniDBThread(localImg, db).start();
+        }
     }
 
     public static DataStorage getInstance(Context context) {
@@ -88,7 +93,7 @@ public class DataStorage {
                 imgData.add(img);
             }
         }
-        if (imgData != null)
+        if (imgData != null && imgData.size() != 0)
             return imgData;
         else
             return null;

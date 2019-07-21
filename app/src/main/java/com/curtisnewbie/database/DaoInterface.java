@@ -15,6 +15,9 @@ public interface DaoInterface {
     @Insert
     void addImageData(ImageData img);
 
+    @Insert
+    void addListOfImageData(List<ImageData> imgs);
+
     @Query("SELECT * FROM image_table")
     List<ImageData> getListOfImg();
 
@@ -24,3 +27,4 @@ public interface DaoInterface {
     @Query("SELECT image_path FROM image_table WHERE image_name = :imgName")
     String getImgPath(String imgName);
 }
+
