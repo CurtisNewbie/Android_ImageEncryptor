@@ -1,6 +1,6 @@
 <h1>Android Image Encryptor/Decryptor</h1>
 
-<h3>What it is?</h3>
+<h3>What Is It?</h3>
 
 <ul>
 <li>This is an simple Android app that allows the user to encrypt and decrypt image. It requires the user to login using his/her password for authentication, however no plaintext crendential is stored (only the hash)!!!</li> 
@@ -31,6 +31,6 @@ This program uses the SHA-256 hashing algorithm and the AES encryption standard,
 
 Date: 20July2019
 
-![FunctionalitiesDemo](https://user-images.githubusercontent.com/45169791/61499340-b9f17400-a9be-11e9-888c-a2c73cde5683.gif)
+<img src="https://user-images.githubusercontent.com/45169791/61499340-b9f17400-a9be-11e9-888c-a2c73cde5683.gif" width=300 height=500 >
 
 Enjoy!
