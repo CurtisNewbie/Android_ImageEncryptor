@@ -41,7 +41,7 @@ public class DataStorage {
         this.db = Room.databaseBuilder(context, AppDatabase.class, "mydatabase.db").build();
 
         // for getting local encrypted images
-        List<ImageData> localImg = getLocalEncryptedData(context);
+        List<Image> localImg = getLocalEncryptedData(context);
 
         if (localImg != null) {
             // this is a thread
@@ -72,20 +72,20 @@ public class DataStorage {
      * @param context context
      * @return list of ImageData obj (encrypted)
      */
-    private List<ImageData> getLocalEncryptedData(Context context) {
+    private List<Image> getLocalEncryptedData(Context context) {
         // directory
         File dir = context.getFilesDir();
         File[] files = dir.listFiles();
 
-        List<ImageData> imgData = new LinkedList<>();
+        List<Image> imgData = new LinkedList<>();
 
         for (File file : files) {
             if (!file.getName().equals("cred.txt")) {
 
                 // store each ImageData obj to the list.
-                ImageData img = new ImageData();
-                img.setImage_path(file.getPath());
-                img.setImage_name(file.getName());
+                Image img = new Image();
+                img.setPath(file.getPath());
+                img.setName(file.getName());
                 imgData.add(img);
             }
         }

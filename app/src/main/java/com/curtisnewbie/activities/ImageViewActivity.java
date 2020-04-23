@@ -11,7 +11,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.curtisnewbie.imgCrypto.Image;
+import com.curtisnewbie.imgCrypto.ImageUtil;
 import com.curtisnewbie.daoThread.GetImgPathThread;
 import com.curtisnewbie.database.AppDatabase;
 import com.curtisnewbie.database.DataStorage;
@@ -59,7 +59,7 @@ public class ImageViewActivity extends AppCompatActivity {
         if (encryptedData != null) {
             // decrypt the data
             pw = getIntent().getStringExtra(DataStorage.PW_TAG);
-            byte[] data = Image.decrypt(encryptedData, pw);
+            byte[] data = ImageUtil.decrypt(encryptedData, pw);
 
             // show image
             try {

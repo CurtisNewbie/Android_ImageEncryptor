@@ -13,8 +13,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.curtisnewbie.daoThread.AddImgThread;
 import com.curtisnewbie.database.AppDatabase;
 import com.curtisnewbie.database.DataStorage;
-import com.curtisnewbie.database.ImageData;
-import com.curtisnewbie.imgCrypto.Image;
+import com.curtisnewbie.database.Image;
+import com.curtisnewbie.imgCrypto.ImageUtil;
 import com.developer.filepicker.controller.DialogSelectionListener;
 import com.developer.filepicker.model.DialogConfigs;
 import com.developer.filepicker.model.DialogProperties;
@@ -146,16 +146,16 @@ public class ImageListActivity extends AppCompatActivity {
                 in.close();
 
                 // encrypt selected images and output the encrypted file to asset folder
-                byte[] encryptedData = Image.encrypt(rawData, pw);
+                byte[] encryptedData = ImageUtil.encrypt(rawData, pw);
                 OutputStream out = ImageListActivity.this.openFileOutput(file.getName()
                         , MODE_PRIVATE);
                 out.write(encryptedData);
                 out.close();
 
                 // store name and path in database
-                ImageData img = new ImageData();
-                img.setImage_name(file.getName());
-                img.setImage_path(ImageListActivity.this.getFilesDir().getPath() + "//" + file.getName());
+                Image img = new Image();
+                img.setName(file.getName());
+                img.setPath(ImageListActivity.this.getFilesDir().getPath() + "//" + file.getName());
 
                 threads.add(new AddImgThread(img, db));
             } catch (FileNotFoundException e) {

@@ -16,7 +16,7 @@ import javax.crypto.spec.SecretKeySpec;
 /**
  * Class for image encryption and decryption
  */
-public class Image {
+public class ImageUtil {
 
     /*
      * Specification of the encryption and decryption

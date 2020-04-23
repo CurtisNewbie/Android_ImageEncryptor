@@ -17,7 +17,7 @@ public class GetImgPathThread extends Thread{
 
     @Override
     public void run() {
-        String path = db.dao().getImgPath(imgName);
+        String path = db.dao().getImagePath(imgName);
         imageViewActivity.setImgPath(path);
     }
 }
