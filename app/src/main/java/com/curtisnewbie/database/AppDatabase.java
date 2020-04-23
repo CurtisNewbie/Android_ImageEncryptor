@@ -6,8 +6,18 @@ import androidx.room.RoomDatabase;
 /**
  * This is the database implementing Room api
  */
-@Database(entities = {Image.class}, version = 1, exportSchema = false)
+@Database(entities = {Image.class, User.class}, version = 1, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
 
-    public abstract ImageDao dao();
+    /**
+     * Get ImageDao
+     * @return ImageDao
+     */
+    public abstract ImageDao imgDao();
+
+    /**
+     * Get UserDao
+     * @return UserDao
+     */
+    public abstract UserDao userDao();
 }

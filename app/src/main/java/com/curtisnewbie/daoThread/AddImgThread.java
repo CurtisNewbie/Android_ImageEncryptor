@@ -25,9 +25,9 @@ public class AddImgThread extends Thread {
     @Override
     public void run() {
         if (img != null) {
-            db.dao().addImage(img);
+            db.imgDao().addImage(img);
         } else {
-            db.dao().addImages(imgs);
+            db.imgDao().addImages(imgs);
         }
 
     }

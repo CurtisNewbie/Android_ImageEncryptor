@@ -15,6 +15,6 @@ public class GetListNameThread extends Thread {
 
     @Override
     public void run() {
-        this.adapter.setImageNames(db.dao().getImageNames());
+        this.adapter.setImageNames(db.imgDao().getImageNames());
     }
 }
