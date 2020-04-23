@@ -18,7 +18,7 @@ public class User {
 
     @ColumnInfo(name = "hash")
     @NonNull
-    private String hash;
+    private byte[] hash;
 
     @ColumnInfo(name = "salt")
     @NonNull
@@ -34,11 +34,11 @@ public class User {
     }
 
     @NonNull
-    public String getHash() {
+    public byte[] getHash() {
         return hash;
     }
 
-    public void setHash(@NonNull String hash) {
+    public void setHash(@NonNull byte[] hash) {
         this.hash = hash;
     }
 
