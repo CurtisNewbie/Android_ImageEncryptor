@@ -1,4 +1,4 @@
-package com.curtisnewbie.imgCrypto;
+package com.curtisnewbie.crypto;
 
 import android.util.Log;
 
@@ -14,7 +14,7 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
 
 /**
- * Class for image encryption and decryption
+ * Util Class for image encryption and decryption
  */
 public class ImageUtil {
 

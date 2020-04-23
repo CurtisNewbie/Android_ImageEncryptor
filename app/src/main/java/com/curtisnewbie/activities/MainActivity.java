@@ -5,19 +5,15 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.curtisnewbie.crypto.CryptoUtil;
 import com.curtisnewbie.database.AppDatabase;
 import com.curtisnewbie.database.DataStorage;
+import com.curtisnewbie.database.User;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.util.Arrays;
 
 /**
@@ -26,7 +22,6 @@ import java.util.Arrays;
 public class MainActivity extends AppCompatActivity {
 
     public static final String TAG = "Encryption_Status";
-    private static final String CRED_PATH = "cred.txt";
 
     // UI components of this activity.
     private EditText pwInput;
@@ -38,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
      */
     private AppDatabase db;
 
+    // TODO: This is a terrible idea, as this loads the password in memory, find a way to fix it
     // the password is set here only when the credential is checked.
     private String password;
 
@@ -56,8 +52,18 @@ public class MainActivity extends AppCompatActivity {
         nameInput = this.findViewById(R.id.nameInput);
         loginBtn = this.findViewById(R.id.loginBtn);
 
-        Toast.makeText(this, "If this is the first time you use this app, you will " +
-                "register your account. :D", Toast.LENGTH_LONG).show();
+        // create thread to prompt msg about whether the user should sign in or sign up
+        new Thread(() -> {
+            int n = db.userDao().getNumOfUsers();
+            String msg;
+            if (n == 0)
+                msg = "Register a new account";
+            else
+                msg = "Sign in your account";
+            this.runOnUiThread(() -> {
+                Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+            });
+        }).start();
     }
 
     /**
@@ -72,86 +78,88 @@ public class MainActivity extends AppCompatActivity {
         String entName = nameInput.getText().toString().trim();
         String entPW = pwInput.getText().toString().trim();
 
-        // check credential
-        if (checkCredential(entName, entPW)) {
+        new Thread(() -> {
+            if (db.userDao().getNumOfUsers() == 0) {
+                String msg;
+                if (register(entName, entPW))
+                    msg = "Account successfully registered";
+                else
+                    msg = "Account cannot be registered";
+                this.runOnUiThread(() -> {
+                    Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
+                });
+            } else {
+                // check credential
+                if (checkCredential(entName, entPW)) {
+                    this.runOnUiThread(() -> {
+                        // Remove entered credential
+                        nameInput.setText("");
+                        pwInput.setText("");
 
-            // Remove credential
-            nameInput.setText("");
-            pwInput.setText("");
-
-            // jumps to ImageListActivity and passing the password to it.
-            Intent intent = new Intent(".ImageListActivity");
-            intent.putExtra(DataStorage.PW_TAG, this.password);
-            startActivity(intent);
-
-        } else {
-            Toast.makeText(MainActivity.this, "Account Incorrect", Toast.LENGTH_SHORT).show();
-        }
+                        // jumps to ImageListActivity and passing the password to it.
+                        Intent intent = new Intent(".ImageListActivity");
+                        intent.putExtra(DataStorage.PW_TAG, this.password);
+                        startActivity(intent);
+                    });
+                } else {
+                    this.runOnUiThread(() -> {
+                        Toast.makeText(MainActivity.this, "Account is incorrect", Toast.LENGTH_SHORT).show();
+                    });
+                }
+            }
+        }).start();
     }
 
 
     /**
-     * This is used to check credential by comparing hashed name and password.
+     * Check Credential
      *
      * @param name name login name
      * @param pw   password login password
      * @return true/false indicating whether the credential is verified.
      */
     public boolean checkCredential(String name, String pw) {
-        // same dir as the openFileOutput() method
-        File cred = new File(this.getFilesDir(), CRED_PATH);
-        if (cred.exists()) {
-            try {
-                // read the bytes from existing files
-                FileInputStream in = this.openFileInput(CRED_PATH);
-                byte[] credBytes = new byte[in.available()];
-                in.read(credBytes);
-                in.close();
+        if (name.isEmpty() || pw.isEmpty()) // invalid arguments
+            return false;
 
-                // hash the password
-                byte[] enteredCred = DataStorage.hashingCred(name, pw);
-                // compare the hash rather than the actual password
-                if (Arrays.equals(enteredCred, credBytes)) {
-                    this.password = pw;
-                    return true;
-                } else {
-                    return false;
-                }
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } else {
-            if (register(name, pw))
+        User user = db.userDao().getUser(name);
+        if (user != null) {
+            // compare hashes
+            byte[] hash = CryptoUtil.hash(pw, user.getSalt());
+            if (Arrays.equals(hash, user.getHash())) {
+                this.password = pw;
                 return true;
-            else
-                return false;
+            }
         }
         return false;
     }
 
     /**
-     * Register a new credential, by storing the hashed byte[] data locally.
+     * Persist a new {@code User} (or new credential) in database
      *
      * @param name name
      * @param pw   password
-     * @return true/false indicating whether the hashed credential data are created and stored.
+     * @return true/false indicating whether the {@code User} is persisted
      */
     private boolean register(String name, String pw) {
         try {
-            OutputStream out = this.openFileOutput(CRED_PATH, MODE_PRIVATE);
-            byte[] hashedCred = DataStorage.hashingCred(name, pw);
-            out.write(hashedCred);
-            out.close();
-            this.password = pw;
-            return true;
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
+            // create new user
+            User user = new User();
+            user.setUsername(name);
+            user.setSalt(CryptoUtil.randSalt(4)); // TODO: create constant for salt length
 
+            // hashing
+            byte[] hash = CryptoUtil.hash(pw, user.getSalt());
+            if (hash == null)
+                return false; // Hashing operation failed
+            user.setHash(hash);
+
+            // persist user
+            db.userDao().addUser(user);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }

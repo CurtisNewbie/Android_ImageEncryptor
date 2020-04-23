@@ -17,8 +17,9 @@ import java.util.List;
 /**
  * Singleton Class for the room database and local data reading.
  */
+// TODO: Change to DI and @Singleton
 public class DataStorage {
-
+    private static final String DB_NAME = "imageEncrypter.db";
     private AppDatabase db = null;
     private static DataStorage dataStorage = null;
 
@@ -26,6 +27,7 @@ public class DataStorage {
      * Used for passing password with intent between activities
      */
     public static final String PW_TAG = "pw";
+
 
     public AppDatabase getDB() {
         return db;
@@ -37,26 +39,12 @@ public class DataStorage {
      * @param context
      */
     private void iniDatabase(Context context) {
-        // create db for the first time
-        this.db = Room.databaseBuilder(context, AppDatabase.class, "mydatabase.db").build();
-
-        // for getting local encrypted images
-        List<Image> localImg = getLocalEncryptedData(context);
-
-        if (localImg != null) {
-            // this is a thread
-            new AddImgThread(localImg, db).start();
-        }
+        // create db that is bound to the context of the whole application (or process)
+        this.db = Room.databaseBuilder(context.getApplicationContext(), AppDatabase.class, DB_NAME).build();
     }
 
     public static DataStorage getInstance(Context context) {
         if (dataStorage == null) {
-
-            // check if local one exists
-            File tempDb = context.getDatabasePath("mydatabase.db");
-            if (tempDb.exists()) {
-                tempDb.delete();
-            }
             dataStorage = new DataStorage();
             dataStorage.iniDatabase(context);
             return dataStorage;
@@ -65,59 +53,35 @@ public class DataStorage {
         }
     }
 
-    /**
-     * Get local Encrypted Data (only file name and path). Actual data are not loaded
-     * due to the memory issue.
-     *
-     * @param context context
-     * @return list of ImageData obj (encrypted)
-     */
-    private List<Image> getLocalEncryptedData(Context context) {
-        // directory
-        File dir = context.getFilesDir();
-        File[] files = dir.listFiles();
-
-        List<Image> imgData = new LinkedList<>();
-
-        for (File file : files) {
-            if (!file.getName().equals("cred.txt")) {
-
-                // store each ImageData obj to the list.
-                Image img = new Image();
-                img.setPath(file.getPath());
-                img.setName(file.getName());
-                imgData.add(img);
-            }
-        }
-        if (imgData != null && imgData.size() != 0)
-            return imgData;
-        else
-            return null;
-    }
-
-    /**
-     * Hashing the name as well as the password for authentication. It uses SHA-256 hashing algorithm.
-     *
-     * @param name
-     * @param pw
-     * @return the hashed credential
-     */
-    public static byte[] hashingCred(String name, String pw) {
-        final String HASHING_ALGORITHM = "SHA-256";
-        try {
-            String cred = name + pw;
-            byte[] credBytes = cred.getBytes("UTF-8");
-
-            // digest the credBytes
-            MessageDigest md = MessageDigest.getInstance(HASHING_ALGORITHM);
-            md.update(credBytes, 0, credBytes.length);
-            byte[] hashedCred = md.digest();
-            return hashedCred;
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
+//     TODO: consider deleting this method? Since the database should persist the data already
+//
+//        /**
+//     * Get local Encrypted Data (only file name and path). Actual data are not loaded
+//     * due to the memory issue.
+//     *
+//     * @param context context
+//     * @return list of ImageData obj (encrypted)
+//     */
+//    private List<Image> getLocalEncryptedData(Context context) {
+//        // directory
+//        File dir = context.getFilesDir();
+//        File[] files = dir.listFiles();
+//
+//        List<Image> imgData = new LinkedList<>();
+//
+//        for (File file : files) {
+//            if (!file.getName().equals("cred.txt")) {
+//
+//                // store each ImageData obj to the list.
+//                Image img = new Image();
+//                img.setPath(file.getPath());
+//                img.setName(file.getName());
+//                imgData.add(img);
+//            }
+//        }
+//        if (imgData != null && imgData.size() != 0)
+//            return imgData;
+//        else
+//            return null;
+//    }
 }

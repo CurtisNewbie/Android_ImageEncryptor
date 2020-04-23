@@ -14,7 +14,7 @@ import com.curtisnewbie.daoThread.AddImgThread;
 import com.curtisnewbie.database.AppDatabase;
 import com.curtisnewbie.database.DataStorage;
 import com.curtisnewbie.database.Image;
-import com.curtisnewbie.imgCrypto.ImageUtil;
+import com.curtisnewbie.crypto.ImageUtil;
 import com.developer.filepicker.controller.DialogSelectionListener;
 import com.developer.filepicker.model.DialogConfigs;
 import com.developer.filepicker.model.DialogProperties;

@@ -50,4 +50,10 @@ public class User {
     public void setSalt(@NonNull String salt) {
         this.salt = salt;
     }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return String.format("Username: %s, hash: %s, salt: %s", username, hash.toString(), salt);
+    }
 }
