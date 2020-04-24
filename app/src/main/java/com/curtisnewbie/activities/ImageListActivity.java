@@ -28,6 +28,8 @@ import java.io.OutputStream;
 import java.util.LinkedList;
 import java.util.List;
 
+// TODO: add a func to remove the encrypted image
+
 /**
  * Shows a list of images, this uses the recyclerView to show list of 'items/smaller views'.
  */
@@ -44,7 +46,6 @@ public class ImageListActivity extends AppCompatActivity {
 
     // FilePicker - the dialog that allows users to select file.
     private FilePickerDialog dialog;
-    private List<File> selectedFiles;
 
     // password passed to this activity
     private String pw;
@@ -56,7 +57,6 @@ public class ImageListActivity extends AppCompatActivity {
 
         // get password when refreshing this activity
         pw = getIntent().getStringExtra(DBManager.PW_TAG);
-        selectedFiles = null;
 
         recycleView = findViewById(R.id.recycleView);
         addImgBtn = findViewById(R.id.addImgBtn);
@@ -115,13 +115,8 @@ public class ImageListActivity extends AppCompatActivity {
         dialog.setDialogSelectionListener(new DialogSelectionListener() {
             @Override
             public void onSelectedFilePaths(String[] files) {
-                //files is the array of the paths of files selected by the Application User.
-                selectedFiles = new LinkedList<>();
-                for (String path : files) {
-                    selectedFiles.add(new File(path));
-                }
                 // encrypt the files, store them to the db
-                encryptNPersist(selectedFiles);
+                encryptNPersist(files);
             }
         });
     }
@@ -133,10 +128,12 @@ public class ImageListActivity extends AppCompatActivity {
      *
      * @param files list of image files that are not encrypted.
      */
-    private void encryptNPersist(List<File> files) {
+    private void encryptNPersist(String[] files) {
         new Thread(() -> {
             AppDatabase db = DBManager.getInstance(null).getDB();
-            for (File file : files) {
+            File file;
+            for (String f : files) {
+                file = new File(f);
                 try {
                     // encrypt and write the encrypted image
                     encryptNWrite(file);
