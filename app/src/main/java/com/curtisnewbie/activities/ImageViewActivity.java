@@ -123,8 +123,6 @@ public class ImageViewActivity extends AppCompatActivity {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
 
-        BitmapFactory.decodeByteArray(data, 0, data.length, options);
-
         // for getting the outWidth and outHeight
         int imgWidth = options.outWidth;
         int imgHeight = options.outHeight;
@@ -132,13 +130,10 @@ public class ImageViewActivity extends AppCompatActivity {
         // check whether it needs to be downscaled.
         int inSampleSize = 1;
         if (imgWidth > reqWidth || imgHeight > reqHeight) {
-
             inSampleSize = 2;
-
             if (imgWidth / inSampleSize > reqWidth && imgHeight / inSampleSize > reqHeight) {
                 inSampleSize *= 2;
             }
-
         }
         options.inJustDecodeBounds = false;
         options.inSampleSize = inSampleSize;
