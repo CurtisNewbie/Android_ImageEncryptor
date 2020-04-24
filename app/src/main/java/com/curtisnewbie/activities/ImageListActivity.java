@@ -159,7 +159,7 @@ public class ImageListActivity extends AppCompatActivity {
     }
 
     /**
-     * Encrypt Image file using the given pw and write them to local storage. I/O is auto closed
+     * Encrypt Image file using the given pw and write them to internal storage. I/O is auto closed
      * even when exceptions are thrown.
      *
      * @param file
