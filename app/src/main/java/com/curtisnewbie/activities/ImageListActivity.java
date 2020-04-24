@@ -25,10 +25,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.LinkedList;
-import java.util.List;
-
-// TODO: add a func to remove the encrypted image
 
 /**
  * Shows a list of images, this uses the recyclerView to show list of 'items/smaller views'.

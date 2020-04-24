@@ -1,5 +1,7 @@
 package com.curtisnewbie.activities;
 
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -7,13 +9,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.curtisnewbie.database.AppDatabase;
 import com.curtisnewbie.database.DBManager;
+import com.curtisnewbie.database.Image;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -82,6 +87,40 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.View
                 context.startActivity(intent);
             }
         });
+
+        // long click (hold) to prompt dialog for deleting the encrypted image
+        holder.getItem_layout().setOnLongClickListener(e -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this.context);
+            builder.setMessage("Want to delete this image?")
+                    .setPositiveButton("Yes", (dia, id) -> {
+                        new Thread(() -> {
+                            int index = holder.getAdapterPosition();
+                            String name = imageNames.get(index);
+                            Image img = this.db.imgDao().getImage(name);
+                            if (img != null && deleteImageFile(img.getPath())) {
+                                // only update the RecyclerView when the file is actually deleted
+                                this.deleteImage(index);
+                                this.db.imgDao().deleteImage(img);
+
+                                ((Activity) this.context).runOnUiThread(() -> {
+                                    Toast.makeText(this.context, String.format("%s deleted.", name),
+                                            Toast.LENGTH_SHORT).show();
+                                });
+                            } else {
+                                ((Activity) this.context).runOnUiThread(() -> {
+                                    Toast.makeText(this.context, "File cannot be deleted, please try again",
+                                            Toast.LENGTH_SHORT).show();
+                                });
+                            }
+                        }).start();
+                    })
+                    .setNegativeButton("No", (dia, id) -> {
+                        // do nothing
+                    });
+            AlertDialog dia = builder.create();
+            dia.show();
+            return true;
+        });
     }
 
     @Override
@@ -109,6 +148,31 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.View
         this.notifyItemInserted(imageNames.size() - 1);
     }
 
+    /**
+     * Delete an image from ths list
+     *
+     * @param index index in the {@code imageNames}
+     * @return the name of the image being deleted
+     */
+    public void deleteImage(int index) {
+        this.imageNames.remove(index);
+        this.notifyItemRemoved(index);
+    }
+
+    // TODO: have a class that is responsible for I/O
+
+    /**
+     * Delete a file
+     *
+     * @param path path to file
+     * @return whether the file is deleted
+     */
+    private boolean deleteImageFile(String path) {
+        File file = new File(path);
+        return file.delete();
+    }
+
+
     // each view holder holds data of each item
     public class ViewHolder extends RecyclerView.ViewHolder {
 
@@ -123,7 +187,6 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.View
 
         public TextView getName() {
             return this.name;
-
         }
 
         public RelativeLayout getItem_layout() {

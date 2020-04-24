@@ -1,6 +1,7 @@
 package com.curtisnewbie.database;
 
 import androidx.room.Dao;
+import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
 
@@ -15,8 +16,11 @@ public interface ImageDao {
     @Insert
     void addImage(Image img);
 
-    @Insert
-    void addImages(List<Image> imgs);
+    @Query("SELECT * FROM image where name = :imgName")
+    Image getImage(String imgName);
+
+    @Delete
+    void deleteImage(Image image);
 
     @Query("SELECT * FROM image")
     List<Image> getImages();
