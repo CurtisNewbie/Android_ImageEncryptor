@@ -82,26 +82,20 @@ public class MainActivity extends AppCompatActivity {
         new Thread(() -> {
             if (db.userDao().getNumOfUsers() == 0) {
                 String msg;
-                if (register(entName, entPW))
+                if (register(entName, entPW)) {
                     msg = String.format("Welcome %s", entName);
-                else
+                    if (checkCredential(entName, entPW))
+                        // always checks credential even for registration
+                        this.login(entPW);
+                } else {
                     msg = "Account cannot be registered";
+                }
                 this.runOnUiThread(() -> {
                     Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
                 });
             } else {
-                // check credential
                 if (checkCredential(entName, entPW)) {
-                    this.runOnUiThread(() -> {
-                        // Remove entered credential
-                        nameInput.setText("");
-                        pwInput.setText("");
-
-                        // jumps to ImageListActivity and passing the password to it.
-                        Intent intent = new Intent(".ImageListActivity");
-                        intent.putExtra(DBManager.PW_TAG, this.password);
-                        startActivity(intent);
-                    });
+                    this.login(entPW);
                 } else {
                     this.runOnUiThread(() -> {
                         Toast.makeText(MainActivity.this, "Account is incorrect", Toast.LENGTH_SHORT).show();
@@ -111,6 +105,24 @@ public class MainActivity extends AppCompatActivity {
         }).start();
     }
 
+    /**
+     * Navigates to ImageListAcivity. Should only be called when the user is authenticated.
+     *
+     * @param pw password for image encryption/decrption
+     */
+    private void login(String pw) {
+        this.password = pw;
+        this.runOnUiThread(() -> {
+            // Remove entered credential
+            nameInput.setText("");
+            pwInput.setText("");
+
+            // jumps to ImageListActivity and passing the password to it.
+            Intent intent = new Intent(".ImageListActivity");
+            intent.putExtra(DBManager.PW_TAG, this.password);
+            startActivity(intent);
+        });
+    }
 
     /**
      * Check Credential
@@ -128,7 +140,6 @@ public class MainActivity extends AppCompatActivity {
             // compare hashes
             byte[] hash = CryptoUtil.hash(pw, user.getSalt());
             if (Arrays.equals(hash, user.getHash())) {
-                this.password = pw;
                 return true;
             }
         }
