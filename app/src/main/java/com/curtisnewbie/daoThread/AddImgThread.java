@@ -5,6 +5,7 @@ import com.curtisnewbie.database.Image;
 
 import java.util.List;
 
+//TODO: Consider removing this class since we can use Lambda?
 public class AddImgThread extends Thread {
 
     private Image img;

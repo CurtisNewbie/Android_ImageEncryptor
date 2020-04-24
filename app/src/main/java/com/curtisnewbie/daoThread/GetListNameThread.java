@@ -3,6 +3,7 @@ package com.curtisnewbie.daoThread;
 import com.curtisnewbie.activities.ImageListAdapter;
 import com.curtisnewbie.database.AppDatabase;
 
+//TODO: Consider removing this class since we can use Lambda?
 public class GetListNameThread extends Thread {
 
     private ImageListAdapter adapter;

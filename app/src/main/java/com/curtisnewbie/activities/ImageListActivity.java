@@ -134,9 +134,7 @@ public class ImageListActivity extends AppCompatActivity {
      * @param files list of image files that are not encrypted.
      */
     private void encryptFile(List<File> files) {
-        ArrayList<Thread> threads = new ArrayList<>();
         AppDatabase db = DataStorage.getInstance(null).getDB();
-
         for (File file : selectedFiles) {
             try {
                 // read the selected images
@@ -152,12 +150,14 @@ public class ImageListActivity extends AppCompatActivity {
                 out.write(encryptedData);
                 out.close();
 
-                // store name and path in database
+                // create image
                 Image img = new Image();
                 img.setName(file.getName());
                 img.setPath(ImageListActivity.this.getFilesDir().getPath() + "//" + file.getName());
 
-                threads.add(new AddImgThread(img, db));
+                // TODO consider adding a thread pool instead of spawning unlimited threads
+                // persist image (name and path)
+                new Thread(() -> db.imgDao().addImage(img)).start();
             } catch (FileNotFoundException e) {
                 Toast.makeText(ImageListActivity.this, "Fail to find file:"
                         + file.getName(), Toast.LENGTH_SHORT).show();
@@ -166,7 +166,6 @@ public class ImageListActivity extends AppCompatActivity {
                         + file.getName(), Toast.LENGTH_SHORT).show();
             }
         }
-        exeThreads(threads);
     }
 
     /**
@@ -177,24 +176,5 @@ public class ImageListActivity extends AppCompatActivity {
         Intent intent = getIntent();
         intent.putExtra(DataStorage.PW_TAG, pw);
         startActivity(intent);
-    }
-
-    /**
-     * Start and join the given list of threads.
-     *
-     * @param threads list of threads.
-     */
-    private void exeThreads(ArrayList<Thread> threads) {
-        for (Thread t : threads) {
-            t.start();
-        }
-
-        for (Thread t : threads) {
-            try {
-                t.join();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
     }
 }
