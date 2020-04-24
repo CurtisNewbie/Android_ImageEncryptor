@@ -11,10 +11,11 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.curtisnewbie.daoThread.GetListNameThread;
 import com.curtisnewbie.database.AppDatabase;
 import com.curtisnewbie.database.DBManager;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -30,7 +31,7 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.View
     /**
      * List of name of image shown for each item view in the recyclerView.
      */
-    private List<String> imagesName;
+    private List<String> imageNames;
 
     private Context context;
 
@@ -48,18 +49,11 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.View
         this.pw = pw;
         this.context = context;
         this.db = DBManager.getInstance(null).getDB();
-
-        Thread t = new GetListNameThread(this, db);
-        t.start();
-        try {
-            t.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        this.imageNames = Collections.synchronizedList(new ArrayList<>());
+        this.loadImageNamesFromDb();
     }
 
     // this method is for inflating the view of each item.
-    @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.acitivity_each_item,
@@ -73,7 +67,7 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.View
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
 
         // setup the name for each image item
-        holder.getName().setText(imagesName.get(position));
+        holder.getName().setText(imageNames.get(position));
 
         // setup the onClickListener for the layout of whole Recycler layout
         holder.getItem_layout().setOnClickListener(new View.OnClickListener() {
@@ -83,7 +77,7 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.View
                 Intent intent = new Intent(".ImageViewActivity");
 
                 // pass password to it for decryption
-                intent.putExtra(IMG_TITLE, imagesName.get(holder.getAdapterPosition()));
+                intent.putExtra(IMG_TITLE, imageNames.get(holder.getAdapterPosition()));
                 intent.putExtra(DBManager.PW_TAG, pw);
                 context.startActivity(intent);
             }
@@ -92,12 +86,27 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.View
 
     @Override
     public int getItemCount() {
-        // for the recyclerView to understand how many to show
-        return imagesName.size();
+        return imageNames.size();
     }
 
-    public synchronized void setImageNames(List<String> imagesName) {
-        this.imagesName = imagesName;
+    /**
+     * Load the whole list of image names from db in a separate {@code Thread}
+     */
+    private void loadImageNamesFromDb() {
+        new Thread(() -> {
+            this.imageNames.clear();
+            this.imageNames.addAll(db.imgDao().getImageNames());
+        }).start();
+    }
+
+    /**
+     * Insert a image name to the end of the list
+     *
+     * @param name image name
+     */
+    public void addImageName(String name) {
+        this.imageNames.add(name);
+        this.notifyItemInserted(imageNames.size() - 1);
     }
 
     // each view holder holds data of each item

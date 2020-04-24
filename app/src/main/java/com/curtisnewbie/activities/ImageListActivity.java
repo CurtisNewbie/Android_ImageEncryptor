@@ -46,11 +46,8 @@ public class ImageListActivity extends AppCompatActivity {
     private FilePickerDialog dialog;
     private List<File> selectedFiles;
 
-    // password passed to this activitiy
+    // password passed to this activity
     private String pw;
-
-    // tag used for putExtras for refreshing this activity.
-    public static final String TAG = "ImageList";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +65,7 @@ public class ImageListActivity extends AppCompatActivity {
         recycleView.setHasFixedSize(true);
 
         /*
-         adapter that adapt inidividual items (activity_each_item.xml);
+         adapter that adapt individual items (activity_each_item.xml);
          and passing password to the adapter for decrypting images.
           */
         rAdapter = new ImageListAdapter(this, pw);
@@ -123,62 +120,63 @@ public class ImageListActivity extends AppCompatActivity {
                 for (String path : files) {
                     selectedFiles.add(new File(path));
                 }
-
                 // encrypt the files, store them to the db
-                encryptFile(selectedFiles);
-                refreshIntent();
+                encryptNPersist(selectedFiles);
             }
         });
     }
 
     /**
-     * Read images (original), encrypt them using the given pw, writing the (encrypted) images data
-     * into local internal storage and them load them into the database.
+     * Read images, encrypt them, write the encrypted images data into local internal storage,
+     * and persist their names and filepath (of the encrypted ones) in the database. Note that
+     * a separate Thread is spawned to undertake this operation.
      *
      * @param files list of image files that are not encrypted.
      */
-    private void encryptFile(List<File> files) {
-        AppDatabase db = DBManager.getInstance(null).getDB();
-        for (File file : selectedFiles) {
-            try {
-                // read the selected images
-                InputStream in = new FileInputStream(file);
-                byte[] rawData = new byte[in.available()];
-                in.read(rawData);
-                in.close();
-
-                // encrypt selected images and output the encrypted file to asset folder
-                byte[] encryptedData = ImageUtil.encrypt(rawData, pw);
-                OutputStream out = ImageListActivity.this.openFileOutput(file.getName()
-                        , MODE_PRIVATE);
-                out.write(encryptedData);
-                out.close();
-
-                // create image
-                Image img = new Image();
-                img.setName(file.getName());
-                img.setPath(ImageListActivity.this.getFilesDir().getPath() + "//" + file.getName());
-
-                // TODO consider adding a thread pool instead of spawning unlimited threads
-                // persist image (name and path)
-                new Thread(() -> db.imgDao().addImage(img)).start();
-            } catch (FileNotFoundException e) {
-                Toast.makeText(ImageListActivity.this, "Fail to find file:"
-                        + file.getName(), Toast.LENGTH_SHORT).show();
-            } catch (IOException e) {
-                Toast.makeText(ImageListActivity.this, "Fail to read from file:"
-                        + file.getName(), Toast.LENGTH_SHORT).show();
+    private void encryptNPersist(List<File> files) {
+        new Thread(() -> {
+            AppDatabase db = DBManager.getInstance(null).getDB();
+            for (File file : files) {
+                try {
+                    // encrypt and write the encrypted image
+                    encryptNWrite(file);
+                    // persist image (name and path)
+                    Image img = new Image();
+                    img.setName(file.getName());
+                    img.setPath(ImageListActivity.this.getFilesDir().getPath() + "//" + file.getName());
+                    db.imgDao().addImage(img);
+                    // update RecyclerView
+                    ((ImageListAdapter) this.rAdapter).addImageName(img.getName());
+                } catch (FileNotFoundException e) {
+                    Toast.makeText(ImageListActivity.this, "Fail to find file:"
+                            + file.getName(), Toast.LENGTH_SHORT).show();
+                } catch (IOException e) {
+                    Toast.makeText(ImageListActivity.this, "Fail to read from file:"
+                            + file.getName(), Toast.LENGTH_SHORT).show();
+                }
             }
-        }
+        }).start();
     }
 
     /**
-     * Create a new intent of ImageListActivity and pass the password to this intent.
+     * Encrypt Image file using the given pw and write them to local storage. I/O is auto closed
+     * even when exceptions are thrown.
+     *
+     * @param file
+     * @throws FileNotFoundException
+     * @throws IOException
      */
-    private void refreshIntent() {
-        // refresh the activity
-        Intent intent = getIntent();
-        intent.putExtra(DBManager.PW_TAG, pw);
-        startActivity(intent);
+    private void encryptNWrite(File file) throws FileNotFoundException, IOException {
+        try (InputStream in = new FileInputStream(file);
+             OutputStream out = ImageListActivity.this.openFileOutput(file.getName()
+                     , MODE_PRIVATE);) {
+            // read the selected images
+            byte[] rawData = new byte[in.available()];
+            in.read(rawData);
+
+            // encrypt selected images and output the encrypted file to asset folder
+            byte[] encryptedData = ImageUtil.encrypt(rawData, pw);
+            out.write(encryptedData);
+        }
     }
 }
