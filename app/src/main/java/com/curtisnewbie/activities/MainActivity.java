@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
             if (db.userDao().getNumOfUsers() == 0) {
                 String msg;
                 if (register(entName, entPW))
-                    msg = "Account successfully registered";
+                    msg = String.format("Welcome %s", entName);
                 else
                     msg = "Account cannot be registered";
                 this.runOnUiThread(() -> {
