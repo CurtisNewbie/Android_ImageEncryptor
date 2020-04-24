@@ -10,9 +10,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.curtisnewbie.daoThread.AddImgThread;
 import com.curtisnewbie.database.AppDatabase;
-import com.curtisnewbie.database.DataStorage;
+import com.curtisnewbie.database.DBManager;
 import com.curtisnewbie.database.Image;
 import com.curtisnewbie.crypto.ImageUtil;
 import com.developer.filepicker.controller.DialogSelectionListener;
@@ -26,7 +25,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -60,7 +58,7 @@ public class ImageListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_image_list);
 
         // get password when refreshing this activity
-        pw = getIntent().getStringExtra(DataStorage.PW_TAG);
+        pw = getIntent().getStringExtra(DBManager.PW_TAG);
         selectedFiles = null;
 
         recycleView = findViewById(R.id.recycleView);
@@ -140,7 +138,7 @@ public class ImageListActivity extends AppCompatActivity {
      * @param files list of image files that are not encrypted.
      */
     private void encryptFile(List<File> files) {
-        AppDatabase db = DataStorage.getInstance(null).getDB();
+        AppDatabase db = DBManager.getInstance(null).getDB();
         for (File file : selectedFiles) {
             try {
                 // read the selected images
@@ -180,7 +178,7 @@ public class ImageListActivity extends AppCompatActivity {
     private void refreshIntent() {
         // refresh the activity
         Intent intent = getIntent();
-        intent.putExtra(DataStorage.PW_TAG, pw);
+        intent.putExtra(DBManager.PW_TAG, pw);
         startActivity(intent);
     }
 }

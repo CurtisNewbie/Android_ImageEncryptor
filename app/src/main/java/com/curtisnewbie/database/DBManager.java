@@ -5,23 +5,14 @@ import android.content.Context;
 
 import androidx.room.Room;
 
-import com.curtisnewbie.daoThread.AddImgThread;
-
-import java.io.File;
-import java.io.UnsupportedEncodingException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.LinkedList;
-import java.util.List;
-
 /**
  * Singleton Class for the room database and local data reading.
  */
 // TODO: Change to DI and @Singleton
-public class DataStorage {
+public class DBManager {
     private static final String DB_NAME = "imageEncrypter.db";
     private AppDatabase db = null;
-    private static DataStorage dataStorage = null;
+    private static DBManager dbManager = null;
 
     /**
      * Used for passing password with intent between activities
@@ -43,13 +34,13 @@ public class DataStorage {
         this.db = Room.databaseBuilder(context.getApplicationContext(), AppDatabase.class, DB_NAME).build();
     }
 
-    public static DataStorage getInstance(Context context) {
-        if (dataStorage == null) {
-            dataStorage = new DataStorage();
-            dataStorage.iniDatabase(context);
-            return dataStorage;
+    public static DBManager getInstance(Context context) {
+        if (dbManager == null) {
+            dbManager = new DBManager();
+            dbManager.iniDatabase(context);
+            return dbManager;
         } else {
-            return dataStorage;
+            return dbManager;
         }
     }
 

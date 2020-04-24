@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.curtisnewbie.daoThread.GetListNameThread;
 import com.curtisnewbie.database.AppDatabase;
-import com.curtisnewbie.database.DataStorage;
+import com.curtisnewbie.database.DBManager;
 
 import java.util.List;
 
@@ -47,7 +47,7 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.View
     public ImageListAdapter(Context context, String pw) {
         this.pw = pw;
         this.context = context;
-        this.db = DataStorage.getInstance(null).getDB();
+        this.db = DBManager.getInstance(null).getDB();
 
         Thread t = new GetListNameThread(this, db);
         t.start();
@@ -84,7 +84,7 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.View
 
                 // pass password to it for decryption
                 intent.putExtra(IMG_TITLE, imagesName.get(holder.getAdapterPosition()));
-                intent.putExtra(DataStorage.PW_TAG, pw);
+                intent.putExtra(DBManager.PW_TAG, pw);
                 context.startActivity(intent);
             }
         });
@@ -96,7 +96,7 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.View
         return imagesName.size();
     }
 
-    public synchronized void setImageNames(List<String> imagesName){
+    public synchronized void setImageNames(List<String> imagesName) {
         this.imagesName = imagesName;
     }
 

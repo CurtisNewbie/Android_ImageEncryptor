@@ -14,7 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.curtisnewbie.crypto.ImageUtil;
 import com.curtisnewbie.daoThread.GetImgPathThread;
 import com.curtisnewbie.database.AppDatabase;
-import com.curtisnewbie.database.DataStorage;
+import com.curtisnewbie.database.DBManager;
 import com.github.chrisbanes.photoview.PhotoView;
 
 import java.io.File;
@@ -41,7 +41,7 @@ public class ImageViewActivity extends AppCompatActivity {
         imageView = this.findViewById(R.id.imageView);
 
         // room database
-        db = DataStorage.getInstance(null).getDB();
+        db = DBManager.getInstance(null).getDB();
 
         // get the data from the database
         String imageName = getIntent().getStringExtra(ImageListAdapter.IMG_TITLE);
@@ -58,7 +58,7 @@ public class ImageViewActivity extends AppCompatActivity {
 
         if (encryptedData != null) {
             // decrypt the data
-            pw = getIntent().getStringExtra(DataStorage.PW_TAG);
+            pw = getIntent().getStringExtra(DBManager.PW_TAG);
             byte[] data = ImageUtil.decrypt(encryptedData, pw);
 
             // show image
@@ -167,7 +167,7 @@ public class ImageViewActivity extends AppCompatActivity {
         return null;
     }
 
-    public synchronized void setImgPath(String imgPath){
+    public synchronized void setImgPath(String imgPath) {
         this.imgPath = imgPath;
     }
 

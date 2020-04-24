@@ -11,7 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.curtisnewbie.crypto.CryptoUtil;
 import com.curtisnewbie.database.AppDatabase;
-import com.curtisnewbie.database.DataStorage;
+import com.curtisnewbie.database.DBManager;
 import com.curtisnewbie.database.User;
 
 import java.util.Arrays;
@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         // getDb (or iniDb if first time)
-        db = DataStorage.getInstance(this).getDB();
+        db = DBManager.getInstance(this).getDB();
 
         // setup the layout for this activity
         setContentView(R.layout.activity_main);
@@ -99,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
 
                         // jumps to ImageListActivity and passing the password to it.
                         Intent intent = new Intent(".ImageListActivity");
-                        intent.putExtra(DataStorage.PW_TAG, this.password);
+                        intent.putExtra(DBManager.PW_TAG, this.password);
                         startActivity(intent);
                     });
                 } else {
