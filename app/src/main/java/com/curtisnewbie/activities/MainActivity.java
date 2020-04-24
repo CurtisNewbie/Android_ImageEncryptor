@@ -33,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
      */
     private AppDatabase db;
 
+    // TODO consider using another secret key for image encryption, not the one for login
     // TODO: This is a terrible idea, as this loads the password in memory, find a way to fix it
     // the password is set here only when the credential is checked.
     private String password;

@@ -89,8 +89,14 @@ public class ImageListActivity extends AppCompatActivity {
                 dialog.show();
             }
         });
-
         Toast.makeText(ImageListActivity.this, "Login Successful", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onBackPressed() {
+        // go back to the login page
+        Intent intent = new Intent(".MainActivity");
+        startActivity(intent);
     }
 
     /**
