@@ -1,12 +1,15 @@
 package com.curtisnewbie.activities;
 
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
+import android.provider.OpenableColumns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -16,21 +19,22 @@ import com.curtisnewbie.database.DBManager;
 import com.curtisnewbie.database.Image;
 import com.curtisnewbie.util.CryptoUtil;
 import com.curtisnewbie.util.IOManager;
-import com.curtisnewbie.util.ImageUtil;
 import com.curtisnewbie.util.ThreadManager;
-import com.developer.filepicker.controller.DialogSelectionListener;
-import com.developer.filepicker.model.DialogConfigs;
-import com.developer.filepicker.model.DialogProperties;
-import com.developer.filepicker.view.FilePickerDialog;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+
+import static android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
 
 /**
  * Shows a list of images, this uses the recyclerView to show list of 'items/smaller views'.
  */
 public class ImageListActivity extends AppCompatActivity implements Promptable {
+    /**
+     * Request code code selecting images in Gallery
+     */
+    public static final int SELECT_IMAGE = 1;
 
     // recyclerView
     private RecyclerView recycleView;
@@ -39,14 +43,9 @@ public class ImageListActivity extends AppCompatActivity implements Promptable {
 
     // components
     private Button addImgBtn;
-    private DialogProperties properties;
-
-    // FilePicker - the dialog that allows users to select file.
-    private FilePickerDialog dialog;
 
     // password passed to this activity
     private String pw;
-
     private ThreadManager tm = ThreadManager.getThreadManager();
 
     @Override
@@ -74,16 +73,36 @@ public class ImageListActivity extends AppCompatActivity implements Promptable {
         rManager = new LinearLayoutManager(this);
         recycleView.setLayoutManager(rManager);
 
-        // initiate file picker variables
-        iniFilePicker();
+        // initiate preferred software (e.g., Gallery) to pick an image
         addImgBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // show the file picker dialogue
-                dialog.show();
+                Intent intent = new Intent();
+                intent.setAction(Intent.ACTION_PICK);
+                intent.setData(EXTERNAL_CONTENT_URI); // Data is URI
+                intent.setType("image/*");
+                startActivityForResult(Intent.createChooser(intent, "Select Images"), SELECT_IMAGE);
             }
         });
         prompt("Login Successful");
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (requestCode == SELECT_IMAGE && data != null) {
+            Uri uri = data.getData();
+            try {
+                Cursor cursor = getContentResolver().query(uri, null, null,
+                        null, null);
+                int nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+                int sizeIndex = cursor.getColumnIndex(OpenableColumns.SIZE);
+                cursor.moveToFirst();
+                encryptNPersist(getContentResolver().openInputStream(uri), cursor.getString(nameIndex),
+                        cursor.getInt(sizeIndex));
+            } catch (FileNotFoundException e) {
+                prompt("File not found.");
+            }
+        }
     }
 
     @Override
@@ -94,85 +113,59 @@ public class ImageListActivity extends AppCompatActivity implements Promptable {
     }
 
     /**
-     * initialise file picker (variables) - the dialogue for selecting files.
-     */
-    private void iniFilePicker() {
-
-        // Dialogue Properties
-        properties = new DialogProperties();
-        properties.selection_mode = DialogConfigs.MULTI_MODE;
-        properties.selection_type = DialogConfigs.FILE_SELECT;
-        properties.root = new File(DialogConfigs.DEFAULT_DIR);
-        properties.error_dir = new File(DialogConfigs.DEFAULT_DIR);
-        properties.offset = new File(DialogConfigs.DEFAULT_DIR);
-        properties.extensions = null;
-
-        String camDirPath = Environment.getExternalStorageDirectory().getAbsolutePath()
-                + File.separator + Environment.DIRECTORY_DCIM + File.separator + "Camera";
-        File camDir = new File(camDirPath);
-        if (camDir.exists() && camDir.isDirectory())
-            properties.root = camDir;
-
-        // create FilePickerDialog
-        dialog = new FilePickerDialog(this, properties);
-        dialog.setTitle("Select an image file");
-
-        dialog.setDialogSelectionListener(new DialogSelectionListener() {
-            @Override
-            public void onSelectedFilePaths(String[] files) {
-                // encrypt the files, store them to the db
-                encryptNPersist(files);
-            }
-        });
-    }
-
-    /**
-     * Read images, encrypt them, write the encrypted images data into local internal storage,
-     * and persist their names and filepath (of the encrypted ones) in the database. Note that
+     * Read image, encrypt it, write the encrypted images data into local internal storage,
+     * and persist the name and filepath (of the encrypted ones) in the database. Note that
      * a separate Thread is spawned to undertake this operation.
      *
-     * @param files list of image files that are not encrypted.
+     * @param in       input stream of a image file that is not encrypted.
+     * @param filename name of the encrypted image that will be created
+     * @param filesize size of the file
      */
-    private void encryptNPersist(String[] files) {
+    private void encryptNPersist(InputStream in, String filename, int filesize) {
         tm.submit(() -> {
             AppDatabase db = DBManager.getInstance(null).getDB();
-            File file;
-            for (String f : files) {
-                file = new File(f);
+            try {
+                // encrypt and write the encrypted image
+                encryptNWrite(in, filename, filesize);
+                // persist image (name and path)
+                Image img = new Image();
+                img.setName(filename);
+                img.setPath(ImageListActivity.this.getFilesDir().getPath() + "//" + filename);
+                db.imgDao().addImage(img);
+                // update RecyclerView
+                ((ImageListAdapter) this.rAdapter).addImageName(img.getName());
+                prompt(String.format("Added: %s", filename));
+            } catch (FileNotFoundException e) {
+                prompt("Fail to find file:");
+            } catch (IOException e) {
+                prompt("Fail to read from file:");
+            } finally {
                 try {
-                    // encrypt and write the encrypted image
-                    encryptNWrite(file);
-                    // persist image (name and path)
-                    Image img = new Image();
-                    img.setName(file.getName());
-                    img.setPath(ImageListActivity.this.getFilesDir().getPath() + "//" + file.getName());
-                    db.imgDao().addImage(img);
-                    // update RecyclerView
-                    ((ImageListAdapter) this.rAdapter).addImageName(img.getName());
-                } catch (FileNotFoundException e) {
-                    prompt("Fail to find file:");
+                    in.close();
                 } catch (IOException e) {
-                    prompt("Fail to read from file:");
+                    e.printStackTrace();
                 }
             }
         });
     }
 
     /**
-     * Encrypt Image file using the given pw and write them to internal storage. I/O is auto closed
-     * even when exceptions are thrown.
+     * Encrypt bytes from the input stream using the given pw and write them to internal storage.
+     * I/O is auto closed even when exceptions are thrown.
      *
-     * @param file
+     * @param in       input stream
+     * @param filename name of the file (encrypted) that will be created in internal storage
+     * @param filesize size of the file
      * @throws FileNotFoundException
      * @throws IOException
      */
-    private void encryptNWrite(File file) throws FileNotFoundException, IOException {
+    private void encryptNWrite(InputStream in, String filename, int filesize) throws FileNotFoundException, IOException {
         // read the image
-        byte[] rawData = IOManager.read(file);
+        byte[] rawData = IOManager.read(in, filesize);
         // encrypt image
         byte[] encryptedData = CryptoUtil.encrypt(rawData, pw);
         // write encrypted image to internal storage
-        IOManager.write(encryptedData, file.getName(), this);
+        IOManager.write(encryptedData, filename, this);
     }
 
     @Override

@@ -2,8 +2,6 @@ package com.curtisnewbie.util;
 
 import android.content.Context;
 
-import com.curtisnewbie.activities.ImageListActivity;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -34,13 +32,26 @@ public class IOManager {
     }
 
     /**
+     * Read bytes from an input stream
+     *
+     * @param in  input stream
+     * @param len number of bytes should be read
+     * @return bytes
+     */
+    public static byte[] read(InputStream in, int len) throws IOException {
+        byte[] bytes = new byte[len];
+        in.read(bytes);
+        return bytes;
+    }
+
+    /**
      * Write all bytes to file
      *
      * @param bytes binary data
      * @param file  file
      * @throws IOException
      */
-    public static void write(byte[] bytes, File file) throws IOException  {
+    public static void write(byte[] bytes, File file) throws IOException {
         try (OutputStream out = new FileOutputStream(file)) {
             out.write(bytes);
         }
@@ -48,9 +59,10 @@ public class IOManager {
 
     /**
      * Write all bytes to a file that will be created in internal storage
-     * @param bytes bytes
+     *
+     * @param bytes       bytes
      * @param fileOutName name of the file that the data are written to in internal storage
-     * @param context context
+     * @param context     context
      * @throws IOException
      */
     public static void write(byte[] bytes, String fileOutName, Context context) throws IOException {
