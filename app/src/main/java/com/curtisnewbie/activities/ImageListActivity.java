@@ -13,6 +13,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.curtisnewbie.database.AppDatabase;
 import com.curtisnewbie.database.DBManager;
 import com.curtisnewbie.database.Image;
+import com.curtisnewbie.util.CryptoUtil;
+import com.curtisnewbie.util.IOManager;
 import com.curtisnewbie.util.ImageUtil;
 import com.curtisnewbie.util.ThreadManager;
 import com.developer.filepicker.controller.DialogSelectionListener;
@@ -21,11 +23,8 @@ import com.developer.filepicker.model.DialogProperties;
 import com.developer.filepicker.view.FilePickerDialog;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 
 /**
  * Shows a list of images, this uses the recyclerView to show list of 'items/smaller views'.
@@ -161,17 +160,12 @@ public class ImageListActivity extends AppCompatActivity implements Promptable {
      * @throws IOException
      */
     private void encryptNWrite(File file) throws FileNotFoundException, IOException {
-        try (InputStream in = new FileInputStream(file);
-             OutputStream out = ImageListActivity.this.openFileOutput(file.getName()
-                     , MODE_PRIVATE);) {
-            // read the selected images
-            byte[] rawData = new byte[in.available()];
-            in.read(rawData);
-
-            // encrypt selected images and output the encrypted file to asset folder
-            byte[] encryptedData = ImageUtil.encrypt(rawData, pw);
-            out.write(encryptedData);
-        }
+            // read the image
+            byte[] rawData = IOManager.read(file);
+            // encrypt image
+            byte[] encryptedData = CryptoUtil.encrypt(rawData, pw);
+            // write encrypted image to internal storage
+            IOManager.write(encryptedData, file.getName(), this);
     }
 
     @Override

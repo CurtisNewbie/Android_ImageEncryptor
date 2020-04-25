@@ -155,7 +155,7 @@ public class MainActivity extends AppCompatActivity implements Promptable {
             // create new user
             User user = new User();
             user.setUsername(name);
-            user.setSalt(CryptoUtil.randSalt(4)); // TODO: create constant for salt length
+            user.setSalt(CryptoUtil.randSalt());
 
             // hashing
             byte[] hash = CryptoUtil.hash(pw, user.getSalt());
