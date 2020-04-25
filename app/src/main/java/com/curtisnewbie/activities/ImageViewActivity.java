@@ -11,7 +11,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.curtisnewbie.crypto.ImageUtil;
+import com.curtisnewbie.util.ImageUtil;
 import com.curtisnewbie.daoThread.GetImgPathThread;
 import com.curtisnewbie.database.AppDatabase;
 import com.curtisnewbie.database.DBManager;

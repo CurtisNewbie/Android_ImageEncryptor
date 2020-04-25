@@ -1,4 +1,4 @@
-package com.curtisnewbie.crypto;
+package com.curtisnewbie.util;
 
 import java.security.MessageDigest;
 import java.util.Random;
