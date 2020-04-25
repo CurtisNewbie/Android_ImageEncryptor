@@ -29,7 +29,7 @@ import java.io.OutputStream;
 /**
  * Shows a list of images, this uses the recyclerView to show list of 'items/smaller views'.
  */
-public class ImageListActivity extends AppCompatActivity {
+public class ImageListActivity extends AppCompatActivity implements Promptable {
 
     // recyclerView
     private RecyclerView recycleView;
@@ -80,7 +80,7 @@ public class ImageListActivity extends AppCompatActivity {
                 dialog.show();
             }
         });
-        Toast.makeText(ImageListActivity.this, "Login Successful", Toast.LENGTH_SHORT).show();
+        prompt("Login Successful");
     }
 
     @Override
@@ -141,11 +141,9 @@ public class ImageListActivity extends AppCompatActivity {
                     // update RecyclerView
                     ((ImageListAdapter) this.rAdapter).addImageName(img.getName());
                 } catch (FileNotFoundException e) {
-                    Toast.makeText(ImageListActivity.this, "Fail to find file:"
-                            + file.getName(), Toast.LENGTH_SHORT).show();
+                    prompt("Fail to find file:");
                 } catch (IOException e) {
-                    Toast.makeText(ImageListActivity.this, "Fail to read from file:"
-                            + file.getName(), Toast.LENGTH_SHORT).show();
+                    prompt("Fail to read from file:");
                 }
             }
         }).start();
@@ -171,5 +169,10 @@ public class ImageListActivity extends AppCompatActivity {
             byte[] encryptedData = ImageUtil.encrypt(rawData, pw);
             out.write(encryptedData);
         }
+    }
+
+    @Override
+    public void prompt(String msg) {
+        Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
     }
 }

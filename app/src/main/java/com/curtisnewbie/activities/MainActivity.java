@@ -19,7 +19,7 @@ import java.util.Arrays;
 /**
  * Activity for login page
  */
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements Promptable {
 
     public static final String TAG = "Encryption_Status";
 
@@ -61,9 +61,7 @@ public class MainActivity extends AppCompatActivity {
                 msg = "Register a new account";
             else
                 msg = "Sign in your account";
-            this.runOnUiThread(() -> {
-                Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
-            });
+            this.runOnUiThread(() -> prompt(msg));
         }).start();
     }
 
@@ -90,16 +88,12 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     msg = "Account cannot be registered";
                 }
-                this.runOnUiThread(() -> {
-                    Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
-                });
+                this.runOnUiThread(() -> prompt(msg));
             } else {
                 if (checkCredential(entName, entPW)) {
                     this.login(entPW);
                 } else {
-                    this.runOnUiThread(() -> {
-                        Toast.makeText(MainActivity.this, "Account is incorrect", Toast.LENGTH_SHORT).show();
-                    });
+                    this.runOnUiThread(() -> prompt("Account is incorrect"));
                 }
             }
         }).start();
@@ -173,5 +167,10 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
             return false;
         }
+    }
+
+    @Override
+    public void prompt(String msg) {
+        Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
     }
 }

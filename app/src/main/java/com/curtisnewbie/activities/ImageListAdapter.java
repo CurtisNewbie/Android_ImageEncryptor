@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -88,12 +87,13 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.View
             }
         });
 
-        // long click (hold) to prompt dialog for deleting the encrypted image
+        // long click (hold) to create dialog for deleting the encrypted image
         holder.getItem_layout().setOnLongClickListener(e -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(this.context);
             builder.setMessage("Want to delete this image?")
                     .setPositiveButton("Yes", (dia, id) -> {
                         new Thread(() -> {
+                            String msg;
                             int index = holder.getAdapterPosition();
                             String name = imageNames.get(index);
                             Image img = this.db.imgDao().getImage(name);
@@ -101,17 +101,13 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.View
                                 // only update the RecyclerView when the file is actually deleted
                                 this.deleteImage(index);
                                 this.db.imgDao().deleteImage(img);
-
-                                ((Activity) this.context).runOnUiThread(() -> {
-                                    Toast.makeText(this.context, String.format("%s deleted.", name),
-                                            Toast.LENGTH_SHORT).show();
-                                });
+                                msg = String.format("%s deleted.", name);
                             } else {
-                                ((Activity) this.context).runOnUiThread(() -> {
-                                    Toast.makeText(this.context, "File cannot be deleted, please try again",
-                                            Toast.LENGTH_SHORT).show();
-                                });
+                                msg = "File cannot be deleted, please try again";
                             }
+                            ((Activity) this.context).runOnUiThread(() -> {
+                                ((Promptable) this.context).prompt(msg);
+                            });
                         }).start();
                     })
                     .setNegativeButton("No", (dia, id) -> {
