@@ -89,6 +89,7 @@ public class ImageViewActivity extends AppCompatActivity implements Promptable {
                 View mView = getLayoutInflater().inflate(R.layout.dialogue_zoomable_layout, null);
                 PhotoView zoomView = mView.findViewById(R.id.zoomView);
                 zoomView.setImageBitmap(bitmap);
+                zoomView.setMaximumScale(20.0f);
                 mBuilder.setView(mView);
                 AlertDialog mDialog = mBuilder.create();
                 mDialog.show();
