@@ -2,6 +2,7 @@ package com.curtisnewbie.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -105,6 +106,12 @@ public class ImageListActivity extends AppCompatActivity implements Promptable {
         properties.error_dir = new File(DialogConfigs.DEFAULT_DIR);
         properties.offset = new File(DialogConfigs.DEFAULT_DIR);
         properties.extensions = null;
+
+        String camDirPath = Environment.getExternalStorageDirectory().getAbsolutePath()
+                + File.separator + Environment.DIRECTORY_DCIM + File.separator + "Camera";
+        File camDir = new File(camDirPath);
+        if (camDir.exists() && camDir.isDirectory())
+            properties.root = camDir;
 
         // create FilePickerDialog
         dialog = new FilePickerDialog(this, properties);
