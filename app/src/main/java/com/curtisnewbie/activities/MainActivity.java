@@ -13,6 +13,7 @@ import com.curtisnewbie.util.CryptoUtil;
 import com.curtisnewbie.database.AppDatabase;
 import com.curtisnewbie.database.DBManager;
 import com.curtisnewbie.database.User;
+import com.curtisnewbie.util.ThreadManager;
 
 import java.util.Arrays;
 
@@ -32,6 +33,7 @@ public class MainActivity extends AppCompatActivity implements Promptable {
      * RoomDatabase
      */
     private AppDatabase db;
+    private ThreadManager tm = ThreadManager.getThreadManager();
 
     // TODO consider using another secret key for image encryption, not the one for login
     // TODO: This is a terrible idea, as this loads the password in memory, find a way to fix it
@@ -54,7 +56,7 @@ public class MainActivity extends AppCompatActivity implements Promptable {
         loginBtn = this.findViewById(R.id.loginBtn);
 
         // create thread to prompt msg about whether the user should sign in or sign up
-        new Thread(() -> {
+        tm.submit(() -> {
             int n = db.userDao().getNumOfUsers();
             String msg;
             if (n == 0)
@@ -62,7 +64,7 @@ public class MainActivity extends AppCompatActivity implements Promptable {
             else
                 msg = "Sign in your account";
             this.runOnUiThread(() -> prompt(msg));
-        }).start();
+        });
     }
 
     /**
@@ -77,7 +79,7 @@ public class MainActivity extends AppCompatActivity implements Promptable {
         String entName = nameInput.getText().toString().trim();
         String entPW = pwInput.getText().toString().trim();
 
-        new Thread(() -> {
+        tm.submit(() -> {
             if (db.userDao().getNumOfUsers() == 0) {
                 String msg;
                 if (register(entName, entPW)) {
@@ -96,11 +98,12 @@ public class MainActivity extends AppCompatActivity implements Promptable {
                     this.runOnUiThread(() -> prompt("Account is incorrect"));
                 }
             }
-        }).start();
+        });
     }
 
     /**
      * Navigates to ImageListAcivity. Should only be called when the user is authenticated.
+     * This method is ran in a UI Thread.
      *
      * @param pw password for image encryption/decrption
      */

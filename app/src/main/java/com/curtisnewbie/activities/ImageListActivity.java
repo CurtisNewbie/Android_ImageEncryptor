@@ -14,6 +14,7 @@ import com.curtisnewbie.database.AppDatabase;
 import com.curtisnewbie.database.DBManager;
 import com.curtisnewbie.database.Image;
 import com.curtisnewbie.util.ImageUtil;
+import com.curtisnewbie.util.ThreadManager;
 import com.developer.filepicker.controller.DialogSelectionListener;
 import com.developer.filepicker.model.DialogConfigs;
 import com.developer.filepicker.model.DialogProperties;
@@ -45,6 +46,8 @@ public class ImageListActivity extends AppCompatActivity implements Promptable {
 
     // password passed to this activity
     private String pw;
+
+    private ThreadManager tm = ThreadManager.getThreadManager();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -125,7 +128,7 @@ public class ImageListActivity extends AppCompatActivity implements Promptable {
      * @param files list of image files that are not encrypted.
      */
     private void encryptNPersist(String[] files) {
-        new Thread(() -> {
+        tm.submit(() -> {
             AppDatabase db = DBManager.getInstance(null).getDB();
             File file;
             for (String f : files) {
@@ -146,7 +149,7 @@ public class ImageListActivity extends AppCompatActivity implements Promptable {
                     prompt("Fail to read from file:");
                 }
             }
-        }).start();
+        });
     }
 
     /**

@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.curtisnewbie.database.AppDatabase;
 import com.curtisnewbie.database.DBManager;
 import com.curtisnewbie.database.Image;
+import com.curtisnewbie.util.ThreadManager;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -48,6 +49,7 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.View
      * pw passed to this adapter, it will be passed to imageViewActivity for decryption
      */
     private String pw;
+    private ThreadManager tm = ThreadManager.getThreadManager();
 
     public ImageListAdapter(Context context, String pw) {
         this.pw = pw;
@@ -92,7 +94,7 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.View
             AlertDialog.Builder builder = new AlertDialog.Builder(this.context);
             builder.setMessage("Want to delete this image?")
                     .setPositiveButton("Yes", (dia, id) -> {
-                        new Thread(() -> {
+                        tm.submit(() -> {
                             String msg;
                             int index = holder.getAdapterPosition();
                             String name = imageNames.get(index);
@@ -108,7 +110,7 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.View
                             ((Activity) this.context).runOnUiThread(() -> {
                                 ((Promptable) this.context).prompt(msg);
                             });
-                        }).start();
+                        });
                     })
                     .setNegativeButton("No", (dia, id) -> {
                         // do nothing
@@ -128,10 +130,10 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.View
      * Load the whole list of image names from db in a separate {@code Thread}
      */
     private void loadImageNamesFromDb() {
-        new Thread(() -> {
+        tm.submit(() -> {
             this.imageNames.clear();
             this.imageNames.addAll(db.imgDao().getImageNames());
-        }).start();
+        });
     }
 
     /**
