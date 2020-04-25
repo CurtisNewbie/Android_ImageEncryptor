@@ -2,6 +2,7 @@ package com.curtisnewbie.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Base64;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -32,10 +33,12 @@ public class MainActivity extends AppCompatActivity implements Promptable {
     private AppDatabase db;
     private ThreadManager tm = ThreadManager.getThreadManager();
 
-    // TODO consider using another secret key for image encryption, not the one for login
-    // TODO: This is a terrible idea, as this loads the password in memory, find a way to fix it
-    // the password is set here only when the credential is checked.
-    private String password;
+    /**
+     * This key is used to encrypt and decrypt images, this is essentially a hash of
+     * (password + img_salt).
+     * @see User
+     */
+    private String imgKey;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,16 +84,15 @@ public class MainActivity extends AppCompatActivity implements Promptable {
                 String msg;
                 if (register(entName, entPW)) {
                     msg = String.format("Welcome %s", entName);
-                    if (checkCredential(entName, entPW))
-                        // always checks credential even for registration
-                        this.login(entPW);
                 } else {
                     msg = "Account cannot be registered";
                 }
                 prompt(msg);
             } else {
                 if (checkCredential(entName, entPW)) {
-                    this.login(entPW);
+                    String imgSalt = db.userDao().getImgSalt(entName);
+                    String imgKey = Base64.encodeToString(CryptoUtil.hash(entPW , imgSalt), Base64.DEFAULT);
+                    this.login(imgKey);
                 } else {
                     prompt("Account is incorrect");
                 }
@@ -99,13 +101,13 @@ public class MainActivity extends AppCompatActivity implements Promptable {
     }
 
     /**
-     * Navigates to ImageListAcivity. Should only be called when the user is authenticated.
+     * Navigates to ImageListActivity. Should only be called when the user is authenticated.
      * This method is ran in a UI Thread.
      *
-     * @param pw password for image encryption/decrption
+     * @param imgKey key for image encryption/decryption
      */
-    private void login(String pw) {
-        this.password = pw;
+    private void login(String imgKey) {
+        this.imgKey = imgKey;
         this.runOnUiThread(() -> {
             // Remove entered credential
             nameInput.setText("");
@@ -113,7 +115,7 @@ public class MainActivity extends AppCompatActivity implements Promptable {
 
             // jumps to ImageListActivity and passing the password to it.
             Intent intent = new Intent(".ImageListActivity");
-            intent.putExtra(DBManager.PW_TAG, this.password);
+            intent.putExtra(DBManager.PW_TAG, this.imgKey);
             startActivity(intent);
         });
     }
@@ -132,7 +134,7 @@ public class MainActivity extends AppCompatActivity implements Promptable {
         User user = db.userDao().getUser(name);
         if (user != null) {
             // compare hashes
-            byte[] hash = CryptoUtil.hash(pw, user.getSalt());
+            byte[] hash = CryptoUtil.hash(pw, user.getPw_salt());
             if (Arrays.equals(hash, user.getHash())) {
                 return true;
             }
@@ -152,10 +154,11 @@ public class MainActivity extends AppCompatActivity implements Promptable {
             // create new user
             User user = new User();
             user.setUsername(name);
-            user.setSalt(CryptoUtil.randSalt());
+            user.setPw_salt(CryptoUtil.randSalt());
+            user.setImg_salt(CryptoUtil.randSalt());
 
             // hashing
-            byte[] hash = CryptoUtil.hash(pw, user.getSalt());
+            byte[] hash = CryptoUtil.hash(pw, user.getPw_salt());
             if (hash == null)
                 return false; // Hashing operation failed
             user.setHash(hash);

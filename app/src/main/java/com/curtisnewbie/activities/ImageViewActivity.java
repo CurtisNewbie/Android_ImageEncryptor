@@ -1,10 +1,8 @@
 package com.curtisnewbie.activities;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.opengl.GLES30;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -12,6 +10,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.curtisnewbie.database.User;
 import com.curtisnewbie.util.CryptoUtil;
 import com.curtisnewbie.util.IOManager;
 import com.curtisnewbie.util.ImageUtil;
@@ -26,13 +25,17 @@ import java.io.File;
  * Show the image that is selected from the ImageListActivity
  */
 public class ImageViewActivity extends AppCompatActivity implements Promptable {
-
-    public static final String TAG = "ImageViewActivity";
     private ImageView imageView;
     private AppDatabase db;
-    private String pw;
     private Bitmap bitmap;
     private ThreadManager tm = ThreadManager.getThreadManager();
+    /**
+     * This key is used to encrypt and decrypt images, this is essentially a hash of
+     * (password + img_salt).
+     *
+     * @see User
+     */
+    private String imgKey;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,11 +54,11 @@ public class ImageViewActivity extends AppCompatActivity implements Promptable {
                 byte[] encryptedData = IOManager.read(new File(imgPath));
 
                 // decrypt the data
-                pw = getIntent().getStringExtra(DBManager.PW_TAG);
-                byte[] decryptedData = CryptoUtil.decrypt(encryptedData, pw);
+                imgKey = getIntent().getStringExtra(DBManager.PW_TAG);
+                byte[] decryptedData = CryptoUtil.decrypt(encryptedData, imgKey);
 
                 // get the allowed maximum size of texture in OpenGL ES3.0
-                int[] maxsize= new int[1];
+                int[] maxsize = new int[1];
                 GLES30.glGetIntegerv(GLES30.GL_MAX_TEXTURE_SIZE, maxsize, 0);
                 int reqWidth, reqHeight;
                 reqWidth = reqHeight = maxsize[0];

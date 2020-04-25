@@ -17,4 +17,7 @@ public interface UserDao {
 
     @Query("SELECT COUNT(*) FROM user")
     int getNumOfUsers();
+
+    @Query("SELECT img_salt FROM user WHERE username = :username")
+    String getImgSalt(String username);
 }

@@ -6,7 +6,9 @@ import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 /**
- * Representation of User model, which stores the User login credential
+ * Representation of User model, which stores the User login credential. Note that
+ * {@link User#pw_salt} is for creating the proper hash of password and {@link User#img_salt}
+ * is for creating the hash that is used as a key for image encryption and decryption.
  */
 @Entity(tableName = "user")
 public class User {
@@ -20,9 +22,13 @@ public class User {
     @NonNull
     private byte[] hash;
 
-    @ColumnInfo(name = "salt")
+    @ColumnInfo(name = "pw_salt")
     @NonNull
-    private String salt;
+    private String pw_salt;
+
+    @ColumnInfo(name = "img_salt")
+    @NonNull
+    private String img_salt;
 
     @NonNull
     public String getUsername() {
@@ -43,17 +49,20 @@ public class User {
     }
 
     @NonNull
-    public String getSalt() {
-        return salt;
+    public String getPw_salt() {
+        return pw_salt;
     }
 
-    public void setSalt(@NonNull String salt) {
-        this.salt = salt;
+    public void setPw_salt(@NonNull String pw_salt) {
+        this.pw_salt = pw_salt;
     }
 
     @NonNull
-    @Override
-    public String toString() {
-        return String.format("Username: %s, hash: %s, salt: %s", username, hash.toString(), salt);
+    public String getImg_salt() {
+        return img_salt;
+    }
+
+    public void setImg_salt(@NonNull String img_salt) {
+        this.img_salt = img_salt;
     }
 }

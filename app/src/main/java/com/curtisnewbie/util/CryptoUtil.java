@@ -2,7 +2,6 @@ package com.curtisnewbie.util;
 
 import java.security.MessageDigest;
 import java.security.SecureRandom;
-import java.util.Random;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
@@ -20,16 +19,16 @@ public class CryptoUtil {
     private static final int SALT_LEN = 4;
 
     /**
-     * Hash password with salt
+     * Hash text with salt
      *
-     * @param pw   password
+     * @param str  text
      * @param salt salt
      * @return hash in {@code byte[]} or {@code NULL} if error happens
      */
-    public static byte[] hash(String pw, String salt) {
+    public static byte[] hash(String str, String salt) {
         try {
             // append salt to password
-            String cred = pw + salt;
+            String cred = str + salt;
             byte[] credBytes = cred.getBytes("UTF-8");
 
             // digest the credBytes
@@ -64,7 +63,7 @@ public class CryptoUtil {
      * @return salt
      * @see {@link CryptoUtil#SALT_LEN}
      */
-    public static String randSalt(){
+    public static String randSalt() {
         return randSalt(SALT_LEN);
     }
 

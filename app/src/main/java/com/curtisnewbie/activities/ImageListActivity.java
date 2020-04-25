@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.curtisnewbie.database.AppDatabase;
 import com.curtisnewbie.database.DBManager;
 import com.curtisnewbie.database.Image;
+import com.curtisnewbie.database.User;
 import com.curtisnewbie.util.CryptoUtil;
 import com.curtisnewbie.util.IOManager;
 import com.curtisnewbie.util.ThreadManager;
@@ -43,9 +44,13 @@ public class ImageListActivity extends AppCompatActivity implements Promptable {
 
     // components
     private Button addImgBtn;
-
-    // password passed to this activity
-    private String pw;
+    /**
+     * This key is used to encrypt and decrypt images, this is essentially a hash of
+     * (password + img_salt).
+     *
+     * @see User
+     */
+    private String imgKey;
     private ThreadManager tm = ThreadManager.getThreadManager();
 
     @Override
@@ -54,7 +59,7 @@ public class ImageListActivity extends AppCompatActivity implements Promptable {
         setContentView(R.layout.activity_image_list);
 
         // get password when refreshing this activity
-        pw = getIntent().getStringExtra(DBManager.PW_TAG);
+        imgKey = getIntent().getStringExtra(DBManager.PW_TAG);
 
         recycleView = findViewById(R.id.recycleView);
         addImgBtn = findViewById(R.id.addImgBtn);
@@ -66,7 +71,7 @@ public class ImageListActivity extends AppCompatActivity implements Promptable {
          adapter that adapt individual items (activity_each_item.xml);
          and passing password to the adapter for decrypting images.
           */
-        rAdapter = new ImageListAdapter(this, pw);
+        rAdapter = new ImageListAdapter(this, imgKey);
         recycleView.setAdapter(rAdapter);
 
         // linear manager
@@ -163,7 +168,7 @@ public class ImageListActivity extends AppCompatActivity implements Promptable {
         // read the image
         byte[] rawData = IOManager.read(in, filesize);
         // encrypt image
-        byte[] encryptedData = CryptoUtil.encrypt(rawData, pw);
+        byte[] encryptedData = CryptoUtil.encrypt(rawData, imgKey);
         // write encrypted image to internal storage
         IOManager.write(encryptedData, filename, this);
     }
