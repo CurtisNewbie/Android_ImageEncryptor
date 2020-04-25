@@ -7,8 +7,6 @@ import androidx.room.PrimaryKey;
 
 @Entity(tableName = "image")
 public class Image {
-// TODO: this is not used, consider removing it
-//    public static final String IMG_TABLE_QUERY = "CREATE TABLE image (name TEXT PRIMARY KEY, image_data BLOB);";
 
     @PrimaryKey
     @NonNull
