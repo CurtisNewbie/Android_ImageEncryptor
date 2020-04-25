@@ -6,7 +6,9 @@ package com.curtisnewbie.activities;
 public interface Promptable {
     /**
      * Display a msg in this corresponding context (e.g., using Toast).
-     * This method should be called in a UI thread.
+     * This method should always create a UI thread to display a msg
+     * (if necessary), such that the caller won't need to worry about
+     * attaching a UI Thread.
      *
      * @param msg message
      */

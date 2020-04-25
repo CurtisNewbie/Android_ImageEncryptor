@@ -61,8 +61,6 @@ public class ImageViewActivity extends AppCompatActivity implements Promptable {
 
                 // decode and downscale if needed to avoid OutOfMemory exception
                 this.bitmap = ImageUtil.decodeBitmapWithScaling(decryptedData, reqWidth, reqHeight);
-//                this.bitmap = Bitmap.createScaledBitmap(ImageUtil.decode(decryptedData), reqWidth,
-//                        reqHeight, true);
                 runOnUiThread(() -> {
                     imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
                     imageView.setImageBitmap(bitmap);
@@ -89,11 +87,8 @@ public class ImageViewActivity extends AppCompatActivity implements Promptable {
                 // create dialogue for a zoomable PhotoView object.
                 AlertDialog.Builder mBuilder = new AlertDialog.Builder(ImageViewActivity.this);
                 View mView = getLayoutInflater().inflate(R.layout.dialogue_zoomable_layout, null);
-
                 PhotoView zoomView = mView.findViewById(R.id.zoomView);
-
                 zoomView.setImageBitmap(bitmap);
-
                 mBuilder.setView(mView);
                 AlertDialog mDialog = mBuilder.create();
                 mDialog.show();

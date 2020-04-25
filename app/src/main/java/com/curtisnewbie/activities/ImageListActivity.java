@@ -160,16 +160,18 @@ public class ImageListActivity extends AppCompatActivity implements Promptable {
      * @throws IOException
      */
     private void encryptNWrite(File file) throws FileNotFoundException, IOException {
-            // read the image
-            byte[] rawData = IOManager.read(file);
-            // encrypt image
-            byte[] encryptedData = CryptoUtil.encrypt(rawData, pw);
-            // write encrypted image to internal storage
-            IOManager.write(encryptedData, file.getName(), this);
+        // read the image
+        byte[] rawData = IOManager.read(file);
+        // encrypt image
+        byte[] encryptedData = CryptoUtil.encrypt(rawData, pw);
+        // write encrypted image to internal storage
+        IOManager.write(encryptedData, file.getName(), this);
     }
 
     @Override
     public void prompt(String msg) {
-        Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+        runOnUiThread(() -> {
+            Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+        });
     }
 }

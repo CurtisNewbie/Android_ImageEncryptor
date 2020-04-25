@@ -107,9 +107,7 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.View
                             } else {
                                 msg = "File cannot be deleted, please try again";
                             }
-                            ((Activity) this.context).runOnUiThread(() -> {
-                                ((Promptable) this.context).prompt(msg);
-                            });
+                            ((Promptable) this.context).prompt(msg);
                         });
                     })
                     .setNegativeButton("No", (dia, id) -> {
@@ -156,8 +154,6 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.View
         this.imageNames.remove(index);
         this.notifyItemRemoved(index);
     }
-
-    // TODO: have a class that is responsible for I/O
 
     /**
      * Delete a file

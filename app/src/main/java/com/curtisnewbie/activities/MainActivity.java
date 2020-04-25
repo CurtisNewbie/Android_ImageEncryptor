@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity implements Promptable {
                 msg = "Register a new account";
             else
                 msg = "Sign in your account";
-            this.runOnUiThread(() -> prompt(msg));
+            prompt(msg);
         });
     }
 
@@ -90,12 +90,12 @@ public class MainActivity extends AppCompatActivity implements Promptable {
                 } else {
                     msg = "Account cannot be registered";
                 }
-                this.runOnUiThread(() -> prompt(msg));
+                prompt(msg);
             } else {
                 if (checkCredential(entName, entPW)) {
                     this.login(entPW);
                 } else {
-                    this.runOnUiThread(() -> prompt("Account is incorrect"));
+                    prompt("Account is incorrect");
                 }
             }
         });
@@ -174,6 +174,6 @@ public class MainActivity extends AppCompatActivity implements Promptable {
 
     @Override
     public void prompt(String msg) {
-        Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+        this.runOnUiThread(() -> Toast.makeText(this, msg, Toast.LENGTH_LONG).show());
     }
 }
