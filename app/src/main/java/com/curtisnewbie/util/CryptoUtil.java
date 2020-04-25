@@ -3,11 +3,19 @@ package com.curtisnewbie.util;
 import java.security.MessageDigest;
 import java.util.Random;
 
+import javax.crypto.Cipher;
+import javax.crypto.spec.SecretKeySpec;
+
 /**
- * Util Class for hashing
+ * Util Class for encryption, decryption, hashing, etc.
  */
 public class CryptoUtil {
-    public static final String HASHING_ALGORITHM = "SHA-256";
+    /*
+     * Specification of the encryption and decryption
+     */
+    private static final String HASHING_ALGORITHM = "SHA-256";
+    private static final String ENCRYPTION_STANDARD = "AES";
+    private static final int SALT_LEN = 4;
 
     /**
      * Hash password with salt
@@ -39,7 +47,7 @@ public class CryptoUtil {
      * @param len length of salt
      * @return salt
      */
-    public static String randSalt(int len) {
+    private static String randSalt(int len) {
         // TODO: fix base, its' for temporary use and Random (Use SecureRandom probably)
         String base = "abcdefghijklmnopqrstuvwxyz";
         Random rd = new Random();
@@ -48,5 +56,83 @@ public class CryptoUtil {
             sb.append(rd.nextInt(base.length()));
         }
         return sb.toString();
+    }
+
+    /**
+     * Generate random salt of the default length
+     *
+     * @return salt
+     * @see {@link CryptoUtil#SALT_LEN}
+     */
+    public static String randSalt(){
+        return randSalt(SALT_LEN);
+    }
+
+    /**
+     * create the a {@code SecretKeySpec} for the specified {@code ENCRYPTION_STANDARD} through
+     * hashing given password using the specified {@code HASHING_ALGORITHM}
+     *
+     * @param pw password
+     * @return SecretKeySpec
+     * @see {@link CryptoUtil#HASHING_ALGORITHM}
+     * @see {@link CryptoUtil#ENCRYPTION_STANDARD}
+     */
+    private static SecretKeySpec createKey(String pw) {
+        try {
+            byte[] pwBytes = pw.getBytes("UTF-8");
+
+            // Create secret Key factory based on the specified algorithm
+            MessageDigest md = MessageDigest.getInstance(HASHING_ALGORITHM);
+
+            // digest the pwBytes to be a new key
+            md.update(pwBytes, 0, pwBytes.length);
+            byte[] key = md.digest();
+            return new SecretKeySpec(key, ENCRYPTION_STANDARD);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
+     * Decrypt using specified {@code HASHING_ALGORITHM} and {@code ENCRYPTION_STANDARD}
+     *
+     * @param data encryptedData
+     * @param pw   password
+     * @return original data byte[]
+     * @see {@link CryptoUtil#HASHING_ALGORITHM}
+     * @see {@link CryptoUtil#ENCRYPTION_STANDARD}
+     */
+    public static byte[] decrypt(byte[] data, String pw) {
+        SecretKeySpec keySpec = createKey(pw);
+        try {
+            Cipher cipher = Cipher.getInstance(ENCRYPTION_STANDARD);
+            cipher.init(Cipher.DECRYPT_MODE, keySpec);
+            byte[] decryptedData = cipher.doFinal(data);
+            return decryptedData;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
+     * Encrypt using SHA-256 & AES
+     *
+     * @param data image data
+     * @param pw   password
+     * @return encrypted byte[]
+     */
+    public static byte[] encrypt(byte[] data, String pw) {
+        SecretKeySpec keySpec = createKey(pw);
+        try {
+            Cipher cipher = Cipher.getInstance(ENCRYPTION_STANDARD);
+            cipher.init(Cipher.ENCRYPT_MODE, keySpec);
+            byte[] encryptedData = cipher.doFinal(data);
+            return encryptedData;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }
