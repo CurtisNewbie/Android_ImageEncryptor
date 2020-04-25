@@ -2,6 +2,7 @@ package com.curtisnewbie.activities;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.opengl.GLES30;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.View;
@@ -53,11 +54,11 @@ public class ImageViewActivity extends AppCompatActivity implements Promptable {
                 pw = getIntent().getStringExtra(DBManager.PW_TAG);
                 byte[] decryptedData = CryptoUtil.decrypt(encryptedData, pw);
 
-                // show image
-                DisplayMetrics displayMetrics = new DisplayMetrics();
-                getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-                int reqHeight = displayMetrics.heightPixels;
-                int reqWidth = displayMetrics.widthPixels;
+                // get the allowed maximum size of texture in OpenGL ES3.0
+                int[] maxsize= new int[1];
+                GLES30.glGetIntegerv(GLES30.GL_MAX_TEXTURE_SIZE, maxsize, 0);
+                int reqWidth, reqHeight;
+                reqWidth = reqHeight = maxsize[0];
 
                 // decode and downscale if needed to avoid OutOfMemory exception
                 this.bitmap = ImageUtil.decodeBitmapWithScaling(decryptedData, reqWidth, reqHeight);
