@@ -22,9 +22,6 @@ import java.util.Arrays;
  */
 public class MainActivity extends AppCompatActivity implements Promptable {
 
-    public static final String TAG = "Encryption_Status";
-
-    // UI components of this activity.
     private EditText pwInput;
     private EditText nameInput;
     private Button loginBtn;
