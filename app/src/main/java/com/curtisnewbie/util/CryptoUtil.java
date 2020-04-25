@@ -1,6 +1,7 @@
 package com.curtisnewbie.util;
 
 import java.security.MessageDigest;
+import java.security.SecureRandom;
 import java.util.Random;
 
 import javax.crypto.Cipher;
@@ -15,6 +16,7 @@ public class CryptoUtil {
      */
     private static final String HASHING_ALGORITHM = "SHA-256";
     private static final String ENCRYPTION_STANDARD = "AES";
+    private static final String CHARS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
     private static final int SALT_LEN = 4;
 
     /**
@@ -48,12 +50,10 @@ public class CryptoUtil {
      * @return salt
      */
     private static String randSalt(int len) {
-        // TODO: fix base, its' for temporary use and Random (Use SecureRandom probably)
-        String base = "abcdefghijklmnopqrstuvwxyz";
-        Random rd = new Random();
+        SecureRandom sr = new SecureRandom();
         StringBuilder sb = new StringBuilder(len);
         for (int i = 0; i < len; i++) {
-            sb.append(rd.nextInt(base.length()));
+            sb.append(CHARS.charAt(sr.nextInt(CHARS.length())));
         }
         return sb.toString();
     }
