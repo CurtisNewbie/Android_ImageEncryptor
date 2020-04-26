@@ -1,6 +1,7 @@
 package com.curtisnewbie.util;
 
 import android.content.Context;
+import android.os.Environment;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -70,4 +71,33 @@ public class IOManager {
             out.write(bytes);
         }
     }
+
+    /**
+     * Create temp file with name created like this: '{@code "PIC" + DateUtil.getDateTimeStr()}'
+     *
+     * @param context
+     * @return a temp file
+     */
+    public static File createTempFile(Context context) throws IOException {
+        String filename = "PIC" + DateUtil.getDateTimeStr();
+        File storageDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File tempFile = File.createTempFile(filename, ".t", storageDir);
+        return tempFile;
+    }
+
+    /**
+     * Attempt to delete the file for 10 times at most
+     *
+     * @param file
+     * @return whether the file is deleted
+     */
+    public static boolean deleteFile(File file) {
+        for (int i = 0; i < 10; i++) {
+            if (file.delete()) {
+                return true;
+            }
+        }
+        return !file.exists();
+    }
+
 }

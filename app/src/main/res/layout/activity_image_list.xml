@@ -29,4 +29,18 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.938" />
 
+    <Button
+        android:id="@+id/takeImgBtn"
+        android:layout_width="108dp"
+        android:layout_height="53dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="@string/take_img_name"
+        app:layout_constraintBottom_toTopOf="@+id/addImgBtn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.968" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

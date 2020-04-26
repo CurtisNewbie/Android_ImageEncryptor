@@ -4,13 +4,14 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.provider.OpenableColumns;
-import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -22,6 +23,8 @@ import com.curtisnewbie.util.CryptoUtil;
 import com.curtisnewbie.util.IOManager;
 import com.curtisnewbie.util.ThreadManager;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,17 +36,19 @@ import static android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
  */
 public class ImageListActivity extends AppCompatActivity implements Promptable {
     /**
-     * Request code code selecting images in Gallery
+     * Request code for selecting image
      */
     public static final int SELECT_IMAGE = 1;
+    /**
+     * Request code for capturing image
+     */
+    public static final int CAPTURE_IMAGE = 2;
 
-    // recyclerView
     private RecyclerView recycleView;
     private RecyclerView.Adapter rAdapter;
     private RecyclerView.LayoutManager rManager;
-
-    // components
     private Button addImgBtn;
+    private Button takeImgBtn;
     /**
      * This key is used to encrypt and decrypt images, this is essentially a hash of
      * (password + img_salt).
@@ -52,41 +57,50 @@ public class ImageListActivity extends AppCompatActivity implements Promptable {
      */
     private String imgKey;
     private ThreadManager tm = ThreadManager.getThreadManager();
+    private String tempFilePath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_list);
 
-        // get password when refreshing this activity
         imgKey = getIntent().getStringExtra(DBManager.PW_TAG);
+        addImgBtn = findViewById(R.id.addImgBtn);
+        takeImgBtn = findViewById(R.id.takeImgBtn);
 
         recycleView = findViewById(R.id.recycleView);
-        addImgBtn = findViewById(R.id.addImgBtn);
-
-        // set fix layout size of the recycle view to improve performance
-        recycleView.setHasFixedSize(true);
-
-        /*
-         adapter that adapt individual items (activity_each_item.xml);
-         and passing password to the adapter for decrypting images.
-          */
+        recycleView.setHasFixedSize(true); // set fix layout size of the recycle view to improve performance
         rAdapter = new ImageListAdapter(this, imgKey);
         recycleView.setAdapter(rAdapter);
-
-        // linear manager
         rManager = new LinearLayoutManager(this);
         recycleView.setLayoutManager(rManager);
 
         // initiate preferred software (e.g., Gallery) to pick an image
-        addImgBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent();
-                intent.setAction(Intent.ACTION_PICK);
-                intent.setData(EXTERNAL_CONTENT_URI); // Data is URI
-                intent.setType("image/*");
-                startActivityForResult(Intent.createChooser(intent, "Select Images"), SELECT_IMAGE);
+        addImgBtn.setOnClickListener(view -> {
+            Intent selectImageIntent = new Intent();
+            selectImageIntent.setAction(Intent.ACTION_PICK);
+            selectImageIntent.setDataAndType(EXTERNAL_CONTENT_URI, "image/*"); // Data is URI
+            startActivityForResult(Intent.createChooser(selectImageIntent, "Select Images"), SELECT_IMAGE);
+        });
+        takeImgBtn.setOnClickListener(view -> {
+            Intent takePicIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            if (takePicIntent.resolveActivity(getPackageManager()) != null) {
+                // there are packages that can resolve this intent (i.e., take picture)
+                File tempFile = null;
+                try {
+                    tempFile = IOManager.createTempFile(this);
+                    tempFilePath = tempFile.getAbsolutePath(); // save absolute path for later access
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+                if (tempFile != null) {
+                    Uri tempUri = FileProvider.getUriForFile(this,
+                            "com.example.android.fileprovider"
+                            , tempFile);
+                    // write the image to the tempFile
+                    takePicIntent.putExtra(MediaStore.EXTRA_OUTPUT, tempUri);
+                    startActivityForResult(takePicIntent, CAPTURE_IMAGE);
+                }
             }
         });
         prompt("Login Successful");
@@ -94,19 +108,35 @@ public class ImageListActivity extends AppCompatActivity implements Promptable {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if (requestCode == SELECT_IMAGE && data != null) {
+        if (requestCode == SELECT_IMAGE && resultCode == RESULT_OK) {
             Uri uri = data.getData();
-            try {
-                Cursor cursor = getContentResolver().query(uri, null, null,
-                        null, null);
-                int nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
-                int sizeIndex = cursor.getColumnIndex(OpenableColumns.SIZE);
-                cursor.moveToFirst();
-                encryptNPersist(getContentResolver().openInputStream(uri), cursor.getString(nameIndex),
-                        cursor.getInt(sizeIndex));
-            } catch (FileNotFoundException e) {
-                prompt("File not found.");
-            }
+            tm.submit(() -> {
+                try (InputStream in = getContentResolver().openInputStream(uri);) {
+                    Cursor cursor = getContentResolver().query(uri, null, null,
+                            null, null);
+                    int nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+                    int sizeIndex = cursor.getColumnIndex(OpenableColumns.SIZE);
+                    cursor.moveToFirst();
+                    encryptNPersist(in, cursor.getString(nameIndex), cursor.getInt(sizeIndex));
+                } catch (FileNotFoundException e) {
+                    prompt("File not found.");
+                } catch (IOException e1) {
+                    prompt("Failed to encrypt image");
+                }
+            });
+        } else if (requestCode == CAPTURE_IMAGE && resultCode == RESULT_OK) {
+            tm.submit(() -> {
+                File tempFile = new File(tempFilePath);
+                if (tempFile.exists())
+                    try (InputStream in = new FileInputStream(tempFile)) {
+                        encryptNPersist(in, tempFile.getName(), (int) tempFile.length());
+                    } catch (IOException ie) {
+                        ie.printStackTrace();
+                    }
+                if (!IOManager.deleteFile(tempFile))
+                    prompt(String.format("Fail to delete temp file, please delete it manually. It's at: '%s'",
+                            tempFile.getAbsolutePath()));
+            });
         }
     }
 
@@ -119,43 +149,71 @@ public class ImageListActivity extends AppCompatActivity implements Promptable {
 
     /**
      * Read image, encrypt it, write the encrypted images data into local internal storage,
-     * and persist the name and filepath (of the encrypted ones) in the database. Note that
-     * a separate Thread is spawned to undertake this operation.
+     * and persist the name and filepath (of the encrypted ones) in the database.
      *
      * @param in       input stream of a image file that is not encrypted.
      * @param filename name of the encrypted image that will be created
      * @param filesize size of the file
      */
     private void encryptNPersist(InputStream in, String filename, int filesize) {
-        tm.submit(() -> {
-            AppDatabase db = DBManager.getInstance(null).getDB();
+        AppDatabase db = DBManager.getInstance(null).getDB();
+        try {
+            // encrypt and write the encrypted image
+            encryptNWrite(in, filename, filesize);
+            // persist image (name and path)
+            Image img = new Image();
+            img.setName(filename);
+            img.setPath(ImageListActivity.this.getFilesDir().getPath() + "//" + filename);
+            db.imgDao().addImage(img);
+            // update RecyclerView
+            ((ImageListAdapter) this.rAdapter).addImageName(img.getName());
+            prompt(String.format("Added: %s", filename));
+        } catch (FileNotFoundException e1) {
+            prompt("Fail to find file:");
+            e1.printStackTrace();
+        } catch (IOException e2) {
+            prompt("Fail to read from file:");
+            e2.printStackTrace();
+        } finally {
             try {
-                // encrypt and write the encrypted image
-                encryptNWrite(in, filename, filesize);
-                // persist image (name and path)
-                Image img = new Image();
-                img.setName(filename);
-                img.setPath(ImageListActivity.this.getFilesDir().getPath() + "//" + filename);
-                db.imgDao().addImage(img);
-                // update RecyclerView
-                ((ImageListAdapter) this.rAdapter).addImageName(img.getName());
-                prompt(String.format("Added: %s", filename));
-            } catch (FileNotFoundException e) {
-                prompt("Fail to find file:");
+                in.close();
             } catch (IOException e) {
-                prompt("Fail to read from file:");
-            } finally {
-                try {
-                    in.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                e.printStackTrace();
             }
-        });
+        }
     }
 
     /**
-     * Encrypt bytes from the input stream using the given pw and write them to internal storage.
+     * TODO: consider whether this method is still useful
+     * <p>
+     * Read image, encrypt it, write the encrypted images data into local internal storage,
+     * and persist the name and filepath (of the encrypted ones) in the database.
+     *
+     * @param bytes    bytes of the image
+     * @param filename name of the encrypted image that will be created
+     */
+    private void encryptNPersist(byte[] bytes, String filename) {
+        AppDatabase db = DBManager.getInstance(null).getDB();
+        try {
+            // encrypt and write the encrypted image
+            encryptNWrite(bytes, filename);
+            // persist image (name and path)
+            Image img = new Image();
+            img.setName(filename);
+            img.setPath(ImageListActivity.this.getFilesDir().getPath() + "//" + filename);
+            db.imgDao().addImage(img);
+            // update RecyclerView
+            ((ImageListAdapter) this.rAdapter).addImageName(img.getName());
+            prompt(String.format("Added: %s", filename));
+        } catch (FileNotFoundException e) {
+            prompt("Fail to find file:");
+        } catch (IOException e) {
+            prompt("Fail to read from file:");
+        }
+    }
+
+    /**
+     * Encrypt bytes from the input stream and write them to internal storage.
      * I/O is auto closed even when exceptions are thrown.
      *
      * @param in       input stream
@@ -169,6 +227,22 @@ public class ImageListActivity extends AppCompatActivity implements Promptable {
         byte[] rawData = IOManager.read(in, filesize);
         // encrypt image
         byte[] encryptedData = CryptoUtil.encrypt(rawData, imgKey);
+        // write encrypted image to internal storage
+        IOManager.write(encryptedData, filename, this);
+    }
+
+    /**
+     * Encrypt bytes and write them to internal storage.
+     * I/O is auto closed even when exceptions are thrown.
+     *
+     * @param bytes    bytes of file
+     * @param filename name of the file (encrypted) that will be created in internal storage
+     * @throws FileNotFoundException
+     * @throws IOException
+     */
+    private void encryptNWrite(byte[] bytes, String filename) throws FileNotFoundException, IOException {
+        // encrypt image
+        byte[] encryptedData = CryptoUtil.encrypt(bytes, imgKey);
         // write encrypted image to internal storage
         IOManager.write(encryptedData, filename, this);
     }
