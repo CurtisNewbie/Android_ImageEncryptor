@@ -7,11 +7,18 @@ import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 
 /**
+ * ------------------------------------
+ * <p>
+ * Author: Yongjie Zhuang
+ * <p>
+ * ------------------------------------
+ * <p>
  * Util Class for encryption, decryption, hashing, etc.
+ * </p>
  */
 public class CryptoUtil {
     /*
-     * Specification of the encryption and decryption
+     * Specification for encryption and decryption
      */
     private static final String HASHING_ALGORITHM = "SHA-256";
     private static final String ENCRYPTION_STANDARD = "AES";
@@ -68,8 +75,9 @@ public class CryptoUtil {
     }
 
     /**
-     * create the a {@code SecretKeySpec} for the specified {@code ENCRYPTION_STANDARD} through
-     * hashing given password using the specified {@code HASHING_ALGORITHM}
+     * create the a {@code SecretKeySpec} for the specified
+     * {@code ENCRYPTION_STANDARD} through hashing given password using the
+     * specified {@code HASHING_ALGORITHM}
      *
      * @param pw password
      * @return SecretKeySpec
@@ -94,12 +102,11 @@ public class CryptoUtil {
     }
 
     /**
-     * Decrypt using specified {@code HASHING_ALGORITHM} and {@code ENCRYPTION_STANDARD}
+     * Decrypt using specified {@code ENCRYPTION_STANDARD}
      *
      * @param data encryptedData
      * @param pw   password
      * @return original data byte[]
-     * @see {@link CryptoUtil#HASHING_ALGORITHM}
      * @see {@link CryptoUtil#ENCRYPTION_STANDARD}
      */
     public static byte[] decrypt(byte[] data, String pw) {
@@ -116,7 +123,7 @@ public class CryptoUtil {
     }
 
     /**
-     * Encrypt using SHA-256 & AES
+     * Encrypt using specified {@code ENCRYPTION_STANDARD}
      *
      * @param data image data
      * @param pw   password

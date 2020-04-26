@@ -8,7 +8,14 @@ import androidx.room.Query;
 import java.util.List;
 
 /**
+ * ------------------------------------
+ * <p>
+ * Author: Yongjie Zhuang
+ * <p>
+ * ------------------------------------
+ * <p>
  * Data Access Object Dao - defines methods for accessing image data
+ * </p>
  */
 @Dao
 public interface ImageDao {
@@ -31,4 +38,3 @@ public interface ImageDao {
     @Query("SELECT path FROM Image WHERE name = :imgName")
     String getImagePath(String imgName);
 }
-

@@ -1,12 +1,18 @@
 package com.curtisnewbie.database;
 
-
 import android.content.Context;
 
 import androidx.room.Room;
 
 /**
- * Singleton Class for the room database and local data reading.
+ * ------------------------------------
+ * <p>
+ * Author: Yongjie Zhuang
+ * <p>
+ * ------------------------------------
+ * <p>
+ * Singleton Class for the room database.
+ * </p>
  */
 // TODO: Change to DI and @Singleton
 public class DBManager {
@@ -15,11 +21,18 @@ public class DBManager {
     private static DBManager dbManager = null;
 
     /**
-     * Used for passing password with intent between activities
+     * Used for passing imgKey with intent between activities.
+     *
+     * @see User
+     * @see com.curtisnewbie.activities.MainActivity#imgKey
      */
-    public static final String PW_TAG = "pw";
+    public static final String IMG_KEY_TAG = "pw";
 
-
+    /**
+     * Get the {@code AppDatabase}.
+     *
+     * @return the {@code AppDatabase}
+     */
     public AppDatabase getDB() {
         return db;
     }

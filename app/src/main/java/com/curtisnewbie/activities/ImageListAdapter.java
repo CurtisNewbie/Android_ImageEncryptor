@@ -23,35 +23,34 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Adapter for each data set (ViewHolder) in the recyclerView
+ * ------------------------------------
+ * <p>
+ * Author: Yongjie Zhuang
+ * <p>
+ * ------------------------------------
+ * <p>
+ * Adapter that manages items in {@code RecyclerView}
+ * </p>
  */
 public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.ViewHolder> {
 
     /**
-     * string for putExtra when navigating to imageViewActvity
+     * string for Intent.putExtra() when navigating to imageViewActvity
      */
-    public static final String IMG_TITLE = "img_title";
-
-    /**
-     * List of name of image shown for each item view in the recyclerView.
-     */
+    public static final String IMG_NAME = "img_title";
     private List<String> imageNames;
-
     private Context context;
-
-    /**
-     * RoomDatabase
-     */
     private AppDatabase db;
 
     /**
-     * pw passed to this adapter, it will be passed to imageViewActivity for decryption
+     * pw passed to this adapter, it will be passed to imageViewActivity for
+     * decryption
      */
-    private String pw;
+    private String imgKey;
     private ThreadManager tm = ThreadManager.getThreadManager();
 
-    public ImageListAdapter(Context context, String pw) {
-        this.pw = pw;
+    public ImageListAdapter(Context context, String imgKey) {
+        this.imgKey = imgKey;
         this.context = context;
         this.db = DBManager.getInstance(null).getDB();
         this.imageNames = Collections.synchronizedList(new ArrayList<>());
@@ -61,8 +60,7 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.View
     // this method is for inflating the view of each item.
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.acitivity_each_item,
-                parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.acitivity_each_item, parent, false);
         ViewHolder viewHolder = new ViewHolder(view);
         return viewHolder;
     }
@@ -82,8 +80,8 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.View
                 Intent intent = new Intent(".ImageViewActivity");
 
                 // pass password to it for decryption
-                intent.putExtra(IMG_TITLE, imageNames.get(holder.getAdapterPosition()));
-                intent.putExtra(DBManager.PW_TAG, pw);
+                intent.putExtra(IMG_NAME, imageNames.get(holder.getAdapterPosition()));
+                intent.putExtra(DBManager.IMG_KEY_TAG, imgKey);
                 context.startActivity(intent);
             }
         });
@@ -165,10 +163,8 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.View
         return file.delete();
     }
 
-
     // each view holder holds data of each item
     public class ViewHolder extends RecyclerView.ViewHolder {
-
         private TextView name;
         private RelativeLayout item_layout;
 

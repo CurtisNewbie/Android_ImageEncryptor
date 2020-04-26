@@ -13,7 +13,14 @@ import java.io.OutputStream;
 import static android.content.Context.MODE_PRIVATE;
 
 /**
- * Class that is responsible for managing I/O.
+ * ------------------------------------
+ * <p>
+ * Author: Yongjie Zhuang
+ * <p>
+ * ------------------------------------
+ * <p>
+ * Class that is responsible for managing I/O operations.
+ * </p>
  */
 public class IOManager {
 
@@ -62,7 +69,8 @@ public class IOManager {
      * Write all bytes to a file that will be created in internal storage
      *
      * @param bytes       bytes
-     * @param fileOutName name of the file that the data are written to in internal storage
+     * @param fileOutName name of the file that the data are written to in internal
+     *                    storage
      * @param context     context
      * @throws IOException
      */
@@ -73,7 +81,8 @@ public class IOManager {
     }
 
     /**
-     * Create temp file with name created like this: '{@code "PIC" + DateUtil.getDateTimeStr()}'
+     * Create temp file with name created like this:
+     * '{@code "PIC" + DateUtil.getDateTimeStr()}'
      *
      * @param context
      * @return a temp file

@@ -32,7 +32,14 @@ import java.io.InputStream;
 import static android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
 
 /**
- * Shows a list of images, this uses the recyclerView to show list of 'items/smaller views'.
+ * ------------------------------------
+ * <p>
+ * Author: Yongjie Zhuang
+ * <p>
+ * ------------------------------------
+ * <p>
+ * {@code Activity} that shows a list of images using {@code RecyclerView}
+ * </p>
  */
 public class ImageListActivity extends AppCompatActivity implements Promptable {
     /**
@@ -64,7 +71,7 @@ public class ImageListActivity extends AppCompatActivity implements Promptable {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_list);
 
-        imgKey = getIntent().getStringExtra(DBManager.PW_TAG);
+        imgKey = getIntent().getStringExtra(DBManager.IMG_KEY_TAG);
         addImgBtn = findViewById(R.id.addImgBtn);
         takeImgBtn = findViewById(R.id.takeImgBtn);
 
@@ -94,9 +101,7 @@ public class ImageListActivity extends AppCompatActivity implements Promptable {
                     ex.printStackTrace();
                 }
                 if (tempFile != null) {
-                    Uri tempUri = FileProvider.getUriForFile(this,
-                            "com.example.android.fileprovider"
-                            , tempFile);
+                    Uri tempUri = FileProvider.getUriForFile(this, "com.example.android.fileprovider", tempFile);
                     // write the image to the tempFile
                     takePicIntent.putExtra(MediaStore.EXTRA_OUTPUT, tempUri);
                     startActivityForResult(takePicIntent, CAPTURE_IMAGE);
@@ -112,8 +117,7 @@ public class ImageListActivity extends AppCompatActivity implements Promptable {
             Uri uri = data.getData();
             tm.submit(() -> {
                 try (InputStream in = getContentResolver().openInputStream(uri);) {
-                    Cursor cursor = getContentResolver().query(uri, null, null,
-                            null, null);
+                    Cursor cursor = getContentResolver().query(uri, null, null, null, null);
                     int nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
                     int sizeIndex = cursor.getColumnIndex(OpenableColumns.SIZE);
                     cursor.moveToFirst();
@@ -148,8 +152,9 @@ public class ImageListActivity extends AppCompatActivity implements Promptable {
     }
 
     /**
-     * Read image, encrypt it, write the encrypted images data into local internal storage,
-     * and persist the name and filepath (of the encrypted ones) in the database.
+     * Read image, encrypt it, write the encrypted images data into local internal
+     * storage, and persist the name and filepath (of the encrypted ones) in the
+     * database.
      *
      * @param in       input stream of a image file that is not encrypted.
      * @param filename name of the encrypted image that will be created
@@ -186,8 +191,9 @@ public class ImageListActivity extends AppCompatActivity implements Promptable {
     /**
      * TODO: consider whether this method is still useful
      * <p>
-     * Read image, encrypt it, write the encrypted images data into local internal storage,
-     * and persist the name and filepath (of the encrypted ones) in the database.
+     * Read image, encrypt it, write the encrypted images data into local internal
+     * storage, and persist the name and filepath (of the encrypted ones) in the
+     * database.
      *
      * @param bytes    bytes of the image
      * @param filename name of the encrypted image that will be created
@@ -213,16 +219,18 @@ public class ImageListActivity extends AppCompatActivity implements Promptable {
     }
 
     /**
-     * Encrypt bytes from the input stream and write them to internal storage.
-     * I/O is auto closed even when exceptions are thrown.
+     * Encrypt bytes from the input stream and write them to internal storage. I/O
+     * is auto closed even when exceptions are thrown.
      *
      * @param in       input stream
-     * @param filename name of the file (encrypted) that will be created in internal storage
+     * @param filename name of the file (encrypted) that will be created in internal
+     *                 storage
      * @param filesize size of the file
      * @throws FileNotFoundException
      * @throws IOException
      */
-    private void encryptNWrite(InputStream in, String filename, int filesize) throws FileNotFoundException, IOException {
+    private void encryptNWrite(InputStream in, String filename, int filesize)
+            throws FileNotFoundException, IOException {
         // read the image
         byte[] rawData = IOManager.read(in, filesize);
         // encrypt image
@@ -232,11 +240,12 @@ public class ImageListActivity extends AppCompatActivity implements Promptable {
     }
 
     /**
-     * Encrypt bytes and write them to internal storage.
-     * I/O is auto closed even when exceptions are thrown.
+     * Encrypt bytes and write them to internal storage. I/O is auto closed even
+     * when exceptions are thrown.
      *
      * @param bytes    bytes of file
-     * @param filename name of the file (encrypted) that will be created in internal storage
+     * @param filename name of the file (encrypted) that will be created in internal
+     *                 storage
      * @throws FileNotFoundException
      * @throws IOException
      */

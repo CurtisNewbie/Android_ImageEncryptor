@@ -19,7 +19,14 @@ import com.curtisnewbie.util.ThreadManager;
 import java.util.Arrays;
 
 /**
- * Activity for login page
+ * ------------------------------------
+ * <p>
+ * Author: Yongjie Zhuang
+ * <p>
+ * ------------------------------------
+ * <p>
+ * Main {@code Activity} which is the login page.
+ * </p>
  */
 public class MainActivity extends AppCompatActivity implements Promptable {
 
@@ -36,6 +43,7 @@ public class MainActivity extends AppCompatActivity implements Promptable {
     /**
      * This key is used to encrypt and decrypt images, this is essentially a hash of
      * (password + img_salt).
+     *
      * @see User
      */
     private String imgKey;
@@ -68,14 +76,15 @@ public class MainActivity extends AppCompatActivity implements Promptable {
     }
 
     /**
-     * when the button is clicked, the entered name and password is processed.
-     * This is a listener method for loginBtn.
+     * when the button is clicked, the entered name and password is processed. This
+     * is a listener method for loginBtn.
      *
      * @param view implicit view object
      */
     public void addOnButtonClick(View view) {
 
-        // getText does not return String, it's a editable object, similar to StringBuilder.
+        // getText does not return String, it's a editable object, similar to
+        // StringBuilder.
         String entName = nameInput.getText().toString().trim();
         String entPW = pwInput.getText().toString().trim();
 
@@ -91,7 +100,7 @@ public class MainActivity extends AppCompatActivity implements Promptable {
             } else {
                 if (checkCredential(entName, entPW)) {
                     String imgSalt = db.userDao().getImgSalt(entName);
-                    String imgKey = Base64.encodeToString(CryptoUtil.hash(entPW , imgSalt), Base64.DEFAULT);
+                    String imgKey = Base64.encodeToString(CryptoUtil.hash(entPW, imgSalt), Base64.DEFAULT);
                     this.login(imgKey);
                 } else {
                     prompt("Account is incorrect");
@@ -101,8 +110,8 @@ public class MainActivity extends AppCompatActivity implements Promptable {
     }
 
     /**
-     * Navigates to ImageListActivity. Should only be called when the user is authenticated.
-     * This method is ran in a UI Thread.
+     * Navigates to ImageListActivity. Should only be called when the user is
+     * authenticated. This method is ran in a UI Thread.
      *
      * @param imgKey key for image encryption/decryption
      */
@@ -115,7 +124,7 @@ public class MainActivity extends AppCompatActivity implements Promptable {
 
             // jumps to ImageListActivity and passing the password to it.
             Intent intent = new Intent(".ImageListActivity");
-            intent.putExtra(DBManager.PW_TAG, this.imgKey);
+            intent.putExtra(DBManager.IMG_KEY_TAG, this.imgKey);
             startActivity(intent);
         });
     }

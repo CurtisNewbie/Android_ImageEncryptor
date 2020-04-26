@@ -22,7 +22,15 @@ import com.github.chrisbanes.photoview.PhotoView;
 import java.io.File;
 
 /**
- * Show the image that is selected from the ImageListActivity
+ * ------------------------------------
+ * <p>
+ * Author: Yongjie Zhuang
+ * <p>
+ * ------------------------------------
+ * <p>
+ * {@code Activity} that shows the image that is selected from the
+ * {@code ImageListActivity}
+ * </p>
  */
 public class ImageViewActivity extends AppCompatActivity implements Promptable {
     private ImageView imageView;
@@ -45,8 +53,8 @@ public class ImageViewActivity extends AppCompatActivity implements Promptable {
         // room database
         db = DBManager.getInstance(null).getDB();
         // get the imageName passed by intent
-        String imageName = getIntent().getStringExtra(ImageListAdapter.IMG_TITLE);
-        //get the path to the decrypted image, decrypt data and display
+        String imageName = getIntent().getStringExtra(ImageListAdapter.IMG_NAME);
+        // get the path to the decrypted image, decrypt data and display
         tm.submit(() -> {
             try {
                 // read encrypted data
@@ -54,7 +62,7 @@ public class ImageViewActivity extends AppCompatActivity implements Promptable {
                 byte[] encryptedData = IOManager.read(new File(imgPath));
 
                 // decrypt the data
-                imgKey = getIntent().getStringExtra(DBManager.PW_TAG);
+                imgKey = getIntent().getStringExtra(DBManager.IMG_KEY_TAG);
                 byte[] decryptedData = CryptoUtil.decrypt(encryptedData, imgKey);
 
                 // get the allowed maximum size of texture in OpenGL ES3.0
@@ -80,7 +88,8 @@ public class ImageViewActivity extends AppCompatActivity implements Promptable {
     }
 
     /**
-     * Create dialogue that contains a zoomable PhotoView when the imageView is clicked
+     * Create dialogue that contains a zoomable PhotoView when the imageView is
+     * clicked
      */
     private void setupZoomableView() {
         imageView.setClickable(true);
@@ -108,4 +117,3 @@ public class ImageViewActivity extends AppCompatActivity implements Promptable {
         });
     }
 }
-

@@ -4,7 +4,14 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
 /**
+ * ------------------------------------
+ * <p>
+ * Author: Yongjie Zhuang
+ * <p>
+ * ------------------------------------
+ * <p>
  * Util Class for image decoding
+ * </p>
  */
 public class ImageUtil {
 

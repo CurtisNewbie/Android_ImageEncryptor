@@ -3,8 +3,16 @@ package com.curtisnewbie.database;
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
+
 /**
+ * ------------------------------------
+ * <p>
+ * Author: Yongjie Zhuang
+ * <p>
+ * ------------------------------------
+ * <p>
  * Data Access Object Dao - defines methods for accessing User data
+ * </p>
  */
 @Dao
 public interface UserDao {

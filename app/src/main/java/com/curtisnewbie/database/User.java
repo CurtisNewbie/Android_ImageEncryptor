@@ -6,9 +6,17 @@ import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 /**
- * Representation of User model, which stores the User login credential. Note that
- * {@link User#pw_salt} is for creating the proper hash of password and {@link User#img_salt}
- * is for creating the hash that is used as a key for image encryption and decryption.
+ * ------------------------------------
+ * <p>
+ * Author: Yongjie Zhuang
+ * <p>
+ * ------------------------------------
+ * <p>
+ * Representation of User model, which stores the User login credential. Note
+ * that {@link User#pw_salt} is for creating the proper hash of password and
+ * {@link User#img_salt} is for creating the hash that is used as a key for
+ * image encryption and decryption.
+ * </p>
  */
 @Entity(tableName = "user")
 public class User {

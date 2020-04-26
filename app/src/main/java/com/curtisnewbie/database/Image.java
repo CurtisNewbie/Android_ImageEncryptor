@@ -5,6 +5,17 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+/**
+ * ------------------------------------
+ * <p>
+ * Author: Yongjie Zhuang
+ * <p>
+ * ------------------------------------
+ * <p>
+ * Representation of User model, it does not store the actual image data, only
+ * the name of the image and the file path of it.
+ * </p>
+ */
 @Entity(tableName = "image")
 public class Image {
 
