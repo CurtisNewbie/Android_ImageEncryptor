@@ -1,36 +1,30 @@
-<h1>Android Image Encryptor/Decryptor</h1>
+# Android Image Encryptor/Decryptor
 
-<h3>What Is It?</h3>
+This is an simple Android app that allows the user to encrypt images and browse the encrypted images.
 
-<ul>
-<li>This is an simple Android app that allows the user to encrypt and decrypt image. It requires the user to login using his/her password for authentication, however no plaintext crendential is stored (only the hash)!!!</li> 
-<li>When the authentication is verified, the images are decrypted based on the given password entered by the users (decrypted on the fly). New images can be encrypted in the app by simply selecting (multiple) image file in the file picker, which will then be hashed and stored locally.</li> <li>Further, when viewing the decrypted images, user can click on the image to create a dialogue that contains the zoomable images.</li>
-</ul>
+**Some of the Features:**
 
-The users credential are also hashed and stored in the internal storage, the process of authentication gets and hashes the name and password provided, and compare the hashed credential with the one stored locally.
+- Support displaying the encrypted images on the fly.
+- Support adding images from Gallery (or other similar apps).
+- Support taking pictures using Camera (or other similar apps), original image is deleted once it's encrypted.
+- Support displaying a zoomable view of the image that is supported by the **PhotoViewer Library**
 
-<h3>Encryption/Decryption Algorithm</h3>
+**Note: PhotoViewer Library is adapted from this GitHub repository <a href="https://github.com/chrisbanes/PhotoView" target="_blank">PhotoView</a>**
 
-This program uses the SHA-256 hashing algorithm and the AES encryption standard, and the password is taken to encrypt and decrypt the image. The credential (name and password) is also hashed and stored locally using SHA-256 algorithm.
+## Details of Implementation
 
-<h3>The lib/techs used that you may be interested</h3>
+1. The authentication and authorisation mechanism is essentially that, the username and salt are stored in the app's DB in plaintext. However, the password is not persisted, only the hash of it is stored. The hash is generated as the persudo code below. Only one user can be registered. When both the name and the hash are matched, the user is authenticated.
 
-<ul>
-  <li>Room persistence (using multi-threading for db connection)</li>
-  <li>Singleton class for storing the database object</li>
-  <li>RecyclerView</li>
-  <li>Intent putExtra/getExtra</li>
-  <li>FilePicker library adapted from <a href="https://github.com/TutorialsAndroid/FilePicker?utm_source=android-arsenal.com&utm_medium=referral&utm_campaign=7663" target="_blank">Akshay Sunil Masram</a> (Thank you :D)</li>
-  <li>Photo Viewer Library adapted from <a href="https://github.com/chrisbanes/PhotoView" target="_blank">Chris Banes</a> (Thank you :D)</li>
-  <li>MessageDigest</li>
-  <li>SHA-256</li>
-  <li>AES</li>
-</ul>
+   **Persudo code ->** `passwordHash = SHA256(concatenate(password, pw_salt))`
 
-<h3>Demonstration of Functionalities</h3>
+2. All images are encrypted using **AES** algorithm. Images are encrypted and stored in the App's **internal storage**. The key used for encryption is neither stored in local files nor in DB. It's generated in runtime when the user is successfully authenticated. The key is generated as the persudo code below. Note that the salt used for generating the key for image encryption/decryption is different from the one used for hashing password. Two different salts are used.
 
-Date: 20July2019
+   **Persudo code ->** `imgKey = SHA256(concatenate(password, img_salt))`
 
-<img src="https://user-images.githubusercontent.com/45169791/61499340-b9f17400-a9be-11e9-888c-a2c73cde5683.gif" width=300 height=500 >
+3. When user browse the images, the images are decrypted in memory. No actual files are created during this process. However, one issue may be involved in this approach, the size of the image may exceed the one allowed by OpenGL ES3.0. The adapted solution to this is to downscale the image when displaying it.
 
-Enjoy!
+## Additional Hints For Usage
+
+- The first time you use this app, the app expects you to register. You simply enter the username and password that you want to use. Please make sure you remember it, since there is no way to recover it.
+- Once you have encryped some images, and you want to delete some of them. You just long press the image name in the list, a dialog will pop up and ask you whether you want to delete it. Press "Yes" to delete it.
+- When you are browsing the images, and you want to zoom in the image, you can press on the image, a zoomable view will appears. To close this zoomable view, you will need to press the "Back" button. This "Back" button is provided by the system on your device.
