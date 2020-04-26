@@ -4,10 +4,10 @@ This is an simple Android app that allows the user to encrypt images and browse 
 
 **Some of the Features:**
 
-- Support displaying the encrypted images on the fly.
-- Support adding images from Gallery (or other similar apps).
-- Support taking pictures using Camera (or other similar apps), original image is deleted once it's encrypted.
-- Support displaying a zoomable view of the image that is supported by the **PhotoViewer Library**
+- Displaying the encrypted images on the fly.
+- Adding images from Gallery (or other similar apps).
+- Taking pictures using Camera (or other similar apps), original image is deleted once it's encrypted.
+- Displaying a zoomable view of the image that is supported by the **PhotoViewer Library**
 
 **Note: PhotoViewer Library is adapted from this GitHub repository <a href="https://github.com/chrisbanes/PhotoView" target="_blank">PhotoView</a>**
 
@@ -21,10 +21,10 @@ This is an simple Android app that allows the user to encrypt images and browse 
 
    **Persudo code ->** `imgKey = SHA256(concatenate(password, img_salt))`
 
-3. When user browse the images, the images are decrypted in memory. No actual files are created during this process. However, one issue may be involved in this approach, the size of the image may exceed the one allowed by OpenGL ES3.0. The adapted solution to this is to downscale the image when displaying it.
+3. When a user browses the images, the images are decrypted in memory. No actual files are created during this process. However, one issue may be involved in this approach, the size of the image may exceed the one allowed by OpenGL ES3.0. The adapted solution to this is to downscale the image when displaying it.
 
 ## Additional Hints For Usage
 
 - The first time you use this app, the app expects you to register. You simply enter the username and password that you want to use. Please make sure you remember it, since there is no way to recover it.
 - Once you have encryped some images, and you want to delete some of them. You just long press the image name in the list, a dialog will pop up and ask you whether you want to delete it. Press "Yes" to delete it.
-- When you are browsing the images, and you want to zoom in the image, you can press on the image, a zoomable view will appears. To close this zoomable view, you will need to press the "Back" button. This "Back" button is provided by the system on your device.
+- When you are browsing the images, and you want to zoom in the image, you can press on the image, a zoomable view will appear. To close this zoomable view, you will need to press the "Back" button. This "Back" button is provided by the system on your device.
