@@ -38,4 +38,9 @@ dependencies {
     annotationProcessor 'androidx.room:room-compiler:2.1.0'
     // Card layout
     implementation 'androidx.cardview:cardview:1.0.0'
+    // Dagger for DI
+    implementation 'com.google.dagger:dagger-android:2.27'
+    implementation 'com.google.dagger:dagger-android-support:2.27'
+    annotationProcessor 'com.google.dagger:dagger-android-processor:2.27'
+    annotationProcessor 'com.google.dagger:dagger-compiler:2.27'
 }
