@@ -22,7 +22,7 @@ import static android.content.Context.MODE_PRIVATE;
  * Class that is responsible for managing I/O operations.
  * </p>
  */
-public class IOManager {
+public class IOUtil {
 
     /**
      * Read all bytes from file

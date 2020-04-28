@@ -100,7 +100,7 @@ public class MainActivity extends AppCompatActivity implements Promptable {
 
     /**
      * Navigates to ImageListActivity. Should only be called when the user is
-     * authenticated. This method is ran in a UI Thread.
+     * authenticated.
      */
     private void navToImageList() {
         // navigates to ImageListActivity

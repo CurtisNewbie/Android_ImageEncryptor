@@ -20,7 +20,7 @@ import com.curtisnewbie.database.Image;
 import com.curtisnewbie.services.App;
 import com.curtisnewbie.services.AuthService;
 import com.curtisnewbie.util.CryptoUtil;
-import com.curtisnewbie.util.IOManager;
+import com.curtisnewbie.util.IOUtil;
 import com.curtisnewbie.services.ExecService;
 
 import java.io.File;
@@ -105,7 +105,7 @@ public class ImageListActivity extends AppCompatActivity implements Promptable {
                 // there are packages that can resolve this intent (i.e., take picture)
                 File tempFile = null;
                 try {
-                    tempFile = IOManager.createTempFile(this);
+                    tempFile = IOUtil.createTempFile(this);
                     tempFilePath = tempFile.getAbsolutePath(); // save absolute path for later access
                 } catch (IOException ex) {
                     ex.printStackTrace();
@@ -147,7 +147,7 @@ public class ImageListActivity extends AppCompatActivity implements Promptable {
                     } catch (IOException ie) {
                         ie.printStackTrace();
                     }
-                if (!IOManager.deleteFile(tempFile))
+                if (!IOUtil.deleteFile(tempFile))
                     prompt(String.format("Fail to delete temp file, please delete it manually. It's at: '%s'",
                             tempFile.getAbsolutePath()));
             });
@@ -211,11 +211,11 @@ public class ImageListActivity extends AppCompatActivity implements Promptable {
     private void encryptNWrite(InputStream in, String filename, int filesize)
             throws FileNotFoundException, IOException {
         // read the image
-        byte[] rawData = IOManager.read(in, filesize);
+        byte[] rawData = IOUtil.read(in, filesize);
         // encrypt image
         byte[] encryptedData = CryptoUtil.encrypt(rawData, imgKey);
         // write encrypted image to internal storage
-        IOManager.write(encryptedData, filename, this);
+        IOUtil.write(encryptedData, filename, this);
     }
 
     @Override

@@ -14,7 +14,7 @@ import com.curtisnewbie.services.App;
 import com.curtisnewbie.services.AuthService;
 import com.curtisnewbie.services.ExecService;
 import com.curtisnewbie.util.CryptoUtil;
-import com.curtisnewbie.util.IOManager;
+import com.curtisnewbie.util.IOUtil;
 import com.curtisnewbie.util.ImageUtil;
 import com.curtisnewbie.database.AppDatabase;
 import com.github.chrisbanes.photoview.PhotoView;
@@ -67,7 +67,7 @@ public class ImageViewActivity extends AppCompatActivity implements Promptable {
                 try {
                     // read encrypted data
                     String imgPath = db.imgDao().getImagePath(imageName);
-                    byte[] encryptedData = IOManager.read(new File(imgPath));
+                    byte[] encryptedData = IOUtil.read(new File(imgPath));
 
                     // decrypt the data
                     byte[] decryptedData = CryptoUtil.decrypt(encryptedData, imgKey);
