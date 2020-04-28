@@ -10,6 +10,9 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.curtisnewbie.services.App;
+import com.curtisnewbie.services.AppComponent;
+import com.curtisnewbie.services.AuthService;
 import com.curtisnewbie.util.CryptoUtil;
 import com.curtisnewbie.database.AppDatabase;
 import com.curtisnewbie.database.DBManager;
@@ -17,6 +20,8 @@ import com.curtisnewbie.database.User;
 import com.curtisnewbie.util.ThreadManager;
 
 import java.util.Arrays;
+
+import javax.inject.Inject;
 
 /**
  * ------------------------------------
@@ -33,6 +38,8 @@ public class MainActivity extends AppCompatActivity implements Promptable {
     private EditText pwInput;
     private EditText nameInput;
     private Button loginBtn;
+    @Inject
+    AuthService authService;
 
     /**
      * RoomDatabase
@@ -50,6 +57,8 @@ public class MainActivity extends AppCompatActivity implements Promptable {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // inject dependencies
+        ((App) getApplicationContext()).getAppComponent().inject(this);
         super.onCreate(savedInstanceState);
 
         // getDb (or iniDb if first time)
