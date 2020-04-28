@@ -32,4 +32,5 @@ public interface AppComponent {
 
     void inject(ImageListAdapter adapter);
 
+    void inject(AuthService authService);
 }

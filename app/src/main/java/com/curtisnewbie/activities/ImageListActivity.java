@@ -16,10 +16,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.curtisnewbie.database.AppDatabase;
-import com.curtisnewbie.database.DBManager;
 import com.curtisnewbie.database.Image;
 import com.curtisnewbie.database.User;
 import com.curtisnewbie.services.App;
+import com.curtisnewbie.services.AuthService;
 import com.curtisnewbie.util.CryptoUtil;
 import com.curtisnewbie.util.IOManager;
 import com.curtisnewbie.util.ThreadManager;
@@ -59,18 +59,15 @@ public class ImageListActivity extends AppCompatActivity implements Promptable {
     private RecyclerView.LayoutManager rManager;
     private Button addImgBtn;
     private Button takeImgBtn;
-    /**
-     * This key is used to encrypt and decrypt images, this is essentially a hash of
-     * (password + img_salt).
-     *
-     * @see User
-     */
     private String imgKey;
     private ThreadManager tm = ThreadManager.getThreadManager();
     private String tempFilePath;
 
     @Inject
     protected AppDatabase db;
+
+    @Inject
+    protected AuthService authService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,10 +76,15 @@ public class ImageListActivity extends AppCompatActivity implements Promptable {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_list);
 
-        imgKey = getIntent().getStringExtra(DBManager.IMG_KEY_TAG);
+        // setup image key for encryption/decryption
+        imgKey = authService.getImgKey();
+        if (imgKey == null){
+            startActivity(new Intent(".MainActivity"));
+            return;
+        }
+
         addImgBtn = findViewById(R.id.addImgBtn);
         takeImgBtn = findViewById(R.id.takeImgBtn);
-
         recycleView = findViewById(R.id.recycleView);
         recycleView.setHasFixedSize(true); // set fix layout size of the recycle view to improve performance
         rAdapter = new ImageListAdapter(this, imgKey);
@@ -116,7 +118,6 @@ public class ImageListActivity extends AppCompatActivity implements Promptable {
                 }
             }
         });
-        prompt("Login Successful");
     }
 
     @Override
@@ -197,35 +198,6 @@ public class ImageListActivity extends AppCompatActivity implements Promptable {
     }
 
     /**
-     * TODO: consider whether this method is still useful
-     * <p>
-     * Read image, encrypt it, write the encrypted images data into local internal
-     * storage, and persist the name and filepath (of the encrypted ones) in the
-     * database.
-     *
-     * @param bytes    bytes of the image
-     * @param filename name of the encrypted image that will be created
-     */
-    private void encryptNPersist(byte[] bytes, String filename) {
-        try {
-            // encrypt and write the encrypted image
-            encryptNWrite(bytes, filename);
-            // persist image (name and path)
-            Image img = new Image();
-            img.setName(filename);
-            img.setPath(ImageListActivity.this.getFilesDir().getPath() + "//" + filename);
-            db.imgDao().addImage(img);
-            // update RecyclerView
-            ((ImageListAdapter) this.rAdapter).addImageName(img.getName());
-            prompt(String.format("Added: %s", filename));
-        } catch (FileNotFoundException e) {
-            prompt("Fail to find file:");
-        } catch (IOException e) {
-            prompt("Fail to read from file:");
-        }
-    }
-
-    /**
      * Encrypt bytes from the input stream and write them to internal storage. I/O
      * is auto closed even when exceptions are thrown.
      *
@@ -242,23 +214,6 @@ public class ImageListActivity extends AppCompatActivity implements Promptable {
         byte[] rawData = IOManager.read(in, filesize);
         // encrypt image
         byte[] encryptedData = CryptoUtil.encrypt(rawData, imgKey);
-        // write encrypted image to internal storage
-        IOManager.write(encryptedData, filename, this);
-    }
-
-    /**
-     * Encrypt bytes and write them to internal storage. I/O is auto closed even
-     * when exceptions are thrown.
-     *
-     * @param bytes    bytes of file
-     * @param filename name of the file (encrypted) that will be created in internal
-     *                 storage
-     * @throws FileNotFoundException
-     * @throws IOException
-     */
-    private void encryptNWrite(byte[] bytes, String filename) throws FileNotFoundException, IOException {
-        // encrypt image
-        byte[] encryptedData = CryptoUtil.encrypt(bytes, imgKey);
         // write encrypted image to internal storage
         IOManager.write(encryptedData, filename, this);
     }

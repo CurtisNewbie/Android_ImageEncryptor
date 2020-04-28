@@ -13,7 +13,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.curtisnewbie.database.AppDatabase;
-import com.curtisnewbie.database.DBManager;
 import com.curtisnewbie.database.Image;
 import com.curtisnewbie.services.App;
 import com.curtisnewbie.util.ThreadManager;
@@ -65,7 +64,8 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.View
     // this method is for inflating the view of each item.
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.acitivity_each_item, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.acitivity_each_item,
+                parent, false);
         ViewHolder viewHolder = new ViewHolder(view);
         return viewHolder;
     }
@@ -78,17 +78,10 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.View
         holder.getName().setText(imageNames.get(position));
 
         // setup the onClickListener for the layout of whole Recycler layout
-        holder.getItem_layout().setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // jump to another Activity to see the view
-                Intent intent = new Intent(".ImageViewActivity");
-
-                // pass password to it for decryption
-                intent.putExtra(IMG_NAME, imageNames.get(holder.getAdapterPosition()));
-                intent.putExtra(DBManager.IMG_KEY_TAG, imgKey);
-                context.startActivity(intent);
-            }
+        holder.getItem_layout().setOnClickListener(view -> {
+            Intent intent = new Intent(".ImageViewActivity");
+            intent.putExtra(IMG_NAME, imageNames.get(holder.getAdapterPosition()));
+            context.startActivity(intent);
         });
 
         // long click (hold) to create dialog for deleting the encrypted image
