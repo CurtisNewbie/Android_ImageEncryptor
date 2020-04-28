@@ -12,9 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.curtisnewbie.services.App;
 import com.curtisnewbie.services.AuthService;
 import com.curtisnewbie.database.AppDatabase;
-import com.curtisnewbie.util.ThreadManager;
-
-import java.util.Arrays;
+import com.curtisnewbie.services.ExecService;
 
 import javax.inject.Inject;
 
@@ -33,7 +31,8 @@ public class MainActivity extends AppCompatActivity implements Promptable {
     private EditText pwInput;
     private EditText nameInput;
     private Button loginBtn;
-    private ThreadManager tm = ThreadManager.getThreadManager();
+    @Inject
+    protected ExecService tm;
 
     @Inject
     protected AuthService authService;

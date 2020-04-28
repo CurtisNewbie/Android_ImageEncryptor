@@ -19,6 +19,7 @@ public class App extends Application {
         super.onCreate();
         App.appComponent = DaggerAppComponent.builder().authModule(new AuthModule())
                 .dBModule(new DBModule(this.getApplicationContext()))
+                .concurrencyModule(new ConcurrencyModule())
                 .build();
     }
 

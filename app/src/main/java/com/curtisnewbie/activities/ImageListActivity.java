@@ -17,12 +17,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.curtisnewbie.database.AppDatabase;
 import com.curtisnewbie.database.Image;
-import com.curtisnewbie.database.User;
 import com.curtisnewbie.services.App;
 import com.curtisnewbie.services.AuthService;
 import com.curtisnewbie.util.CryptoUtil;
 import com.curtisnewbie.util.IOManager;
-import com.curtisnewbie.util.ThreadManager;
+import com.curtisnewbie.services.ExecService;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -60,7 +59,8 @@ public class ImageListActivity extends AppCompatActivity implements Promptable {
     private Button addImgBtn;
     private Button takeImgBtn;
     private String imgKey;
-    private ThreadManager tm = ThreadManager.getThreadManager();
+    @Inject
+    protected ExecService tm;
     private String tempFilePath;
 
     @Inject

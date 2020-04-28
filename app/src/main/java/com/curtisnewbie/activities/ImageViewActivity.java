@@ -12,11 +12,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.curtisnewbie.services.App;
 import com.curtisnewbie.services.AuthService;
+import com.curtisnewbie.services.ExecService;
 import com.curtisnewbie.util.CryptoUtil;
 import com.curtisnewbie.util.IOManager;
 import com.curtisnewbie.util.ImageUtil;
 import com.curtisnewbie.database.AppDatabase;
-import com.curtisnewbie.util.ThreadManager;
 import com.github.chrisbanes.photoview.PhotoView;
 
 import java.io.File;
@@ -39,9 +39,10 @@ public class ImageViewActivity extends AppCompatActivity implements Promptable {
     protected AppDatabase db;
     @Inject
     protected AuthService authService;
+    @Inject
+    protected ExecService tm;
     private ImageView imageView;
     private Bitmap bitmap;
-    private ThreadManager tm = ThreadManager.getThreadManager();
     private String imgKey;
     private String imageName;
 

@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.curtisnewbie.database.AppDatabase;
 import com.curtisnewbie.database.Image;
 import com.curtisnewbie.services.App;
-import com.curtisnewbie.util.ThreadManager;
+import com.curtisnewbie.services.ExecService;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -35,23 +35,17 @@ import javax.inject.Inject;
  * </p>
  */
 public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.ViewHolder> {
-
-
     /**
-     * string for Intent.putExtra() when navigating to imageViewActvity
+     * string for Intent.putExtra() when navigating to imageViewActivity
      */
     public static final String IMG_NAME = "img_title";
     private List<String> imageNames;
     private Context context;
     @Inject
     protected AppDatabase db;
-
-    /**
-     * pw passed to this adapter, it will be passed to imageViewActivity for
-     * decryption
-     */
+    @Inject
+    protected ExecService tm;
     private String imgKey;
-    private ThreadManager tm = ThreadManager.getThreadManager();
 
     public ImageListAdapter(Context context, String imgKey) {
         App.getAppComponent().inject(this);
