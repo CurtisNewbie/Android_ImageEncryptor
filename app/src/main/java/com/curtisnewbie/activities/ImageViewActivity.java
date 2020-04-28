@@ -11,6 +11,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.curtisnewbie.database.User;
+import com.curtisnewbie.services.App;
 import com.curtisnewbie.util.CryptoUtil;
 import com.curtisnewbie.util.IOManager;
 import com.curtisnewbie.util.ImageUtil;
@@ -20,6 +21,8 @@ import com.curtisnewbie.util.ThreadManager;
 import com.github.chrisbanes.photoview.PhotoView;
 
 import java.io.File;
+
+import javax.inject.Inject;
 
 /**
  * ------------------------------------
@@ -34,7 +37,8 @@ import java.io.File;
  */
 public class ImageViewActivity extends AppCompatActivity implements Promptable {
     private ImageView imageView;
-    private AppDatabase db;
+    @Inject
+    protected AppDatabase db;
     private Bitmap bitmap;
     private ThreadManager tm = ThreadManager.getThreadManager();
     /**
@@ -47,11 +51,10 @@ public class ImageViewActivity extends AppCompatActivity implements Promptable {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        App.getAppComponent().inject(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_view);
         imageView = this.findViewById(R.id.imageView);
-        // room database
-        db = DBManager.getInstance(null).getDB();
         // get the imageName passed by intent
         String imageName = getIntent().getStringExtra(ImageListAdapter.IMG_NAME);
         // get the path to the decrypted image, decrypt data and display

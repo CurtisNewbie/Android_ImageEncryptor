@@ -12,12 +12,14 @@ import android.app.Application;
  * Custom Application class for Dependency Injection. The modules are instantiated here.
  */
 public class App extends Application {
-    private AppComponent appComponent;
+    private static AppComponent appComponent;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        appComponent = DaggerAppComponent.builder().authModule(new AuthModule()).build();
+        App.appComponent = DaggerAppComponent.builder().authModule(new AuthModule())
+                .dBModule(new DBModule(this.getApplicationContext()))
+                .build();
     }
 
     /**
@@ -25,7 +27,7 @@ public class App extends Application {
      *
      * @return
      */
-    public AppComponent getAppComponent() {
-        return this.appComponent;
+    public static AppComponent getAppComponent() {
+        return appComponent;
     }
 }

@@ -1,5 +1,8 @@
 package com.curtisnewbie.services;
 
+import com.curtisnewbie.activities.ImageListActivity;
+import com.curtisnewbie.activities.ImageListAdapter;
+import com.curtisnewbie.activities.ImageViewActivity;
 import com.curtisnewbie.activities.MainActivity;
 
 import javax.inject.Singleton;
@@ -18,11 +21,15 @@ import dagger.Component;
  * in the activity are injected.
  */
 @Singleton
-@Component(modules = {AuthModule.class})
+@Component(modules = {AuthModule.class, DBModule.class})
 public interface AppComponent {
 
-    /**
-     * injecting dependencies in MainActivity
-     */
     void inject(MainActivity activity);
+
+    void inject(ImageListActivity activity);
+
+    void inject(ImageViewActivity activity);
+
+    void inject(ImageListAdapter adapter);
+
 }

@@ -15,12 +15,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.curtisnewbie.database.AppDatabase;
 import com.curtisnewbie.database.DBManager;
 import com.curtisnewbie.database.Image;
+import com.curtisnewbie.services.App;
 import com.curtisnewbie.util.ThreadManager;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import javax.inject.Inject;
 
 /**
  * ------------------------------------
@@ -34,13 +37,15 @@ import java.util.List;
  */
 public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.ViewHolder> {
 
+
     /**
      * string for Intent.putExtra() when navigating to imageViewActvity
      */
     public static final String IMG_NAME = "img_title";
     private List<String> imageNames;
     private Context context;
-    private AppDatabase db;
+    @Inject
+    protected AppDatabase db;
 
     /**
      * pw passed to this adapter, it will be passed to imageViewActivity for
@@ -50,9 +55,9 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.View
     private ThreadManager tm = ThreadManager.getThreadManager();
 
     public ImageListAdapter(Context context, String imgKey) {
+        App.getAppComponent().inject(this);
         this.imgKey = imgKey;
         this.context = context;
-        this.db = DBManager.getInstance(null).getDB();
         this.imageNames = Collections.synchronizedList(new ArrayList<>());
         this.loadImageNamesFromDb();
     }

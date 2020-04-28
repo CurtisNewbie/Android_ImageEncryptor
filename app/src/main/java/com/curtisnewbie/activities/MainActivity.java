@@ -38,14 +38,13 @@ public class MainActivity extends AppCompatActivity implements Promptable {
     private EditText pwInput;
     private EditText nameInput;
     private Button loginBtn;
-    @Inject
-    AuthService authService;
-
-    /**
-     * RoomDatabase
-     */
-    private AppDatabase db;
     private ThreadManager tm = ThreadManager.getThreadManager();
+
+    @Inject
+    protected AuthService authService;
+
+    @Inject
+    protected AppDatabase db;
 
     /**
      * This key is used to encrypt and decrypt images, this is essentially a hash of
@@ -57,17 +56,11 @@ public class MainActivity extends AppCompatActivity implements Promptable {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        // inject dependencies
-        ((App) getApplicationContext()).getAppComponent().inject(this);
+        App.getAppComponent().inject(this);
         super.onCreate(savedInstanceState);
-
-        // getDb (or iniDb if first time)
-        db = DBManager.getInstance(this).getDB();
 
         // setup the layout for this activity
         setContentView(R.layout.activity_main);
-
-        // setup components of view
         pwInput = this.findViewById(R.id.pwInput);
         nameInput = this.findViewById(R.id.nameInput);
         loginBtn = this.findViewById(R.id.loginBtn);

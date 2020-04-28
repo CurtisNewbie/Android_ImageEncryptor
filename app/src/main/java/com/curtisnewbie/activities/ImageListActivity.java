@@ -19,6 +19,7 @@ import com.curtisnewbie.database.AppDatabase;
 import com.curtisnewbie.database.DBManager;
 import com.curtisnewbie.database.Image;
 import com.curtisnewbie.database.User;
+import com.curtisnewbie.services.App;
 import com.curtisnewbie.util.CryptoUtil;
 import com.curtisnewbie.util.IOManager;
 import com.curtisnewbie.util.ThreadManager;
@@ -28,6 +29,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+
+import javax.inject.Inject;
 
 import static android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
 
@@ -66,8 +69,13 @@ public class ImageListActivity extends AppCompatActivity implements Promptable {
     private ThreadManager tm = ThreadManager.getThreadManager();
     private String tempFilePath;
 
+    @Inject
+    protected AppDatabase db;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // inject dependencies
+        App.getAppComponent().inject(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_list);
 
@@ -113,6 +121,7 @@ public class ImageListActivity extends AppCompatActivity implements Promptable {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == SELECT_IMAGE && resultCode == RESULT_OK) {
             Uri uri = data.getData();
             tm.submit(() -> {
@@ -161,7 +170,6 @@ public class ImageListActivity extends AppCompatActivity implements Promptable {
      * @param filesize size of the file
      */
     private void encryptNPersist(InputStream in, String filename, int filesize) {
-        AppDatabase db = DBManager.getInstance(null).getDB();
         try {
             // encrypt and write the encrypted image
             encryptNWrite(in, filename, filesize);
@@ -199,7 +207,6 @@ public class ImageListActivity extends AppCompatActivity implements Promptable {
      * @param filename name of the encrypted image that will be created
      */
     private void encryptNPersist(byte[] bytes, String filename) {
-        AppDatabase db = DBManager.getInstance(null).getDB();
         try {
             // encrypt and write the encrypted image
             encryptNWrite(bytes, filename);

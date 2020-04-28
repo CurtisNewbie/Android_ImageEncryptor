@@ -4,6 +4,8 @@ import android.content.Context;
 
 import androidx.room.Room;
 
+import javax.inject.Singleton;
+
 /**
  * ------------------------------------
  * <p>
@@ -14,7 +16,8 @@ import androidx.room.Room;
  * Singleton Class for the room database.
  * </p>
  */
-// TODO: Change to DI and @Singleton
+// TODO: Should be deleted without problems
+@Singleton
 public class DBManager {
     private static final String DB_NAME = "imageEncrypter.db";
     private AppDatabase db = null;
