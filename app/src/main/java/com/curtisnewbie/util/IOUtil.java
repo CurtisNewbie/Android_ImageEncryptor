@@ -11,6 +11,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import static android.content.Context.MODE_PRIVATE;
+import static android.os.Environment.DIRECTORY_PICTURES;
 
 /**
  * ------------------------------------
@@ -81,18 +82,40 @@ public class IOUtil {
     }
 
     /**
-     * Create temp file with name created like this:
-     * '{@code "PIC" + DateUtil.getDateTimeStr()}'
+     * Create temp file with an extension '.t' that has a name created like this:
+     * '{@code "PIC" + DateUtil.getDateTimeStr()}'. This temp file tho is not protected in internal
+     * storage, it can be unavailable to other apps as well.
      *
      * @param context
      * @return a temp file
      */
     public static File createTempFile(Context context) throws IOException {
         String filename = "PIC" + DateUtil.getDateTimeStr();
-        File storageDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File storageDir = context.getExternalFilesDir(DIRECTORY_PICTURES);
         File tempFile = File.createTempFile(filename, ".t", storageDir);
         return tempFile;
     }
+
+    /**
+     * Create temp file with the specified filename and file extension. This file is created in
+     * external storage public directory (DIRECTORY_PICTURES), thus it can be visible to the user
+     * as well as other apps. This method requires {@code Manifest.permission.WRITE_EXTERNAL_STORAGE}
+     *
+     * @param context
+     * @param filename
+     * @param fileExtension
+     * @return a temp file
+     */
+    public static File createExternalSharedFile(Context context, String filename, String fileExtension) throws IOException {
+        if (!fileExtension.startsWith("."))
+            fileExtension = "." + fileExtension;
+        if (filename.isEmpty())
+            filename = "PIC" + DateUtil.getDateTimeStr();
+        File storageDir = Environment.getExternalStoragePublicDirectory(DIRECTORY_PICTURES);
+        File tempFile = File.createTempFile(filename, fileExtension, storageDir);
+        return tempFile;
+    }
+
 
     /**
      * Attempt to delete the file for 10 times at most

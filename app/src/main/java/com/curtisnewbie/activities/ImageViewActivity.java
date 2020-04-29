@@ -1,13 +1,20 @@
 package com.curtisnewbie.activities;
 
+import android.Manifest;
 import android.app.AlertDialog;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.opengl.GLES30;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.curtisnewbie.database.Image;
 import com.curtisnewbie.services.App;
@@ -20,6 +27,7 @@ import com.curtisnewbie.database.AppDatabase;
 import com.github.chrisbanes.photoview.PhotoView;
 
 import java.io.File;
+import java.io.IOException;
 
 import javax.inject.Inject;
 
@@ -35,6 +43,7 @@ import javax.inject.Inject;
  * </p>
  */
 public class ImageViewActivity extends AppCompatActivity implements Promptable {
+    private static final int PERMISSION_REQUEST_CODE = 1;
     @Inject
     protected AppDatabase db;
     @Inject
@@ -45,6 +54,9 @@ public class ImageViewActivity extends AppCompatActivity implements Promptable {
     private Bitmap bitmap;
     private String imgKey;
     private String imageName;
+    private byte[] decryptedData = null;
+    private boolean waitingPermissionResult = false;
+    private boolean permissionGranted = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +68,34 @@ public class ImageViewActivity extends AppCompatActivity implements Promptable {
         photoView.setMaximumScale(20.0f);
         imageName = getIntent().getStringExtra(ImageListAdapter.IMG_NAME);
         decryptNDisplay();
+        photoView.setOnLongClickListener(view -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage("Want to recover this image back to Gallery?")
+                    .setPositiveButton("Yes", (dia, id) -> {
+                        tm.submit(() -> {
+                            requestPermission();
+                            while (waitingPermissionResult == true)
+                                ; // block, wait for user permission
+                            if (!permissionGranted) {
+                                prompt("Permission Denied. Cannot recover image.");
+                                return;
+                            }
+                            Image img = this.db.imgDao().getImage(imageName);
+                            String msg;
+                            if (img != null && recoverImage(img))
+                                msg = "Image recovered, go check you Gallery app.";
+                            else
+                                msg = "Image cannot be recovered, please try again";
+                            prompt(msg);
+                        });
+                    })
+                    .setNegativeButton("No", (dia, id) -> {
+                        // do nothing
+                    });
+            AlertDialog dia = builder.create();
+            dia.show();
+            return true;
+        });
     }
 
     /**
@@ -71,7 +111,7 @@ public class ImageViewActivity extends AppCompatActivity implements Promptable {
                     byte[] encryptedData = IOUtil.read(new File(imgPath));
 
                     // decrypt the data
-                    byte[] decryptedData = CryptoUtil.decrypt(encryptedData, imgKey);
+                    decryptedData = CryptoUtil.decrypt(encryptedData, imgKey);
 
                     // get the allowed maximum size of texture in OpenGL ES3.0
                     int[] maxsize = new int[1];
@@ -92,6 +132,64 @@ public class ImageViewActivity extends AppCompatActivity implements Promptable {
             });
         else
             prompt("Your are not authenticated. Please sign in first.");
+    }
+
+    /**
+     * Request permission for {@code Manifest.permission.WRITE_EXTERNAL_STORAGE}. This method doesn't
+     * guarantee the permission is granted. {@code waitingPermissionResult} indicates that the
+     * app is waiting for user to grant/reject permission, and {@code permissionGranted} indicates
+     * whether the permission is actually granted.
+     */
+    private void requestPermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                == PackageManager.PERMISSION_GRANTED) {
+            this.permissionGranted = true;
+        } else {
+            // if not granted, request permission
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    PERMISSION_REQUEST_CODE);
+            this.waitingPermissionResult = true;
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == PERMISSION_REQUEST_CODE && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            // permission granted
+            this.permissionGranted = true;
+        }
+        this.waitingPermissionResult = false;
+    }
+
+    /**
+     * Recover the image back to the Gallery.
+     *
+     * @param image
+     * @return
+     */
+    private boolean recoverImage(Image image) {
+        try {
+            // create temp file
+            File file = IOUtil.createExternalSharedFile(this, image.getName(), ".jpg");
+            if (file != null) {
+                if (decryptedData != null) {
+                    IOUtil.write(decryptedData, file);
+                } else {
+                    byte[] encryptedData = IOUtil.read(new File(db.imgDao().getImagePath(imageName)));
+                    IOUtil.write(CryptoUtil.decrypt(encryptedData, imgKey), file);
+                }
+                // expose it to Gallery
+                Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+                Uri contentUri = Uri.fromFile(file);
+                mediaScanIntent.setData(contentUri);
+                this.sendBroadcast(mediaScanIntent);
+            }
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     @Override
