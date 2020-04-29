@@ -44,7 +44,7 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.View
     @Inject
     protected AppDatabase db;
     @Inject
-    protected ExecService tm;
+    protected ExecService es;
     private String imgKey;
 
     public ImageListAdapter(Context context, String imgKey) {
@@ -83,7 +83,7 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.View
             AlertDialog.Builder builder = new AlertDialog.Builder(this.context);
             builder.setMessage("Want to delete this image?")
                     .setPositiveButton("Yes", (dia, id) -> {
-                        tm.submit(() -> {
+                        es.submit(() -> {
                             String msg;
                             int index = holder.getAdapterPosition();
                             String name = imageNames.get(index);
@@ -117,7 +117,7 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.View
      * Load the whole list of image names from db in a separate {@code Thread}
      */
     private void loadImageNamesFromDb() {
-        tm.submit(() -> {
+        es.submit(() -> {
             this.imageNames.clear();
             this.imageNames.addAll(db.imgDao().getImageNames());
         });

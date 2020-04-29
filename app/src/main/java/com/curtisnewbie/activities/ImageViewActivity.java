@@ -49,7 +49,7 @@ public class ImageViewActivity extends AppCompatActivity implements Promptable {
     @Inject
     protected AuthService authService;
     @Inject
-    protected ExecService tm;
+    protected ExecService es;
     private PhotoView photoView;
     private Bitmap bitmap;
     private String imgKey;
@@ -72,7 +72,7 @@ public class ImageViewActivity extends AppCompatActivity implements Promptable {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setMessage("Want to recover this image back to Gallery?")
                     .setPositiveButton("Yes", (dia, id) -> {
-                        tm.submit(() -> {
+                        es.submit(() -> {
                             requestPermission();
                             while (waitingPermissionResult == true)
                                 ; // block, wait for user permission
@@ -104,7 +104,7 @@ public class ImageViewActivity extends AppCompatActivity implements Promptable {
     private void decryptNDisplay() {
         if (imgKey != null)
             // get the path to the decrypted image, decrypt data and display
-            tm.submit(() -> {
+            es.submit(() -> {
                 try {
                     // read encrypted data
                     String imgPath = db.imgDao().getImagePath(imageName);

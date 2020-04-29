@@ -60,7 +60,7 @@ public class ImageListActivity extends AppCompatActivity implements Promptable {
     private Button takeImgBtn;
     private String imgKey;
     @Inject
-    protected ExecService tm;
+    protected ExecService es;
     private String tempFilePath;
 
     @Inject
@@ -125,7 +125,7 @@ public class ImageListActivity extends AppCompatActivity implements Promptable {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == SELECT_IMAGE && resultCode == RESULT_OK) {
             Uri uri = data.getData();
-            tm.submit(() -> {
+            es.submit(() -> {
                 try (InputStream in = getContentResolver().openInputStream(uri);) {
                     Cursor cursor = getContentResolver().query(uri, null, null, null, null);
                     int nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
@@ -139,7 +139,7 @@ public class ImageListActivity extends AppCompatActivity implements Promptable {
                 }
             });
         } else if (requestCode == CAPTURE_IMAGE && resultCode == RESULT_OK) {
-            tm.submit(() -> {
+            es.submit(() -> {
                 File tempFile = new File(tempFilePath);
                 if (tempFile.exists())
                     try (InputStream in = new FileInputStream(tempFile)) {

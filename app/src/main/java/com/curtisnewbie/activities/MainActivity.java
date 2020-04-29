@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity implements Promptable {
     private EditText nameInput;
     private Button loginBtn;
     @Inject
-    protected ExecService tm;
+    protected ExecService es;
 
     @Inject
     protected AuthService authService;
@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity implements Promptable {
         loginBtn = this.findViewById(R.id.loginBtn);
 
         // create thread to prompt msg about whether the user should sign in or sign up
-        tm.submit(() -> {
+        es.submit(() -> {
             int n = db.userDao().getNumOfUsers();
             String msg;
             if (n == 0)
@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity implements Promptable {
         String entName = nameInput.getText().toString().trim();
         String entPW = pwInput.getText().toString().trim();
 
-        tm.submit(() -> {
+        es.submit(() -> {
             String msg;
             if (db.userDao().getNumOfUsers() == 0) {
                 if (authService.register(entName, entPW)) {
