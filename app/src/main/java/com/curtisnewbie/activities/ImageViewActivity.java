@@ -1,5 +1,6 @@
 package com.curtisnewbie.activities;
 
+import android.app.AlertDialog;
 import android.graphics.Bitmap;
 import android.opengl.GLES30;
 import android.os.Bundle;
@@ -8,6 +9,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.curtisnewbie.database.Image;
 import com.curtisnewbie.services.App;
 import com.curtisnewbie.services.AuthService;
 import com.curtisnewbie.services.ExecService;

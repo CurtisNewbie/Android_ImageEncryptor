@@ -21,7 +21,7 @@ import dagger.Component;
  * in the activity are injected.
  */
 @Singleton
-@Component(modules = {AuthModule.class, DBModule.class, ConcurrencyModule.class})
+@Component(modules = {AppModule.class})
 public interface AppComponent {
 
     void inject(MainActivity activity);

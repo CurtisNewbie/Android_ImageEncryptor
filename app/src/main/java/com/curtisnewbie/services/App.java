@@ -17,9 +17,8 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        App.appComponent = DaggerAppComponent.builder().authModule(new AuthModule())
-                .dBModule(new DBModule(this.getApplicationContext()))
-                .concurrencyModule(new ConcurrencyModule())
+        App.appComponent = DaggerAppComponent.builder()
+                .appModule(new AppModule(this.getApplicationContext()))
                 .build();
     }
 
