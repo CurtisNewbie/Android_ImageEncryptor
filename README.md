@@ -1,15 +1,20 @@
 # Android Image Encryptor/Decryptor
 
-This is an simple Android app that allows the user to encrypt images and browse the encrypted images.
+This is an simple Android app that allows the user to encrypt images and browse the encrypted images. An app that you no longer need to worry about it sending your secret data somewhere you don't know :D
+
+**This app is powered by**:
+
+- Android Platform
+- Dagger 2
+- <a href="https://github.com/chrisbanes/PhotoView" target="_blank">PhotoView Library</a>
 
 **Some of the Features:**
 
-- Displaying the encrypted images on the fly.
-- Adding images from Gallery (or other similar apps).
-- Taking pictures using Camera (or other similar apps), original image is deleted once it's encrypted.
-- Displaying a zoomable view of the image that is supported by the **PhotoViewer Library**
-
-**Note: PhotoViewer Library is adapted from this GitHub repository <a href="https://github.com/chrisbanes/PhotoView" target="_blank">PhotoView</a>**
+- Display the encrypted images on the fly.
+- Add images from Gallery (or other similar apps).
+- Take pictures using Camera (or other similar apps), original image is deleted once it's encrypted.
+- Display a zoomable view of the image
+- Recover the encrypted image and expose it to other Gallery alike apps.
 
 ## Details of Implementation
 
@@ -27,4 +32,5 @@ This is an simple Android app that allows the user to encrypt images and browse 
 
 - The first time you use this app, the app expects you to register. You simply enter the username and password that you want to use. Please make sure you remember it, since there is no way to recover it.
 - Once you have encryped some images, and you want to delete some of them. You just long press the image name in the list, a dialog will pop up and ask you whether you want to delete it. Press "Yes" to delete it.
-- When you are browsing the images, and you want to zoom in the image, you can press on the image, a zoomable view will appear. To close this zoomable view, you will need to press the "Back" button. This "Back" button is provided by the system on your device.
+- When you are viewing an image, and you want to zoom in/out the image, you just do the gesture that you will normally do on any other apps.
+- When you are viewing an image, and you want to recover it back to your normal Gallery apps, you just long press the image, and a dialog will pop up and ask you whether you want to recover it. Notice that you will be asked to grant permission for this operation. It will fail, if you refuse to grant the permission.
