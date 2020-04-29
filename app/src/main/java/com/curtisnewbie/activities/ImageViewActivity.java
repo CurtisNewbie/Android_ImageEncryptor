@@ -3,11 +3,9 @@ package com.curtisnewbie.activities;
 import android.graphics.Bitmap;
 import android.opengl.GLES30;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.curtisnewbie.services.App;
@@ -41,7 +39,7 @@ public class ImageViewActivity extends AppCompatActivity implements Promptable {
     protected AuthService authService;
     @Inject
     protected ExecService tm;
-    private ImageView imageView;
+    private PhotoView photoView;
     private Bitmap bitmap;
     private String imgKey;
     private String imageName;
@@ -52,7 +50,8 @@ public class ImageViewActivity extends AppCompatActivity implements Promptable {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_view);
         imgKey = authService.getImgKey();
-        imageView = this.findViewById(R.id.imageView);
+        photoView = this.findViewById(R.id.photoView);
+        photoView.setMaximumScale(20.0f);
         imageName = getIntent().getStringExtra(ImageListAdapter.IMG_NAME);
         decryptNDisplay();
     }
@@ -81,12 +80,9 @@ public class ImageViewActivity extends AppCompatActivity implements Promptable {
                     // decode and downscale if needed to avoid OutOfMemory exception
                     this.bitmap = ImageUtil.decodeBitmapWithScaling(decryptedData, reqWidth, reqHeight);
                     runOnUiThread(() -> {
-                        imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
-                        imageView.setImageBitmap(bitmap);
+                        photoView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+                        photoView.setImageBitmap(bitmap);
                     });
-
-                    // setup dialogue for zoomable PhotoView
-                    setupZoomableView();
                 } catch (Exception e) {
                     prompt("Decryption Failed");
                     e.printStackTrace();
@@ -94,29 +90,6 @@ public class ImageViewActivity extends AppCompatActivity implements Promptable {
             });
         else
             prompt("Your are not authenticated. Please sign in first.");
-    }
-
-    /**
-     * Create dialogue that contains a zoomable PhotoView when the imageView is
-     * clicked
-     */
-    private void setupZoomableView() {
-        imageView.setClickable(true);
-        imageView.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View view) {
-                // create dialogue for a zoomable PhotoView object.
-                AlertDialog.Builder mBuilder = new AlertDialog.Builder(ImageViewActivity.this);
-                View mView = getLayoutInflater().inflate(R.layout.dialogue_zoomable_layout, null);
-                PhotoView zoomView = mView.findViewById(R.id.zoomView);
-                zoomView.setImageBitmap(bitmap);
-                zoomView.setMaximumScale(20.0f);
-                mBuilder.setView(mView);
-                AlertDialog mDialog = mBuilder.create();
-                mDialog.show();
-            }
-        });
     }
 
     @Override
