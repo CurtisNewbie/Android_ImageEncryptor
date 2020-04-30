@@ -45,11 +45,9 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.View
     protected AppDatabase db;
     @Inject
     protected ExecService es;
-    private String imgKey;
 
     public ImageListAdapter(Context context, String imgKey) {
         App.getAppComponent().inject(this);
-        this.imgKey = imgKey;
         this.context = context;
         this.imageNames = Collections.synchronizedList(new ArrayList<>());
         this.loadImageNamesFromDb();

@@ -76,12 +76,15 @@ public class ImageListActivity extends AppCompatActivity implements Promptable {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_list);
 
-        // setup image key for encryption/decryption
-        imgKey = authService.getImgKey();
-        if (imgKey == null){
-            startActivity(new Intent(".MainActivity"));
+        if (!authService.isAuthenticated()) {
+            prompt("Your are not authenticated. Please sign in first.");
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
             return;
         }
+        // setup image key for encryption/decryption
+        imgKey = authService.getImgKey();
 
         addImgBtn = findViewById(R.id.addImgBtn);
         takeImgBtn = findViewById(R.id.takeImgBtn);
@@ -157,8 +160,11 @@ public class ImageListActivity extends AppCompatActivity implements Promptable {
     @Override
     public void onBackPressed() {
         // go back to the login page
-        Intent intent = new Intent(".MainActivity");
+        authService.signOut();
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
+        return;
     }
 
     /**

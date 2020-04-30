@@ -101,4 +101,21 @@ public class AuthService {
     public String getImgKey() {
         return imgKey;
     }
+
+    /**
+     * Check whether the current user is authenticated
+     *
+     * @return whether the current user is authenticated
+     */
+    public boolean isAuthenticated() {
+        return getImgKey() != null;
+    }
+
+    /**
+     * Sign out the current user. After calling this method, the {@code isAuthenticated()} method
+     * will return false;
+     */
+    public void signOut() {
+        imgKey = null;
+    }
 }

@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity implements Promptable {
                     msg = "Account cannot be registered";
                 }
             } else {
-                if (authService.login(entName, entPW)) {
+                if (authService.login(entName, entPW) && authService.isAuthenticated()) {
                     msg = String.format("Welcome %s", entName);
                     navToImageList();
                 } else {

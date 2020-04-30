@@ -63,6 +63,14 @@ public class ImageViewActivity extends AppCompatActivity implements Promptable {
         App.getAppComponent().inject(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_view);
+
+        if (!authService.isAuthenticated()) {
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            return;
+        }
+
         imgKey = authService.getImgKey();
         photoView = this.findViewById(R.id.photoView);
         photoView.setMaximumScale(20.0f);
@@ -102,36 +110,33 @@ public class ImageViewActivity extends AppCompatActivity implements Promptable {
      * Decrypt and display the selected image
      */
     private void decryptNDisplay() {
-        if (imgKey != null)
-            // get the path to the decrypted image, decrypt data and display
-            es.submit(() -> {
-                try {
-                    // read encrypted data
-                    String imgPath = db.imgDao().getImagePath(imageName);
-                    byte[] encryptedData = IOUtil.read(new File(imgPath));
+        // get the path to the decrypted image, decrypt data and display
+        es.submit(() -> {
+            try {
+                // read encrypted data
+                String imgPath = db.imgDao().getImagePath(imageName);
+                byte[] encryptedData = IOUtil.read(new File(imgPath));
 
-                    // decrypt the data
-                    decryptedData = CryptoUtil.decrypt(encryptedData, imgKey);
+                // decrypt the data
+                decryptedData = CryptoUtil.decrypt(encryptedData, imgKey);
 
-                    // get the allowed maximum size of texture in OpenGL ES3.0
-                    int[] maxsize = new int[1];
-                    GLES30.glGetIntegerv(GLES30.GL_MAX_TEXTURE_SIZE, maxsize, 0);
-                    int reqWidth, reqHeight;
-                    reqWidth = reqHeight = maxsize[0];
+                // get the allowed maximum size of texture in OpenGL ES3.0
+                int[] maxsize = new int[1];
+                GLES30.glGetIntegerv(GLES30.GL_MAX_TEXTURE_SIZE, maxsize, 0);
+                int reqWidth, reqHeight;
+                reqWidth = reqHeight = maxsize[0];
 
-                    // decode and downscale if needed to avoid OutOfMemory exception
-                    this.bitmap = ImageUtil.decodeBitmapWithScaling(decryptedData, reqWidth, reqHeight);
-                    runOnUiThread(() -> {
-                        photoView.setScaleType(ImageView.ScaleType.FIT_CENTER);
-                        photoView.setImageBitmap(bitmap);
-                    });
-                } catch (Exception e) {
-                    prompt("Decryption Failed");
-                    e.printStackTrace();
-                }
-            });
-        else
-            prompt("Your are not authenticated. Please sign in first.");
+                // decode and downscale if needed to avoid OutOfMemory exception
+                this.bitmap = ImageUtil.decodeBitmapWithScaling(decryptedData, reqWidth, reqHeight);
+                runOnUiThread(() -> {
+                    photoView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+                    photoView.setImageBitmap(bitmap);
+                });
+            } catch (Exception e) {
+                prompt("Decryption Failed");
+                e.printStackTrace();
+            }
+        });
     }
 
     /**
