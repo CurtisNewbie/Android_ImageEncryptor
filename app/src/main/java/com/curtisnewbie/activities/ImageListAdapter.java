@@ -46,7 +46,7 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.View
     @Inject
     protected ExecService es;
 
-    public ImageListAdapter(Context context, String imgKey) {
+    public ImageListAdapter(Context context) {
         App.getAppComponent().inject(this);
         this.context = context;
         this.imageNames = Collections.synchronizedList(new ArrayList<>());

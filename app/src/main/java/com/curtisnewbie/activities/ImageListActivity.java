@@ -90,7 +90,7 @@ public class ImageListActivity extends AppCompatActivity implements Promptable {
         takeImgBtn = findViewById(R.id.takeImgBtn);
         recycleView = findViewById(R.id.recycleView);
         recycleView.setHasFixedSize(true); // set fix layout size of the recycle view to improve performance
-        rAdapter = new ImageListAdapter(this, imgKey);
+        rAdapter = new ImageListAdapter(this);
         recycleView.setAdapter(rAdapter);
         rManager = new LinearLayoutManager(this);
         recycleView.setLayoutManager(rManager);
