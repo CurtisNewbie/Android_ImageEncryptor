@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -63,6 +64,9 @@ public class ImageViewActivity extends AppCompatActivity implements Promptable {
         App.getAppComponent().inject(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_view);
+        ActionBar bar = getSupportActionBar();
+        if(bar != null)
+            bar.hide();
 
         if (!authService.isAuthenticated()) {
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
