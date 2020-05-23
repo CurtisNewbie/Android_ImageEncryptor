@@ -59,15 +59,16 @@ public class ImageListActivity extends AppCompatActivity implements Promptable {
     private Button addImgBtn;
     private Button takeImgBtn;
     private String imgKey;
-    @Inject
-    protected ExecService es;
     private String tempFilePath;
 
     @Inject
+    protected ExecService es;
+    @Inject
     protected AppDatabase db;
-
     @Inject
     protected AuthService authService;
+    @Inject
+    protected AppLifeCycleManager lifeCycleManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,9 +79,7 @@ public class ImageListActivity extends AppCompatActivity implements Promptable {
 
         if (!authService.isAuthenticated()) {
             prompt("Your are not authenticated. Please sign in first.");
-            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
+            lifeCycleManager.restart();
             return;
         }
         // setup image key for encryption/decryption

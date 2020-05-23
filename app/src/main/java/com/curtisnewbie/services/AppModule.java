@@ -4,6 +4,7 @@ import android.content.Context;
 
 import androidx.room.Room;
 
+import com.curtisnewbie.activities.AppLifeCycleManager;
 import com.curtisnewbie.database.AppDatabase;
 
 import javax.inject.Singleton;
@@ -46,6 +47,12 @@ public class AppModule {
     @Singleton
     ExecService providesThreadManager() {
         return new ExecService();
+    }
+
+    @Provides
+    @Singleton
+    AppLifeCycleManager providesAppLifeCycleManager() {
+        return new AppLifeCycleManager(appContext);
     }
 
 }

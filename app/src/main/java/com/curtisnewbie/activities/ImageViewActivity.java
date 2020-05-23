@@ -51,6 +51,9 @@ public class ImageViewActivity extends AppCompatActivity implements Promptable {
     protected AuthService authService;
     @Inject
     protected ExecService es;
+    @Inject
+    protected AppLifeCycleManager lifeCycleManager;
+
     private PhotoView photoView;
     private Bitmap bitmap;
     private String imgKey;
@@ -65,13 +68,11 @@ public class ImageViewActivity extends AppCompatActivity implements Promptable {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_view);
         ActionBar bar = getSupportActionBar();
-        if(bar != null)
+        if (bar != null)
             bar.hide();
 
         if (!authService.isAuthenticated()) {
-            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
+            lifeCycleManager.restart();
             return;
         }
 

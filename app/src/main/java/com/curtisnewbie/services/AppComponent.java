@@ -1,5 +1,6 @@
 package com.curtisnewbie.services;
 
+import com.curtisnewbie.activities.AppLifeCycleManager;
 import com.curtisnewbie.activities.ImageListActivity;
 import com.curtisnewbie.activities.ImageListAdapter;
 import com.curtisnewbie.activities.ImageViewActivity;
@@ -33,4 +34,6 @@ public interface AppComponent {
     void inject(ImageListAdapter adapter);
 
     void inject(AuthService authService);
+
+    void inject(AppLifeCycleManager lifecycleManager);
 }
