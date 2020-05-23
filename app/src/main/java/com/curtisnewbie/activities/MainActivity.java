@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -31,6 +32,7 @@ public class MainActivity extends AppCompatActivity implements Promptable {
     private EditText pwInput;
     private EditText nameInput;
     private Button loginBtn;
+    private TextView instructTv;
     @Inject
     protected ExecService es;
 
@@ -50,15 +52,18 @@ public class MainActivity extends AppCompatActivity implements Promptable {
         pwInput = this.findViewById(R.id.pwInput);
         nameInput = this.findViewById(R.id.nameInput);
         loginBtn = this.findViewById(R.id.loginBtn);
+        instructTv = this.findViewById(R.id.instructTv);
 
         // create thread to prompt msg about whether the user should sign in or sign up
         es.submit(() -> {
             int n = db.userDao().getNumOfUsers();
             String msg;
-            if (n == 0)
+            if (n == 0) {
                 msg = "Register a new account";
-            else
+                instructTv.setText(R.string.register_instruction);
+            } else {
                 msg = "Sign in your account";
+            }
             prompt(msg);
         });
     }
