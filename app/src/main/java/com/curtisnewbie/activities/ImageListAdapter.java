@@ -71,7 +71,7 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.View
 
         // setup the onClickListener for the layout of whole Recycler layout
         holder.getItem_layout().setOnClickListener(view -> {
-            Intent intent = new Intent(".ImageViewActivity");
+            Intent intent = new Intent(context, ImageViewActivity.class);
             intent.putExtra(IMG_NAME, imageNames.get(holder.getAdapterPosition()));
             context.startActivity(intent);
         });

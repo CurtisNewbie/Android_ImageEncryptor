@@ -109,7 +109,7 @@ public class MainActivity extends AppCompatActivity implements Promptable {
      */
     private void navToImageList() {
         // navigates to ImageListActivity
-        Intent intent = new Intent(".ImageListActivity");
+        Intent intent = new Intent(this, ImageListActivity.class);
         startActivity(intent);
     }
 
