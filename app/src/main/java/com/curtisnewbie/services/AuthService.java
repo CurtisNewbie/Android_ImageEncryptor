@@ -73,7 +73,7 @@ public class AuthService {
      * @return true/false indicating whether the {@code User} is persisted
      */
     public boolean register(String name, String pw) {
-        if (db.userDao().getNumOfUsers() > 0)
+        if (isRegistered())
             return false;
 
         try {
@@ -96,6 +96,14 @@ public class AuthService {
             e.printStackTrace();
             return false;
         }
+    }
+
+    /**
+     * Return whether there is a user registered already
+     * @return
+     */
+    public boolean isRegistered(){
+        return db.userDao().getNumOfUsers() > 0;
     }
 
     public String getImgKey() {

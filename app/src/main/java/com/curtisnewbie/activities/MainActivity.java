@@ -56,13 +56,12 @@ public class MainActivity extends AppCompatActivity implements Promptable {
 
         // create thread to prompt msg about whether the user should sign in or sign up
         es.submit(() -> {
-            int n = db.userDao().getNumOfUsers();
             String msg;
-            if (n == 0) {
+            if (authService.isRegistered()) {
+                msg = "Sign in your account";
+            } else {
                 msg = "Register a new account";
                 instructTv.setText(R.string.register_instruction);
-            } else {
-                msg = "Sign in your account";
             }
             prompt(msg);
         });
@@ -80,18 +79,18 @@ public class MainActivity extends AppCompatActivity implements Promptable {
 
         es.submit(() -> {
             String msg;
-            if (db.userDao().getNumOfUsers() == 0) {
-                if (authService.register(entName, entPW)) {
-                    msg = String.format("Registration Successful, Welcome %s", entName);
-                } else {
-                    msg = "Account cannot be registered";
-                }
-            } else {
+            if (authService.isRegistered()) {
                 if (authService.login(entName, entPW) && authService.isAuthenticated()) {
                     msg = String.format("Welcome %s", entName);
                     navToImageList();
                 } else {
                     msg = "Account is incorrect";
+                }
+            } else {
+                if (authService.register(entName, entPW)) {
+                    msg = String.format("Registration Successful, Welcome %s", entName);
+                } else {
+                    msg = "Account cannot be registered";
                 }
             }
             this.runOnUiThread(() -> {
