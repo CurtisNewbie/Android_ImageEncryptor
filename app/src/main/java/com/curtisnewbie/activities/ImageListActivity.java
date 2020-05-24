@@ -207,11 +207,7 @@ public class ImageListActivity extends AppCompatActivity implements Promptable {
 
     @Override
     public void onBackPressed() {
-        // go back to the login page
-        authService.signOut();
-        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
+        lifeCycleManager.restart();
         return;
     }
 
