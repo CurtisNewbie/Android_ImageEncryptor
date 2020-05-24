@@ -1,6 +1,6 @@
 # Android Image Encryptor/Decryptor
 
-This is an simple Android app that allows the user to encrypt images and browse the encrypted images. An app that you no longer need to worry about it sending your secret data somewhere you don't know :D
+This is an simple Android app that allows the user to encrypt images and browse the encrypted images.
 
 **This app is powered by**:
 
