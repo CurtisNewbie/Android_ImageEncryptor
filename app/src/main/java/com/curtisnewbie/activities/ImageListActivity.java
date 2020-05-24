@@ -214,7 +214,7 @@ public class ImageListActivity extends AppCompatActivity implements Promptable {
     /**
      * Read image, encrypt it, write the encrypted images data into local internal
      * storage, and persist the name and filepath (of the encrypted ones) in the
-     * database.
+     * database. InputStream is always closed even when exceptions are caught.
      *
      * @param in       input stream of a image file that is not encrypted.
      * @param filename name of the encrypted image that will be created
@@ -249,7 +249,7 @@ public class ImageListActivity extends AppCompatActivity implements Promptable {
 
     /**
      * Encrypt bytes from the input stream and write them to internal storage. I/O
-     * is auto closed even when exceptions are thrown.
+     * is never closed in this method, thus needs to be handled properly.
      *
      * @param in       input stream
      * @param filename name of the file (encrypted) that will be created in internal
