@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.provider.OpenableColumns;
 import android.widget.Button;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -45,7 +44,7 @@ import static android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
  * {@code Activity} that shows a list of images using {@code RecyclerView}
  * </p>
  */
-public class ImageListActivity extends AppCompatActivity implements Promptable {
+public class ImageListActivity extends AppCompatActivity {
     /**
      * Request code for selecting image
      */
@@ -80,7 +79,7 @@ public class ImageListActivity extends AppCompatActivity implements Promptable {
         setContentView(R.layout.activity_image_list);
 
         if (!authService.isAuthenticated()) {
-            prompt("Your are not authenticated. Please sign in first.");
+            MsgToaster.msgShort(this, "Your are not authenticated. Please sign in first.");
             lifeCycleManager.restart();
             return;
         }
@@ -183,10 +182,10 @@ public class ImageListActivity extends AppCompatActivity implements Promptable {
                     int sizeIndex = cursor.getColumnIndex(OpenableColumns.SIZE);
                     cursor.moveToFirst();
                     encryptNPersist(in, cursor.getString(nameIndex), cursor.getInt(sizeIndex));
-                } catch (FileNotFoundException e) {
-                    prompt("File not found.");
-                } catch (IOException e1) {
-                    prompt("Failed to encrypt image");
+                } catch (FileNotFoundException e1) {
+                    MsgToaster.msgShort(this, "File not found.");
+                } catch (IOException e2) {
+                    MsgToaster.msgShort(this, "Failed to encrypt image");
                 }
             });
         } else if (requestCode == CAPTURE_IMAGE && resultCode == RESULT_OK) {
@@ -199,7 +198,7 @@ public class ImageListActivity extends AppCompatActivity implements Promptable {
                         ie.printStackTrace();
                     }
                 if (!IOUtil.deleteFile(tempFile))
-                    prompt(String.format("Fail to delete temp file, please delete it manually. It's at: '%s'",
+                    MsgToaster.msgLong(this, String.format("Fail to delete temp file, please delete it manually. It's at: '%s'",
                             tempFile.getAbsolutePath()));
             });
         }
@@ -231,12 +230,12 @@ public class ImageListActivity extends AppCompatActivity implements Promptable {
             db.imgDao().addImage(img);
             // update RecyclerView
             ((ImageListAdapter) this.rAdapter).addImageName(img.getName());
-            prompt(String.format("Added: %s", filename));
+            MsgToaster.msgShort(this, String.format("Added: %s", filename));
         } catch (FileNotFoundException e1) {
-            prompt("Fail to find file:");
+            MsgToaster.msgShort(this, "Fail to find file:");
             e1.printStackTrace();
         } catch (IOException e2) {
-            prompt("Fail to read from file:");
+            MsgToaster.msgShort(this, "Fail to read from file:");
             e2.printStackTrace();
         } finally {
             try {
@@ -266,12 +265,5 @@ public class ImageListActivity extends AppCompatActivity implements Promptable {
         byte[] encryptedData = CryptoUtil.encrypt(rawData, imgKey);
         // write encrypted image to internal storage
         IOUtil.write(encryptedData, filename, this);
-    }
-
-    @Override
-    public void prompt(String msg) {
-        runOnUiThread(() -> {
-            Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
-        });
     }
 }

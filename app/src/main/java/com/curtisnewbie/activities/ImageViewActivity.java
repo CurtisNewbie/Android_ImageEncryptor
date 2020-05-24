@@ -9,7 +9,6 @@ import android.net.Uri;
 import android.opengl.GLES30;
 import android.os.Bundle;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -43,7 +42,7 @@ import javax.inject.Inject;
  * {@code ImageListActivity}
  * </p>
  */
-public class ImageViewActivity extends AppCompatActivity implements Promptable {
+public class ImageViewActivity extends AppCompatActivity {
     private static final int PERMISSION_REQUEST_CODE = 1;
     @Inject
     protected AppDatabase db;
@@ -90,7 +89,7 @@ public class ImageViewActivity extends AppCompatActivity implements Promptable {
                             while (waitingPermissionResult == true)
                                 ; // block, wait for user permission
                             if (!permissionGranted) {
-                                prompt("Permission Denied. Cannot recover image.");
+                                MsgToaster.msgShort(this, "Permission Denied. Cannot recover image.");
                                 return;
                             }
                             Image img = this.db.imgDao().getImage(imageName);
@@ -99,7 +98,7 @@ public class ImageViewActivity extends AppCompatActivity implements Promptable {
                                 msg = "Image recovered, go check you Gallery app.";
                             else
                                 msg = "Image cannot be recovered, please try again";
-                            prompt(msg);
+                            MsgToaster.msgShort(this, msg);
                         });
                     })
                     .setNegativeButton("No", (dia, id) -> {
@@ -138,7 +137,7 @@ public class ImageViewActivity extends AppCompatActivity implements Promptable {
                     photoView.setImageBitmap(bitmap);
                 });
             } catch (Exception e) {
-                prompt("Decryption Failed");
+                MsgToaster.msgShort(this,"Decryption Failed");
                 e.printStackTrace();
             }
         });
@@ -200,12 +199,5 @@ public class ImageViewActivity extends AppCompatActivity implements Promptable {
             e.printStackTrace();
             return false;
         }
-    }
-
-    @Override
-    public void prompt(String msg) {
-        this.runOnUiThread(() -> {
-            Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
-        });
     }
 }

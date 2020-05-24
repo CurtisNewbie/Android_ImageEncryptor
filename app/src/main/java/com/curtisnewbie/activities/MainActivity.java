@@ -6,7 +6,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -27,18 +26,17 @@ import javax.inject.Inject;
  * Main {@code Activity} which is the login page.
  * </p>
  */
-public class MainActivity extends AppCompatActivity implements Promptable {
+public class MainActivity extends AppCompatActivity {
 
     private EditText pwInput;
     private EditText nameInput;
     private Button loginBtn;
     private TextView instructTv;
+
     @Inject
     protected ExecService es;
-
     @Inject
     protected AuthService authService;
-
     @Inject
     protected AppDatabase db;
 
@@ -63,7 +61,7 @@ public class MainActivity extends AppCompatActivity implements Promptable {
                 msg = "Register a new account";
                 instructTv.setText(R.string.register_instruction);
             }
-            prompt(msg);
+            MsgToaster.msgLong(this, msg);
         });
     }
 
@@ -97,8 +95,8 @@ public class MainActivity extends AppCompatActivity implements Promptable {
                 // Remove entered credential
                 nameInput.setText("");
                 pwInput.setText("");
+                MsgToaster.msgShort(this, msg);
             });
-            prompt(msg);
         });
     }
 
@@ -110,10 +108,5 @@ public class MainActivity extends AppCompatActivity implements Promptable {
         // navigates to ImageListActivity
         Intent intent = new Intent(this, ImageListActivity.class);
         startActivity(intent);
-    }
-
-    @Override
-    public void prompt(String msg) {
-        this.runOnUiThread(() -> Toast.makeText(this, msg, Toast.LENGTH_LONG).show());
     }
 }

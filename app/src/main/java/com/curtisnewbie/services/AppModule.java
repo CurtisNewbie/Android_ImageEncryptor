@@ -54,5 +54,4 @@ public class AppModule {
     AppLifeCycleManager providesAppLifeCycleManager() {
         return new AppLifeCycleManager(appContext);
     }
-
 }

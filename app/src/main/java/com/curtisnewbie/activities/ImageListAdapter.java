@@ -1,5 +1,6 @@
 package com.curtisnewbie.activities;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -18,7 +19,6 @@ import com.curtisnewbie.services.App;
 import com.curtisnewbie.services.ExecService;
 import com.curtisnewbie.util.IOUtil;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -125,10 +125,10 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.View
             // only update the RecyclerView when the file is actually deleted
             this.deleteImage(index);
             this.db.imgDao().deleteImage(img);
-            ((Promptable) context).prompt(String.format("%s deleted.", name));
+            MsgToaster.msgShort((Activity) context, String.format("%s deleted.", name));
             return true;
         } else {
-            ((Promptable) context).prompt("File cannot be deleted, please try again");
+            MsgToaster.msgShort((Activity) context, "File cannot be deleted, please try again");
             return false;
         }
     }
