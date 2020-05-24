@@ -9,9 +9,11 @@ import android.provider.OpenableColumns;
 import android.widget.Button;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -94,6 +96,9 @@ public class ImageListActivity extends AppCompatActivity implements Promptable {
         rManager = new LinearLayoutManager(this);
         recycleView.setLayoutManager(rManager);
 
+        // get ItemTouchHelper for swipe & delete animation
+        this.initItemTouchHelper().attachToRecyclerView(recycleView);
+
         // initiate preferred software (e.g., Gallery) to pick an image
         this.regAddImgBtnListener();
         // initiate preferred app (e.g., default camera) to take picture
@@ -101,10 +106,37 @@ public class ImageListActivity extends AppCompatActivity implements Promptable {
     }
 
     /**
+     * Initialise ItemTouchHelper for swipe animation in recyclerview
+     *
+     * @return ItemTouchHelper for swipe animation in recyclerview
+     */
+    private ItemTouchHelper initItemTouchHelper() {
+        ItemTouchHelper ith = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP
+                | ItemTouchHelper.DOWN, ItemTouchHelper.LEFT) {
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder,
+                                  @NonNull RecyclerView.ViewHolder target) {
+                // TODO: not supported for now
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                if (direction == ItemTouchHelper.LEFT) {
+                    es.submit(() -> {
+                        ((ImageListAdapter) rAdapter).deleteImageNFile(viewHolder.getAdapterPosition());
+                    });
+                }
+            }
+        });
+        return ith;
+    }
+
+    /**
      * Register listener for {@code addImgBtn} that uses preferred software (e.g., Gallery) to
      * pick an image
      */
-    private void regAddImgBtnListener(){
+    private void regAddImgBtnListener() {
         addImgBtn.setOnClickListener(view -> {
             Intent selectImageIntent = new Intent();
             selectImageIntent.setAction(Intent.ACTION_PICK);
@@ -117,7 +149,7 @@ public class ImageListActivity extends AppCompatActivity implements Promptable {
      * Register listener for {@code takeImgBtn} that uses preferred app (e.g., default camera) to
      * take picture
      */
-    private void regTakeImgBtnListener(){
+    private void regTakeImgBtnListener() {
         takeImgBtn.setOnClickListener(view -> {
             Intent takePicIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             if (takePicIntent.resolveActivity(getPackageManager()) != null) {

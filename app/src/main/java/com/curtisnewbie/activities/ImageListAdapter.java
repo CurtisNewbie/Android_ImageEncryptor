@@ -16,6 +16,7 @@ import com.curtisnewbie.database.AppDatabase;
 import com.curtisnewbie.database.Image;
 import com.curtisnewbie.services.App;
 import com.curtisnewbie.services.ExecService;
+import com.curtisnewbie.util.IOUtil;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -82,19 +83,8 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.View
             builder.setMessage("Want to delete this image?")
                     .setPositiveButton("Yes", (dia, id) -> {
                         es.submit(() -> {
-                            String msg;
                             int index = holder.getAdapterPosition();
-                            String name = imageNames.get(index);
-                            Image img = this.db.imgDao().getImage(name);
-                            if (img != null && deleteImageFile(img.getPath())) {
-                                // only update the RecyclerView when the file is actually deleted
-                                this.deleteImage(index);
-                                this.db.imgDao().deleteImage(img);
-                                msg = String.format("%s deleted.", name);
-                            } else {
-                                msg = "File cannot be deleted, please try again";
-                            }
-                            ((Promptable) this.context).prompt(msg);
+                            deleteImageNFile(index);
                         });
                     })
                     .setNegativeButton("No", (dia, id) -> {
@@ -122,7 +112,30 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.View
     }
 
     /**
-     * Insert a image name to the end of the list
+     * Remove the image from recyclerview and delete the actual encrypted file. The recyclerview
+     * is updated only when the actual file is deleted. Regardless of whether the actual file is
+     * deleted, a message will be created to notify the user.
+     *
+     * @param index index in the {@code imageNames}
+     */
+    public boolean deleteImageNFile(int index) {
+        String name = imageNames.get(index);
+        Image img = this.db.imgDao().getImage(name);
+        if (img != null && IOUtil.deleteFile(img.getPath())) {
+            // only update the RecyclerView when the file is actually deleted
+            this.deleteImage(index);
+            this.db.imgDao().deleteImage(img);
+            ((Promptable) context).prompt(String.format("%s deleted.", name));
+            return true;
+        } else {
+            ((Promptable) context).prompt("File cannot be deleted, please try again");
+            return false;
+        }
+    }
+
+    /**
+     * Insert a image name to the end of the list, this method only affects the recyclerview not
+     * the actual file.
      *
      * @param name image name
      */
@@ -132,25 +145,14 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.View
     }
 
     /**
-     * Delete an image from ths list
+     * Remove an image from ths list. This method only affects the recyclerview not the actual file.
      *
      * @param index index in the {@code imageNames}
      * @return the name of the image being deleted
      */
-    public void deleteImage(int index) {
+    private void deleteImage(int index) {
         this.imageNames.remove(index);
         this.notifyItemRemoved(index);
-    }
-
-    /**
-     * Delete a file
-     *
-     * @param path path to file
-     * @return whether the file is deleted
-     */
-    private boolean deleteImageFile(String path) {
-        File file = new File(path);
-        return file.delete();
     }
 
     // each view holder holds data of each item

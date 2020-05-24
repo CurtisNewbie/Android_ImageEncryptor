@@ -118,17 +118,26 @@ public class IOUtil {
 
 
     /**
-     * Attempt to delete the file for 10 times at most
+     * Attempt to delete a file
      *
      * @param file
      * @return whether the file is deleted
      */
     public static boolean deleteFile(File file) {
-        for (int i = 0; i < 10; i++) {
-            if (file.delete()) {
-                return true;
-            }
+        if (file.delete()) {
+            return true;
         }
         return !file.exists();
+    }
+
+    /**
+     * Attempt to delete a file
+     *
+     * @param path
+     * @return whether the file is deleted
+     */
+    public static boolean deleteFile(String path){
+        File file = new File(path);
+        return deleteFile(file);
     }
 }
