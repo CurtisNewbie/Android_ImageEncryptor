@@ -12,7 +12,7 @@
         android:id="@+id/instructTv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/login_instruction"
+        android:text="@string/login_textview"
         android:textSize="15sp"
         app:layout_constraintBottom_toTopOf="@+id/nameInput"
         app:layout_constraintLeft_toLeftOf="parent"

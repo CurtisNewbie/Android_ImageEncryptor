@@ -51,4 +51,22 @@ public class MsgToaster {
     public static void msgShort(Activity activity, String msg) {
         msg(activity, msg, SHORT);
     }
+
+    /**
+     * Display a msg using Toast and Toast.LENGTH_LONG. A UI thread is always created for this method.
+     *
+     * @param resId resourceId
+     */
+    public static void msgLong(Activity activity, int resId){
+        msgLong(activity, activity.getString(resId));
+    }
+
+    /**
+     * Display a msg using Toast and Toast.LENGTH_SHORT. A UI thread is always created for this method.
+     *
+     * @param resId resourceId
+     */
+    public static void msgShort(Activity activity, int resId){
+        msgShort(activity, activity.getString(resId));
+    }
 }

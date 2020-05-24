@@ -80,14 +80,14 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.View
         // long click (hold) to create dialog for deleting the encrypted image
         holder.getItem_layout().setOnLongClickListener(e -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(this.context);
-            builder.setMessage("Want to delete this image?")
-                    .setPositiveButton("Yes", (dia, id) -> {
+            builder.setMessage(R.string.delete_dialog_title)
+                    .setPositiveButton(context.getString(R.string.positiveBtnTxt), (dia, id) -> {
                         es.submit(() -> {
                             int index = holder.getAdapterPosition();
                             deleteImageNFile(index);
                         });
                     })
-                    .setNegativeButton("No", (dia, id) -> {
+                    .setNegativeButton(context.getString(R.string.negativeBtnTxt), (dia, id) -> {
                         // do nothing
                     });
             AlertDialog dia = builder.create();
@@ -128,7 +128,7 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.View
             MsgToaster.msgShort((Activity) context, String.format("%s deleted.", name));
             return true;
         } else {
-            MsgToaster.msgShort((Activity) context, "File cannot be deleted, please try again");
+            MsgToaster.msgShort((Activity) context, R.string.file_not_deleted_msg);
             return false;
         }
     }

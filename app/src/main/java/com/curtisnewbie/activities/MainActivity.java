@@ -54,12 +54,12 @@ public class MainActivity extends AppCompatActivity {
 
         // create thread to prompt msg about whether the user should sign in or sign up
         es.submit(() -> {
-            String msg;
+            int msg;
             if (authService.isRegistered()) {
-                msg = "Sign in your account";
+                msg = R.string.signin_msg;
             } else {
-                msg = "Register a new account";
-                instructTv.setText(R.string.register_instruction);
+                msg = R.string.register_msg;
+                instructTv.setText(R.string.register_textview);
             }
             MsgToaster.msgLong(this, msg);
         });
@@ -82,13 +82,13 @@ public class MainActivity extends AppCompatActivity {
                     msg = String.format("Welcome %s", entName);
                     navToImageList();
                 } else {
-                    msg = "Account is incorrect";
+                    msg = getString(R.string.account_incorrect_msg);
                 }
             } else {
                 if (authService.register(entName, entPW)) {
                     msg = String.format("Registration Successful, Welcome %s", entName);
                 } else {
-                    msg = "Account cannot be registered";
+                    msg = getString(R.string.account_not_registered_msg);
                 }
             }
             this.runOnUiThread(() -> {

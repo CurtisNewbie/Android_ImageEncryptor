@@ -1,11 +1,34 @@
 <resources>
+    <!-- Used directly in layout -->
     <string name="app_name">Images Encryption</string>
-    <string name="login_instruction">Please Login</string>
     <string name="hint_name">Name</string>
     <string name="hint_pw">Password</string>
     <string name="btn_login">Login</string>
     <string name="add_img_name">Add Image</string>
-    <string name="register_instruction">Please Register</string>
     <string name="take_img_name">Take Picture</string>
     <string name="app_description">An app for images encryption. Open sourced on https://github.com/CurtisNewbie/Android_ImageEncryptor and developed by Yongjie Zhuang (CurtisNewbie)</string>
+    <string name="image_chooser_title">Select Image</string>
+
+    <!-- Specified in code (e.g., for dialog) -->
+    <string name="login_textview">Please Login</string>
+    <string name="register_textview">Please Register</string>
+    <string name="positiveBtnTxt">Yes</string>
+    <string name="negativeBtnTxt">No</string>
+    <string name="delete_dialog_title">Want to delete this image?</string>
+    <string name="recover_dialog_title">Want to recover this image back to Gallery?</string>
+
+    <!-- Messages are created/displayed using Toast -->
+    <string name="signin_msg">Sign in your account</string>
+    <string name="register_msg">Register a new account</string>
+    <string name="account_incorrect_msg">Account is incorrect</string>
+    <string name="account_not_registered_msg">Account cannot be registered</string>
+    <string name="account_not_authenticated_msg">Your are not authenticated. Please sign in first</string>
+    <string name="file_not_found_msg">File not found</string>
+    <string name="file_not_read_msg">Cannot read file</string>
+    <string name="file_not_encrypted_msg">Encryption failed</string>
+    <string name="file_not_decrypted_msg">Decryption failed</string>
+    <string name="file_not_deleted_msg">File cannot be deleted, please try again</string>
+    <string name="image_recovered_msg">Image recovered, go check you Gallery app</string>
+    <string name="image_not_recovered_msg">Image cannot be recovered, please try again</string>
+    <string name="permission_denied_to_recover_msg">Permission Denied. Cannot recover image.</string>
 </resources>

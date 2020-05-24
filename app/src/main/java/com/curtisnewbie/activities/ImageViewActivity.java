@@ -82,26 +82,26 @@ public class ImageViewActivity extends AppCompatActivity {
         decryptNDisplay();
         photoView.setOnLongClickListener(view -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage("Want to recover this image back to Gallery?")
-                    .setPositiveButton("Yes", (dia, id) -> {
+            builder.setMessage(R.string.recover_dialog_title)
+                    .setPositiveButton(R.string.positiveBtnTxt, (dia, id) -> {
                         es.submit(() -> {
                             requestPermission();
                             while (waitingPermissionResult == true)
                                 ; // block, wait for user permission
                             if (!permissionGranted) {
-                                MsgToaster.msgShort(this, "Permission Denied. Cannot recover image.");
+                                MsgToaster.msgShort(this, R.string.permission_denied_to_recover_msg);
                                 return;
                             }
                             Image img = this.db.imgDao().getImage(imageName);
-                            String msg;
+                            int msg;
                             if (img != null && recoverImage(img))
-                                msg = "Image recovered, go check you Gallery app.";
+                                msg = R.string.image_recovered_msg;
                             else
-                                msg = "Image cannot be recovered, please try again";
+                                msg = R.string.image_not_recovered_msg;
                             MsgToaster.msgShort(this, msg);
                         });
                     })
-                    .setNegativeButton("No", (dia, id) -> {
+                    .setNegativeButton(R.string.negativeBtnTxt, (dia, id) -> {
                         // do nothing
                     });
             AlertDialog dia = builder.create();
@@ -137,7 +137,7 @@ public class ImageViewActivity extends AppCompatActivity {
                     photoView.setImageBitmap(bitmap);
                 });
             } catch (Exception e) {
-                MsgToaster.msgShort(this,"Decryption Failed");
+                MsgToaster.msgShort(this, R.string.file_not_decrypted_msg);
                 e.printStackTrace();
             }
         });

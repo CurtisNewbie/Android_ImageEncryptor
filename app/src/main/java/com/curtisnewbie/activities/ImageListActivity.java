@@ -79,7 +79,7 @@ public class ImageListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_image_list);
 
         if (!authService.isAuthenticated()) {
-            MsgToaster.msgShort(this, "Your are not authenticated. Please sign in first.");
+            MsgToaster.msgShort(this, R.string.account_not_authenticated_msg);
             lifeCycleManager.restart();
             return;
         }
@@ -140,7 +140,7 @@ public class ImageListActivity extends AppCompatActivity {
             Intent selectImageIntent = new Intent();
             selectImageIntent.setAction(Intent.ACTION_PICK);
             selectImageIntent.setDataAndType(EXTERNAL_CONTENT_URI, "image/*"); // Data is URI
-            startActivityForResult(Intent.createChooser(selectImageIntent, "Select Images"), SELECT_IMAGE);
+            startActivityForResult(Intent.createChooser(selectImageIntent, getString(R.string.image_chooser_title)), SELECT_IMAGE);
         });
     }
 
@@ -183,9 +183,9 @@ public class ImageListActivity extends AppCompatActivity {
                     cursor.moveToFirst();
                     encryptNPersist(in, cursor.getString(nameIndex), cursor.getInt(sizeIndex));
                 } catch (FileNotFoundException e1) {
-                    MsgToaster.msgShort(this, "File not found.");
+                    MsgToaster.msgShort(this, R.string.file_not_found_msg);
                 } catch (IOException e2) {
-                    MsgToaster.msgShort(this, "Failed to encrypt image");
+                    MsgToaster.msgShort(this, R.string.file_not_read_msg);
                 }
             });
         } else if (requestCode == CAPTURE_IMAGE && resultCode == RESULT_OK) {
@@ -232,10 +232,10 @@ public class ImageListActivity extends AppCompatActivity {
             ((ImageListAdapter) this.rAdapter).addImageName(img.getName());
             MsgToaster.msgShort(this, String.format("Added: %s", filename));
         } catch (FileNotFoundException e1) {
-            MsgToaster.msgShort(this, "Fail to find file:");
+            MsgToaster.msgShort(this, R.string.file_not_found_msg);
             e1.printStackTrace();
         } catch (IOException e2) {
-            MsgToaster.msgShort(this, "Fail to read from file:");
+            MsgToaster.msgShort(this, R.string.file_not_read_msg);
             e2.printStackTrace();
         } finally {
             try {
