@@ -125,7 +125,7 @@ public class ImageListActivity extends AppCompatActivity {
                 final int index = viewHolder.getAdapterPosition();
 
                 ImageListAdapter adapter = ((ImageListAdapter) rAdapter);
-                // always remove the image from the view, such that the image can be consistently
+                // always remove the image from the view, such that the image name in the list can be consistently
                 // recovered when user wants to revert the swipe animation
                 adapter.deleteImage(index);
                 runOnUiThread(() -> {
