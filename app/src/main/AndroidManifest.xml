@@ -11,7 +11,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        android:name="com.curtisnewbie.services.App">
+        android:name="com.curtisnewbie.services.App"
+        android:description="@string/app_description">
 
         <activity android:name="MainActivity">
             <intent-filter>

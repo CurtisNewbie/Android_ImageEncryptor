@@ -7,4 +7,5 @@
     <string name="add_img_name">Add Image</string>
     <string name="register_instruction">Please Register</string>
     <string name="take_img_name">Take Picture</string>
+    <string name="app_description">An app for images encryption. Open sourced on https://github.com/CurtisNewbie/Android_ImageEncryptor and developed by Yongjie Zhuang (CurtisNewbie)</string>
 </resources>
