@@ -121,11 +121,25 @@ public class ImageListActivity extends AppCompatActivity {
 
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-                if (direction == ItemTouchHelper.LEFT) {
-                    es.submit(() -> {
-                        ((ImageListAdapter) rAdapter).deleteImageNFile(viewHolder.getAdapterPosition());
+                final String imageName = ((ImageListAdapter.ViewHolder) viewHolder).getName().getText().toString();
+                final int index = viewHolder.getAdapterPosition();
+
+                ImageListAdapter adapter = ((ImageListAdapter) rAdapter);
+                // always remove the image from the view, such that the image can be consistently
+                // recovered when user wants to revert the swipe animation
+                adapter.deleteImage(index);
+                runOnUiThread(() -> {
+                    adapter.createDeleteDialog(() -> {
+                            // select positive btn
+                        es.submit(() -> {
+                            if (!adapter.deleteImageFile(imageName))
+                                adapter.addImageName(imageName, index); // recover if not deleted
+                        });
+                    }, () -> {
+                        // select negative btn, revert the swipe animation
+                        adapter.addImageName(imageName, index);
                     });
-                }
+                });
             }
         });
         return ith;

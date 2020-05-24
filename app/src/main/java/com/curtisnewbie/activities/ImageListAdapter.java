@@ -17,6 +17,7 @@ import com.curtisnewbie.database.AppDatabase;
 import com.curtisnewbie.database.Image;
 import com.curtisnewbie.services.App;
 import com.curtisnewbie.services.ExecService;
+import com.curtisnewbie.util.Callback;
 import com.curtisnewbie.util.IOUtil;
 
 import java.util.ArrayList;
@@ -40,7 +41,8 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.View
      * string for Intent.putExtra() when navigating to imageViewActivity
      */
     public static final String IMG_NAME = "img_title";
-    private List<String> imageNames;
+    private List<String> imageNames = Collections.synchronizedList(new ArrayList<>());
+    ;
     private Context context;
     @Inject
     protected AppDatabase db;
@@ -50,7 +52,6 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.View
     public ImageListAdapter(Context context) {
         App.getAppComponent().inject(this);
         this.context = context;
-        this.imageNames = Collections.synchronizedList(new ArrayList<>());
         this.loadImageNamesFromDb();
     }
 
@@ -79,21 +80,36 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.View
 
         // long click (hold) to create dialog for deleting the encrypted image
         holder.getItem_layout().setOnLongClickListener(e -> {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this.context);
-            builder.setMessage(R.string.delete_dialog_title)
-                    .setPositiveButton(context.getString(R.string.positiveBtnTxt), (dia, id) -> {
-                        es.submit(() -> {
-                            int index = holder.getAdapterPosition();
-                            deleteImageNFile(index);
-                        });
-                    })
-                    .setNegativeButton(context.getString(R.string.negativeBtnTxt), (dia, id) -> {
-                        // do nothing
-                    });
-            AlertDialog dia = builder.create();
-            dia.show();
+            createDeleteDialog(() -> {
+                es.submit(() -> {
+                    deleteImageNFile(holder.getAdapterPosition());
+                });
+            }, null);
             return true;
         });
+    }
+
+    /**
+     * Create a dialog that asks whether the user want to delete the item
+     *
+     * @param positiveCallback callback for positive ("YES") button, set to {@code NULL} if no
+     *                         operation is needed
+     * @param negativeCallback callback for negative ("NO") button, set to {@code NULL} if no
+     *                         operation is needed
+     */
+    public void createDeleteDialog(Callback positiveCallback, Callback negativeCallback) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this.context);
+        builder.setMessage(R.string.delete_dialog_title)
+                .setPositiveButton(context.getString(R.string.positiveBtnTxt), (dia, id) -> {
+                    if (positiveCallback != null)
+                        positiveCallback.func();
+                })
+                .setNegativeButton(context.getString(R.string.negativeBtnTxt), (dia, id) -> {
+                    if (negativeCallback != null)
+                        negativeCallback.func();
+                });
+        AlertDialog dia = builder.create();
+        dia.show();
     }
 
     @Override
@@ -120,10 +136,25 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.View
      */
     public boolean deleteImageNFile(int index) {
         String name = imageNames.get(index);
-        Image img = this.db.imgDao().getImage(name);
-        if (img != null && IOUtil.deleteFile(img.getPath())) {
+        if (deleteImageFile(name)) {
             // only update the RecyclerView when the file is actually deleted
             this.deleteImage(index);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Delete the actual image file with the specified name. Regardless of whether the actual file is
+     * * deleted, a message will be created to notify the user.
+     *
+     * @param name of the image
+     * @return whether the file is actually deleted
+     */
+    public boolean deleteImageFile(String name) {
+        Image img = this.db.imgDao().getImage(name);
+        if (img != null && IOUtil.deleteFile(img.getPath())) {
             this.db.imgDao().deleteImage(img);
             MsgToaster.msgShort((Activity) context, String.format("%s deleted.", name));
             return true;
@@ -133,6 +164,7 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.View
         }
     }
 
+
     /**
      * Insert a image name to the end of the list, this method only affects the recyclerview not
      * the actual file.
@@ -140,8 +172,18 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.View
      * @param name image name
      */
     public void addImageName(String name) {
-        this.imageNames.add(name);
-        this.notifyItemInserted(imageNames.size() - 1);
+        addImageName(name, imageNames.size());
+    }
+
+    /**
+     * Insert a image name to a specific index, this method only affects the recyclerview not
+     * the actual file.
+     *
+     * @param name image name
+     */
+    public void addImageName(String name, int index) {
+        this.imageNames.add(index, name);
+        this.notifyItemInserted(index);
     }
 
     /**
@@ -150,7 +192,7 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.View
      * @param index index in the {@code imageNames}
      * @return the name of the image being deleted
      */
-    private void deleteImage(int index) {
+    public void deleteImage(int index) {
         this.imageNames.remove(index);
         this.notifyItemRemoved(index);
     }
