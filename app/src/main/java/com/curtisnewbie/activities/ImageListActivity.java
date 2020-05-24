@@ -95,12 +95,29 @@ public class ImageListActivity extends AppCompatActivity implements Promptable {
         recycleView.setLayoutManager(rManager);
 
         // initiate preferred software (e.g., Gallery) to pick an image
+        this.regAddImgBtnListener();
+        // initiate preferred app (e.g., default camera) to take picture
+        this.regTakeImgBtnListener();
+    }
+
+    /**
+     * Register listener for {@code addImgBtn} that uses preferred software (e.g., Gallery) to
+     * pick an image
+     */
+    private void regAddImgBtnListener(){
         addImgBtn.setOnClickListener(view -> {
             Intent selectImageIntent = new Intent();
             selectImageIntent.setAction(Intent.ACTION_PICK);
             selectImageIntent.setDataAndType(EXTERNAL_CONTENT_URI, "image/*"); // Data is URI
             startActivityForResult(Intent.createChooser(selectImageIntent, "Select Images"), SELECT_IMAGE);
         });
+    }
+
+    /**
+     * Register listener for {@code takeImgBtn} that uses preferred app (e.g., default camera) to
+     * take picture
+     */
+    private void regTakeImgBtnListener(){
         takeImgBtn.setOnClickListener(view -> {
             Intent takePicIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             if (takePicIntent.resolveActivity(getPackageManager()) != null) {
