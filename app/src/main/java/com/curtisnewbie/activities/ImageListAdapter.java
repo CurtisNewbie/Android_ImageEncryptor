@@ -82,7 +82,7 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.View
         holder.getItem_layout().setOnLongClickListener(e -> {
             createDeleteDialog(() -> {
                 es.submit(() -> {
-                    deleteImageNFile(holder.getAdapterPosition());
+                    deleteImageNameNFile(holder.getAdapterPosition());
                 });
             }, null);
             return true;
@@ -134,11 +134,11 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.View
      *
      * @param index index in the {@code imageNames}
      */
-    public boolean deleteImageNFile(int index) {
+    public boolean deleteImageNameNFile(int index) {
         String name = imageNames.get(index);
         if (deleteImageFile(name)) {
             // only update the RecyclerView when the file is actually deleted
-            this.deleteImage(index);
+            this.deleteImageName(index);
             return true;
         } else {
             return false;
@@ -192,7 +192,7 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.View
      * @param index index in the {@code imageNames}
      * @return the name of the image being deleted
      */
-    public void deleteImage(int index) {
+    public void deleteImageName(int index) {
         this.imageNames.remove(index);
         this.notifyItemRemoved(index);
     }
