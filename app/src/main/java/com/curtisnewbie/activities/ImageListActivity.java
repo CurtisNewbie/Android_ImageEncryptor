@@ -121,7 +121,7 @@ public class ImageListActivity extends AppCompatActivity {
 
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-                final String imageName = ((ImageListAdapter.ViewHolder) viewHolder).getName().getText().toString();
+                final String imageName = ((ImageListAdapter.ViewHolder) viewHolder).getNameStr();
                 final int index = viewHolder.getAdapterPosition();
 
                 ImageListAdapter adapter = ((ImageListAdapter) rAdapter);

@@ -212,6 +212,8 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.View
             return this.name;
         }
 
+        public String getNameStr(){ return this.name.getText().toString();}
+
         public RelativeLayout getItem_layout() {
             return this.item_layout;
         }
