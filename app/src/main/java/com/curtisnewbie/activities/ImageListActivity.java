@@ -115,8 +115,11 @@ public class ImageListActivity extends AppCompatActivity {
             @Override
             public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder,
                                   @NonNull RecyclerView.ViewHolder target) {
-                // TODO: not supported for now
-                return false;
+                final int from = viewHolder.getAdapterPosition();
+                final int to = target.getAdapterPosition();
+                ((ImageListAdapter) rAdapter).swapPosition(from, to);
+                rAdapter.notifyItemMoved(from, to);
+                return true;
             }
 
             @Override
@@ -130,7 +133,7 @@ public class ImageListActivity extends AppCompatActivity {
                 adapter.deleteImageName(index);
                 runOnUiThread(() -> {
                     adapter.createDeleteDialog(() -> {
-                            // select positive btn
+                        // select positive btn
                         es.submit(() -> {
                             if (!adapter.deleteImageFile(imageName))
                                 adapter.addImageName(imageName, index); // recover if not deleted

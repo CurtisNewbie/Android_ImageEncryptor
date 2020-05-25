@@ -78,15 +78,17 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.View
             context.startActivity(intent);
         });
 
+        // TODO: since the drag and drop animation is used, long pressing the item must be disabled.
+        //  Consider whether this is still necessary
         // long click (hold) to create dialog for deleting the encrypted image
-        holder.getItem_layout().setOnLongClickListener(e -> {
-            createDeleteDialog(() -> {
-                es.submit(() -> {
-                    deleteImageNameNFile(holder.getAdapterPosition());
-                });
-            }, null);
-            return true;
-        });
+//        holder.getItem_layout().setOnLongClickListener(e -> {
+//            createDeleteDialog(() -> {
+//                es.submit(() -> {
+//                    deleteImageNameNFile(holder.getAdapterPosition());
+//                });
+//            }, null);
+//            return true;
+//        });
     }
 
     /**
@@ -115,6 +117,24 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.View
     @Override
     public int getItemCount() {
         return imageNames.size();
+    }
+
+    /**
+     * Swap the content of two items (ViewHolders).
+     *
+     * @param l index of an item
+     * @param r index of an item
+     * @return whether two items are indeed swapped
+     */
+    public boolean swapPosition(int l, int r) {
+        int len = imageNames.size();
+        if (l >= 0 && l < len && r >= 0 && r < len) {
+            String temp = imageNames.get(l);
+            imageNames.set(l, imageNames.get(r));
+            imageNames.set(r, temp);
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -212,7 +232,9 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.View
             return this.name;
         }
 
-        public String getNameStr(){ return this.name.getText().toString();}
+        public String getNameStr() {
+            return this.name.getText().toString();
+        }
 
         public RelativeLayout getItem_layout() {
             return this.item_layout;
