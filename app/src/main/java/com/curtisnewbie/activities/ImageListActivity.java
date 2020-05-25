@@ -110,9 +110,9 @@ public class ImageListActivity extends AppCompatActivity {
     }
 
     /**
-     * Initialise ItemTouchHelper for swipe animation in recyclerview
+     * Initialise ItemTouchHelper for swipe and drag and drop animations in recyclerview
      *
-     * @return ItemTouchHelper for swipe animation in recyclerview
+     * @return ItemTouchHelper for swipe and drag and drop animations in recyclerview
      */
     private ItemTouchHelper initItemTouchHelper() {
         ItemTouchHelper ith = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP
