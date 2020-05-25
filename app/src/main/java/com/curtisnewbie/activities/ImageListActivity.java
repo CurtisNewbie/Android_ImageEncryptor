@@ -1,6 +1,8 @@
 package com.curtisnewbie.activities;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -29,6 +31,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -61,6 +64,8 @@ public class ImageListActivity extends AppCompatActivity {
     private Button takeImgBtn;
     private String imgKey;
     private String tempFilePath;
+    private boolean addImgBtnDisabled = false;
+    private boolean takeImgBtnDisabled = false;
 
     @Inject
     protected ExecService es;
@@ -153,11 +158,20 @@ public class ImageListActivity extends AppCompatActivity {
      * pick an image
      */
     private void regAddImgBtnListener() {
+        Intent selectImageIntent = new Intent();
+        selectImageIntent.setAction(Intent.ACTION_PICK);
+        selectImageIntent.setDataAndType(EXTERNAL_CONTENT_URI, "image/*"); // Data is URI
+
+        // verify that there is at least one activity that can respond to this intent
+        if (!hasIntentActivity(selectImageIntent))
+            addImgBtnDisabled = true;
+
         addImgBtn.setOnClickListener(view -> {
-            Intent selectImageIntent = new Intent();
-            selectImageIntent.setAction(Intent.ACTION_PICK);
-            selectImageIntent.setDataAndType(EXTERNAL_CONTENT_URI, "image/*"); // Data is URI
-            startActivityForResult(Intent.createChooser(selectImageIntent, getString(R.string.image_chooser_title)), SELECT_IMAGE);
+            if (!addImgBtnDisabled) {
+                startActivityForResult(Intent.createChooser(selectImageIntent, getString(R.string.image_chooser_title)), SELECT_IMAGE);
+            } else {
+                MsgToaster.msgShort(this, R.string.operation_not_supported);
+            }
         });
     }
 
@@ -166,9 +180,13 @@ public class ImageListActivity extends AppCompatActivity {
      * take picture
      */
     private void regTakeImgBtnListener() {
+        Intent takePicIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+        if (!hasIntentActivity(takePicIntent))
+            takeImgBtnDisabled = true;
+
         takeImgBtn.setOnClickListener(view -> {
-            Intent takePicIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            if (takePicIntent.resolveActivity(getPackageManager()) != null) {
+            if (!takeImgBtnDisabled) {
                 // there are packages that can resolve this intent (i.e., take picture)
                 File tempFile = null;
                 try {
@@ -183,8 +201,25 @@ public class ImageListActivity extends AppCompatActivity {
                     takePicIntent.putExtra(MediaStore.EXTRA_OUTPUT, tempUri);
                     startActivityForResult(takePicIntent, CAPTURE_IMAGE);
                 }
+            } else {
+                MsgToaster.msgShort(this, R.string.operation_not_supported);
             }
         });
+    }
+
+    /**
+     * Check whether there is existing package/activity that can resolve this intent action
+     *
+     * @param intent an intent action
+     * @return whether there is an activity that can resolve this intent action
+     */
+    private boolean hasIntentActivity(Intent intent) {
+        PackageManager pm = getPackageManager();
+        List<ResolveInfo> list = pm.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
+        if (list.size() < 1)
+            return false;
+        else
+            return true;
     }
 
     @Override
