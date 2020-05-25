@@ -1,20 +1,28 @@
 package com.curtisnewbie.activities;
 
+import android.app.SearchManager;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.curtisnewbie.services.App;
 import com.curtisnewbie.services.AuthService;
 import com.curtisnewbie.database.AppDatabase;
 import com.curtisnewbie.services.ExecService;
+import com.curtisnewbie.util.IntentUtil;
 
 import javax.inject.Inject;
+
+import static com.curtisnewbie.util.IntentUtil.hasIntentActivity;
 
 /**
  * ------------------------------------
@@ -98,6 +106,25 @@ public class MainActivity extends AppCompatActivity {
                 MsgToaster.msgShort(this, msg);
             });
         });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        // open github repo page for this app
+        if (item.getItemId() == R.id.aboutMenuItem) {
+            Intent openWebpageIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.app_repo_url)));
+            if (hasIntentActivity(this, openWebpageIntent)) {
+                startActivity(openWebpageIntent);
+            }
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     /**

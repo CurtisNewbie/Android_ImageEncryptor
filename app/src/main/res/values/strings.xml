@@ -7,7 +7,11 @@
     <string name="add_img_name">Add Image</string>
     <string name="take_img_name">Take Picture</string>
     <string name="app_description">An app for images encryption. Open sourced on https://github.com/CurtisNewbie/Android_ImageEncryptor and developed by Yongjie Zhuang (CurtisNewbie)</string>
+    <string name="app_repo_url">https://github.com/CurtisNewbie/Android_ImageEncryptor</string>
     <string name="image_chooser_title">Select Image</string>
+    <string name="app_about">About</string>
+    <string name="about_dialog_title">About This App</string>
+    <string name="about_dialog_positive">Okay</string>
 
     <!-- Specified in code (e.g., for dialog) -->
     <string name="login_textview">Please Login</string>
@@ -31,5 +35,6 @@
     <string name="image_recovered_msg">Image recovered, go check you Gallery app</string>
     <string name="image_not_recovered_msg">Image cannot be recovered, please try again</string>
     <string name="permission_denied_to_recover_msg">Permission Denied. Cannot recover image.</string>
+
     <string name="operation_not_supported">Operation is not supported on this device</string>
 </resources>

@@ -25,6 +25,7 @@ import com.curtisnewbie.services.AuthService;
 import com.curtisnewbie.util.CryptoUtil;
 import com.curtisnewbie.util.IOUtil;
 import com.curtisnewbie.services.ExecService;
+import com.curtisnewbie.util.IntentUtil;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -36,6 +37,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import static android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+import static com.curtisnewbie.util.IntentUtil.hasIntentActivity;
 
 /**
  * ------------------------------------
@@ -163,7 +165,7 @@ public class ImageListActivity extends AppCompatActivity {
         selectImageIntent.setDataAndType(EXTERNAL_CONTENT_URI, "image/*"); // Data is URI
 
         // verify that there is at least one activity that can respond to this intent
-        if (!hasIntentActivity(selectImageIntent))
+        if (!hasIntentActivity(this, selectImageIntent))
             addImgBtnDisabled = true;
 
         addImgBtn.setOnClickListener(view -> {
@@ -182,7 +184,7 @@ public class ImageListActivity extends AppCompatActivity {
     private void regTakeImgBtnListener() {
         Intent takePicIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
-        if (!hasIntentActivity(takePicIntent))
+        if (!hasIntentActivity(this, takePicIntent))
             takeImgBtnDisabled = true;
 
         takeImgBtn.setOnClickListener(view -> {
@@ -205,21 +207,6 @@ public class ImageListActivity extends AppCompatActivity {
                 MsgToaster.msgShort(this, R.string.operation_not_supported);
             }
         });
-    }
-
-    /**
-     * Check whether there is existing package/activity that can resolve this intent action
-     *
-     * @param intent an intent action
-     * @return whether there is an activity that can resolve this intent action
-     */
-    private boolean hasIntentActivity(Intent intent) {
-        PackageManager pm = getPackageManager();
-        List<ResolveInfo> list = pm.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
-        if (list.size() < 1)
-            return false;
-        else
-            return true;
     }
 
     @Override
