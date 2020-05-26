@@ -64,7 +64,6 @@ public class ImageListActivity extends AppCompatActivity {
     private RecyclerView.LayoutManager rManager;
     private Button addImgBtn;
     private Button takeImgBtn;
-    private String imgKey;
     private String tempFilePath;
     private boolean addImgBtnDisabled = false;
     private boolean takeImgBtnDisabled = false;
@@ -90,9 +89,6 @@ public class ImageListActivity extends AppCompatActivity {
             lifeCycleManager.restart();
             return;
         }
-        // setup image key for encryption/decryption
-        imgKey = authService.getImgKey();
-
         addImgBtn = findViewById(R.id.addImgBtn);
         takeImgBtn = findViewById(R.id.takeImgBtn);
         recycleView = findViewById(R.id.recycleView);
@@ -301,7 +297,7 @@ public class ImageListActivity extends AppCompatActivity {
         // read the image
         byte[] rawData = IOUtil.read(in, filesize);
         // encrypt image
-        byte[] encryptedData = CryptoUtil.encrypt(rawData, imgKey);
+        byte[] encryptedData = CryptoUtil.encrypt(rawData, authService.getImgKey());
         // write encrypted image to internal storage
         IOUtil.write(encryptedData, filename, this);
     }

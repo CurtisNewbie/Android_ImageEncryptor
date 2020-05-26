@@ -75,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * when the button is clicked, the entered name and password is processed. This
-     * is a listener method for loginBtn.
+     * is a listener for loginBtn.
      *
      * @param view implicit view object
      */

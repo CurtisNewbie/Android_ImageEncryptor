@@ -55,7 +55,6 @@ public class ImageViewActivity extends AppCompatActivity {
 
     private PhotoView photoView;
     private Bitmap bitmap;
-    private String imgKey;
     private String imageName;
     private byte[] decryptedData = null;
     private boolean waitingPermissionResult = false;
@@ -75,7 +74,6 @@ public class ImageViewActivity extends AppCompatActivity {
             return;
         }
 
-        imgKey = authService.getImgKey();
         photoView = this.findViewById(R.id.photoView);
         photoView.setMaximumScale(20.0f);
         imageName = getIntent().getStringExtra(ImageListAdapter.IMG_NAME);
@@ -122,7 +120,7 @@ public class ImageViewActivity extends AppCompatActivity {
                 byte[] encryptedData = IOUtil.read(new File(imgPath));
 
                 // decrypt the data
-                decryptedData = CryptoUtil.decrypt(encryptedData, imgKey);
+                decryptedData = CryptoUtil.decrypt(encryptedData, authService.getImgKey());
 
                 // get the allowed maximum size of texture in OpenGL ES3.0
                 int[] maxsize = new int[1];
@@ -186,7 +184,7 @@ public class ImageViewActivity extends AppCompatActivity {
                     IOUtil.write(decryptedData, file);
                 } else {
                     byte[] encryptedData = IOUtil.read(new File(db.imgDao().getImagePath(imageName)));
-                    IOUtil.write(CryptoUtil.decrypt(encryptedData, imgKey), file);
+                    IOUtil.write(CryptoUtil.decrypt(encryptedData, authService.getImgKey()), file);
                 }
                 // expose it to Gallery
                 Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
