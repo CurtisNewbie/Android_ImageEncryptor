@@ -132,13 +132,18 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, ImageListActivity.class);
         if (receivedData != null) {
             try {
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 String path = receivedData.toString();
                 intent.putExtra(DATA_FROM_MAIN, path);
-                receivedData = null;
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
         startActivity(intent);
+
+        if (receivedData != null) {
+            receivedData = null;
+            finish();
+        }
     }
 }

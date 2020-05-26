@@ -203,8 +203,10 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.View
      * @param name image name
      */
     public void addImageName(String name, int index) {
-        this.imageNames.add(index, name);
-        this.notifyItemInserted(index);
+        ((Activity) context).runOnUiThread(() -> {
+            this.imageNames.add(index, name);
+            this.notifyItemInserted(index);
+        });
     }
 
     /**

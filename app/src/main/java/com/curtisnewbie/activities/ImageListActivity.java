@@ -1,5 +1,6 @@
 package com.curtisnewbie.activities;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -164,11 +165,29 @@ public class ImageListActivity extends AppCompatActivity {
                 pathFromMain = null;
                 try {
                     encryptImage(Uri.parse(fpath));
+                    runOnUiThread(() -> {
+                        createExitDialog();
+                    });
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             });
         }
+    }
+
+    /**
+     * Create a dialog that asks whether the user want to exit this app
+     */
+    private void createExitDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(R.string.exit_dialog_title)
+                .setPositiveButton(this.getString(R.string.positiveBtnTxt), (dia, id) -> {
+                })
+                .setNegativeButton(this.getString(R.string.negativeBtnTxt), (dia, id) -> {
+                    finish();
+                });
+        AlertDialog dia = builder.create();
+        dia.show();
     }
 
     /**
