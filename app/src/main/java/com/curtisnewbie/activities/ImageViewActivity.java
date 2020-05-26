@@ -65,19 +65,31 @@ public class ImageViewActivity extends AppCompatActivity {
         App.getAppComponent().inject(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_view);
-        ActionBar bar = getSupportActionBar();
-        if (bar != null)
-            bar.hide();
 
         if (!authService.isAuthenticated()) {
             lifeCycleManager.restart();
             return;
         }
 
+        hideActionBar();
         photoView = this.findViewById(R.id.photoView);
         photoView.setMaximumScale(20.0f);
         imageName = getIntent().getStringExtra(ImageListAdapter.IMG_NAME);
         decryptNDisplay();
+        regPhotoViewListener();
+    }
+
+    private void hideActionBar() {
+        ActionBar bar = getSupportActionBar();
+        if (bar != null)
+            bar.hide();
+    }
+
+    /**
+     * Register listener for {@code photoView} by which the long click creates a dialog asking
+     * whether the user wants to recover the image.
+     */
+    private void regPhotoViewListener() {
         photoView.setOnLongClickListener(view -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setMessage(R.string.recover_dialog_title)
@@ -109,7 +121,7 @@ public class ImageViewActivity extends AppCompatActivity {
     }
 
     /**
-     * Decrypt and display the selected image
+     * Decrypt and display the selected image on a separate thread
      */
     private void decryptNDisplay() {
         // get the path to the decrypted image, decrypt data and display
