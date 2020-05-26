@@ -1,8 +1,6 @@
 package com.curtisnewbie.activities;
 
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -25,14 +23,12 @@ import com.curtisnewbie.services.AuthService;
 import com.curtisnewbie.util.CryptoUtil;
 import com.curtisnewbie.util.IOUtil;
 import com.curtisnewbie.services.ExecService;
-import com.curtisnewbie.util.IntentUtil;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -211,27 +207,14 @@ public class ImageListActivity extends AppCompatActivity {
         if (requestCode == SELECT_IMAGE && resultCode == RESULT_OK) {
             Uri uri = data.getData();
             es.submit(() -> {
-                try (InputStream in = getContentResolver().openInputStream(uri);) {
-                    Cursor cursor = getContentResolver().query(uri, null, null, null, null);
-                    int nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
-                    int sizeIndex = cursor.getColumnIndex(OpenableColumns.SIZE);
-                    cursor.moveToFirst();
-                    encryptNPersist(in, cursor.getString(nameIndex), cursor.getInt(sizeIndex));
-                } catch (FileNotFoundException e1) {
-                    MsgToaster.msgShort(this, R.string.file_not_found_msg);
-                } catch (IOException e2) {
-                    MsgToaster.msgShort(this, R.string.file_not_read_msg);
-                }
+                encryptImage(uri);
             });
         } else if (requestCode == CAPTURE_IMAGE && resultCode == RESULT_OK) {
             es.submit(() -> {
                 File tempFile = new File(tempFilePath);
-                if (tempFile.exists())
-                    try (InputStream in = new FileInputStream(tempFile)) {
-                        encryptNPersist(in, tempFile.getName(), (int) tempFile.length());
-                    } catch (IOException ie) {
-                        ie.printStackTrace();
-                    }
+                if (tempFile.exists()) {
+                    encryptImage(tempFile);
+                }
                 if (!IOUtil.deleteFile(tempFile))
                     MsgToaster.msgLong(this, String.format("Fail to delete temp file, please delete it manually. It's at: '%s'",
                             tempFile.getAbsolutePath()));
@@ -246,54 +229,94 @@ public class ImageListActivity extends AppCompatActivity {
     }
 
     /**
-     * Read image, encrypt it, write the encrypted images data into local internal
-     * storage, and persist the name and filepath (of the encrypted ones) in the
-     * database. InputStream is always closed even when exceptions are caught.
+     * Encrypt an image by its Uri. This is a high-level method that involves calling a chain of helper
+     * methods, e.g., persisting the new {@code Image} to the database and updating the recyclerView.
      *
-     * @param in       input stream of a image file that is not encrypted.
-     * @param filename name of the encrypted image that will be created
-     * @param filesize size of the file
+     * @param uri
      */
-    private void encryptNPersist(InputStream in, String filename, int filesize) {
-        try {
-            // encrypt and write the encrypted image
-            encryptNWrite(in, filename, filesize);
-            // persist image (name and path)
-            Image img = new Image();
-            img.setName(filename);
-            img.setPath(ImageListActivity.this.getFilesDir().getPath() + "//" + filename);
-            db.imgDao().addImage(img);
-            // update RecyclerView
-            ((ImageListAdapter) this.rAdapter).addImageName(img.getName());
-            MsgToaster.msgShort(this, String.format("Added: %s", filename));
+    private void encryptImage(Uri uri) {
+        try (InputStream in = getContentResolver().openInputStream(uri);) {
+            Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+            int nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+            int sizeIndex = cursor.getColumnIndex(OpenableColumns.SIZE);
+            cursor.moveToFirst();
+            final String fname = cursor.getString(nameIndex);
+            final int fsize = cursor.getInt(sizeIndex);
+            encryptImage(in, fname, fsize);
         } catch (FileNotFoundException e1) {
             MsgToaster.msgShort(this, R.string.file_not_found_msg);
-            e1.printStackTrace();
         } catch (IOException e2) {
             MsgToaster.msgShort(this, R.string.file_not_read_msg);
-            e2.printStackTrace();
-        } finally {
-            try {
-                in.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
         }
     }
 
     /**
-     * Encrypt bytes from the input stream and write them to internal storage. I/O
-     * is never closed in this method, thus needs to be handled properly.
+     * Encrypt an image File. This is a high-level method that involves calling a chain of helper
+     * methods, e.g., persisting the new {@code Image} to the database and updating the recyclerView.
+     *
+     * @param file
+     */
+    private void encryptImage(File file) {
+        try (InputStream in = new FileInputStream(file);) {
+            final String fname = file.getName();
+            final int fsize = (int) file.length();
+            encryptImage(in, fname, fsize);
+        } catch (FileNotFoundException e1) {
+            MsgToaster.msgShort(this, R.string.file_not_found_msg);
+        } catch (IOException e2) {
+            MsgToaster.msgShort(this, R.string.file_not_read_msg);
+        }
+    }
+
+    /**
+     * Encrypt an image from an InputStream. This is a high-level method that involves calling a chain of helper
+     * methods, e.g., persisting the new {@code Image} to the database and updating the recyclerView.
+     *
+     * @param in       inputStream
+     * @param filename
+     * @param filesize
+     */
+    private void encryptImage(InputStream in, String filename, int filesize) {
+        try {
+            encryptNWrite(in, filename, filesize);
+            persistImage(filename);
+            ((ImageListAdapter) this.rAdapter).addImageName(filename);
+            MsgToaster.msgShort(this, String.format("Added: %s", filename));
+        } catch (IOException e2) {
+            MsgToaster.msgShort(this, R.string.file_not_read_msg);
+        }
+    }
+
+
+    /**
+     * Persist the name and filepath (of the encrypted ones) into the database.
+     * <p>
+     * This is a helper method, to undertake a series of operations involved for image encryption, consider using
+     * {@code ImageListActivity#encryptImage(...)}
+     *
+     * @param filename name of the encrypted image that will be created
+     */
+    private void persistImage(String filename) {
+        // persist image (name and path)
+        Image img = new Image();
+        img.setName(filename);
+        img.setPath(ImageListActivity.this.getFilesDir().getPath() + "//" + filename);
+        db.imgDao().addImage(img);
+    }
+
+    /**
+     * Encrypt bytes from the input stream and write them to internal storage.
+     * <p>
+     * This is a helper method, to undertake a series of operations involved for image encryption, consider using
+     * {@code ImageListActivity#encryptImage(...)}
      *
      * @param in       input stream
      * @param filename name of the file (encrypted) that will be created in internal
      *                 storage
      * @param filesize size of the file
-     * @throws FileNotFoundException
      * @throws IOException
      */
-    private void encryptNWrite(InputStream in, String filename, int filesize)
-            throws FileNotFoundException, IOException {
+    private void encryptNWrite(InputStream in, String filename, int filesize) throws IOException {
         // read the image
         byte[] rawData = IOUtil.read(in, filesize);
         // encrypt image
