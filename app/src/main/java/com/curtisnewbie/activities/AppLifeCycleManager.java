@@ -40,7 +40,7 @@ public class AppLifeCycleManager {
      */
     public void restart() {
         Intent intent = new Intent(appContext, MainActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         this.appContext.startActivity(intent);
         this.auth.signOut();
     }
