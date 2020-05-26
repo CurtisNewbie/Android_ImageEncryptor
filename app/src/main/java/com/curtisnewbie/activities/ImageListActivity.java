@@ -20,6 +20,7 @@ import com.curtisnewbie.database.AppDatabase;
 import com.curtisnewbie.database.Image;
 import com.curtisnewbie.services.App;
 import com.curtisnewbie.services.AuthService;
+import com.curtisnewbie.util.Callback;
 import com.curtisnewbie.util.CryptoUtil;
 import com.curtisnewbie.util.IOUtil;
 import com.curtisnewbie.services.ExecService;
@@ -54,6 +55,7 @@ public class ImageListActivity extends AppCompatActivity {
      * Request code for capturing image
      */
     public static final int CAPTURE_IMAGE = 2;
+    public static final int ALL = -1;
 
     private RecyclerView recycleView;
     private RecyclerView.Adapter rAdapter;
@@ -63,6 +65,7 @@ public class ImageListActivity extends AppCompatActivity {
     private String tempFilePath;
     private boolean addImgBtnDisabled = false;
     private boolean takeImgBtnDisabled = false;
+    private String pathFromMain = null;
 
     @Inject
     protected ExecService es;
@@ -101,6 +104,10 @@ public class ImageListActivity extends AppCompatActivity {
         this.regAddImgBtnListener();
         // initiate preferred app (e.g., default camera) to take picture
         this.regTakeImgBtnListener();
+
+        // check if there is an image from main_activity to encrypt
+        Intent intent = getIntent();
+        pathFromMain = intent.getStringExtra(MainActivity.DATA_FROM_MAIN);
     }
 
     /**
@@ -145,6 +152,23 @@ public class ImageListActivity extends AppCompatActivity {
             }
         });
         return ith;
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        if (pathFromMain != null) {
+            es.submit(() -> {
+                String fpath = pathFromMain;
+                pathFromMain = null;
+                try {
+                    encryptImage(Uri.parse(fpath));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+        }
     }
 
     /**
@@ -244,8 +268,10 @@ public class ImageListActivity extends AppCompatActivity {
             final int fsize = cursor.getInt(sizeIndex);
             encryptImage(in, fname, fsize);
         } catch (FileNotFoundException e1) {
+            e1.printStackTrace();
             MsgToaster.msgShort(this, R.string.file_not_found_msg);
         } catch (IOException e2) {
+            e2.printStackTrace();
             MsgToaster.msgShort(this, R.string.file_not_read_msg);
         }
     }
@@ -262,8 +288,10 @@ public class ImageListActivity extends AppCompatActivity {
             final int fsize = (int) file.length();
             encryptImage(in, fname, fsize);
         } catch (FileNotFoundException e1) {
+            e1.printStackTrace();
             MsgToaster.msgShort(this, R.string.file_not_found_msg);
         } catch (IOException e2) {
+            e2.printStackTrace();
             MsgToaster.msgShort(this, R.string.file_not_read_msg);
         }
     }
@@ -274,19 +302,22 @@ public class ImageListActivity extends AppCompatActivity {
      *
      * @param in       inputStream
      * @param filename
-     * @param filesize
+     * @param filesize size of the file or {@code ALL} for the whole file
      */
     private void encryptImage(InputStream in, String filename, int filesize) {
         try {
+            if (db.imgDao().imageCount(filename) > 0) // already added
+                return;
+
             encryptNWrite(in, filename, filesize);
             persistImage(filename);
             ((ImageListAdapter) this.rAdapter).addImageName(filename);
             MsgToaster.msgShort(this, String.format("Added: %s", filename));
         } catch (IOException e2) {
+            e2.printStackTrace();
             MsgToaster.msgShort(this, R.string.file_not_read_msg);
         }
     }
-
 
     /**
      * Persist the name and filepath (of the encrypted ones) into the database.

@@ -5,27 +5,32 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
+        android:name="com.curtisnewbie.services.App"
         android:allowBackup="true"
+        android:description="@string/app_description"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
-        android:name="com.curtisnewbie.services.App"
-        android:description="@string/app_description">
+        android:theme="@style/AppTheme">
 
-        <activity android:name="MainActivity">
+        <activity android:name="MainActivity" android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+            <!-- Allow external app to send image for encryption -->
+            <intent-filter>
+                <action android:name="android.intent.action.SEND"></action>
+                <data android:mimeType="image/*"></data>
+                <category android:name="android.intent.category.DEFAULT"></category>
+            </intent-filter>
         </activity>
 
-        <activity android:name="ImageViewActivity">
-        </activity>
+        <activity android:name="ImageViewActivity"></activity>
 
-        <activity android:name="ImageListActivity">
-        </activity>
+        <activity android:name="ImageListActivity"></activity>
 
         <provider
             android:name="androidx.core.content.FileProvider"

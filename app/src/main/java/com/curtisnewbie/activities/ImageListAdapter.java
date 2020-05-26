@@ -148,6 +148,7 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.View
     }
 
     /**
+     * TODO: This method can be removed
      * Remove the image from recyclerview and delete the actual encrypted file. The recyclerview
      * is updated only when the actual file is deleted. Regardless of whether the actual file is
      * deleted, a message will be created to notify the user.

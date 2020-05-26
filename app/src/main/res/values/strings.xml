@@ -20,6 +20,7 @@
     <string name="negativeBtnTxt">No</string>
     <string name="delete_dialog_title">Want to delete this image?</string>
     <string name="recover_dialog_title">Want to recover this image back to Gallery?</string>
+    <string name="exit_dialog_title">Continue using this app?</string>
 
     <!-- Messages are created/displayed using Toast -->
     <string name="signin_msg">Sign in your account</string>
@@ -35,6 +36,6 @@
     <string name="image_recovered_msg">Image recovered, go check you Gallery app</string>
     <string name="image_not_recovered_msg">Image cannot be recovered, please try again</string>
     <string name="permission_denied_to_recover_msg">Permission Denied. Cannot recover image.</string>
-
     <string name="operation_not_supported">Operation is not supported on this device</string>
+    <string name="action_send_msg">Login to encrypt the image that you selected</string>
 </resources>

@@ -1,6 +1,5 @@
 package com.curtisnewbie.activities;
 
-import android.app.SearchManager;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -18,7 +17,6 @@ import com.curtisnewbie.services.App;
 import com.curtisnewbie.services.AuthService;
 import com.curtisnewbie.database.AppDatabase;
 import com.curtisnewbie.services.ExecService;
-import com.curtisnewbie.util.IntentUtil;
 
 import javax.inject.Inject;
 
@@ -36,10 +34,13 @@ import static com.curtisnewbie.util.IntentUtil.hasIntentActivity;
  */
 public class MainActivity extends AppCompatActivity {
 
+    public static final String DATA_FROM_MAIN = "main";
+
     private EditText pwInput;
     private EditText nameInput;
     private Button loginBtn;
     private TextView instructTv;
+    private Uri receivedData = null;
 
     @Inject
     protected ExecService es;
@@ -53,24 +54,19 @@ public class MainActivity extends AppCompatActivity {
         App.getAppComponent().inject(this);
         super.onCreate(savedInstanceState);
 
+        Intent intent = getIntent();
+        String action = intent.getAction();
+        if (action.equals(Intent.ACTION_SEND) && intent.hasExtra(Intent.EXTRA_STREAM)) {
+            receivedData = intent.getParcelableExtra(Intent.EXTRA_STREAM);
+            MsgToaster.msgLong(this, R.string.action_send_msg);
+        }
+
         // setup the layout for this activity
         setContentView(R.layout.activity_main);
         pwInput = this.findViewById(R.id.pwInput);
         nameInput = this.findViewById(R.id.nameInput);
         loginBtn = this.findViewById(R.id.loginBtn);
         instructTv = this.findViewById(R.id.instructTv);
-
-        // create thread to prompt msg about whether the user should sign in or sign up
-        es.submit(() -> {
-            int msg;
-            if (authService.isRegistered()) {
-                msg = R.string.signin_msg;
-            } else {
-                msg = R.string.register_msg;
-                instructTv.setText(R.string.register_textview);
-            }
-            MsgToaster.msgLong(this, msg);
-        });
     }
 
     /**
@@ -134,6 +130,15 @@ public class MainActivity extends AppCompatActivity {
     private void navToImageList() {
         // navigates to ImageListActivity
         Intent intent = new Intent(this, ImageListActivity.class);
+        if (receivedData != null) {
+            try {
+                String path = receivedData.toString();
+                intent.putExtra(DATA_FROM_MAIN, path);
+                receivedData = null;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
         startActivity(intent);
     }
 }

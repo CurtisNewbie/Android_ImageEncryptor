@@ -26,6 +26,9 @@ public interface ImageDao {
     @Query("SELECT * FROM image where name = :imgName")
     Image getImage(String imgName);
 
+    @Query("SELECT COUNT(*) FROM image where name = :imgName")
+    int imageCount(String imgName);
+
     @Delete
     void deleteImage(Image image);
 

@@ -34,7 +34,7 @@ public class IOUtil {
      */
     public static byte[] read(File file) throws IOException {
         try (InputStream in = new FileInputStream(file);) {
-            byte[] bytes = new byte[(int) file.length()];
+            byte[] bytes = new byte[(int) file.length()]; // TODO repetitive code
             in.read(bytes);
             return bytes;
         }
@@ -136,7 +136,7 @@ public class IOUtil {
      * @param path
      * @return whether the file is deleted
      */
-    public static boolean deleteFile(String path){
+    public static boolean deleteFile(String path) {
         File file = new File(path);
         return deleteFile(file);
     }
