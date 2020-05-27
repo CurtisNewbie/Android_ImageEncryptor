@@ -67,6 +67,12 @@ public class MainActivity extends AppCompatActivity {
         nameInput = this.findViewById(R.id.nameInput);
         loginBtn = this.findViewById(R.id.loginBtn);
         instructTv = this.findViewById(R.id.instructTv);
+
+        es.submit(() -> {
+            if (!authService.isRegistered()) {
+                instructTv.setText(R.string.register_textview);
+            }
+        });
     }
 
     /**
