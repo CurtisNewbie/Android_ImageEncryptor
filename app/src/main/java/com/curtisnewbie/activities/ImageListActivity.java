@@ -3,6 +3,8 @@ package com.curtisnewbie.activities;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -21,10 +23,10 @@ import com.curtisnewbie.database.AppDatabase;
 import com.curtisnewbie.database.Image;
 import com.curtisnewbie.services.App;
 import com.curtisnewbie.services.AuthService;
-import com.curtisnewbie.util.Callback;
 import com.curtisnewbie.util.CryptoUtil;
 import com.curtisnewbie.util.IOUtil;
 import com.curtisnewbie.services.ExecService;
+import com.curtisnewbie.util.ImageUtil;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -56,7 +58,6 @@ public class ImageListActivity extends AppCompatActivity {
      * Request code for capturing image
      */
     public static final int CAPTURE_IMAGE = 2;
-    public static final int ALL = -1;
 
     private RecyclerView recycleView;
     private RecyclerView.Adapter rAdapter;
@@ -278,8 +279,8 @@ public class ImageListActivity extends AppCompatActivity {
      * @param uri
      */
     private void encryptImage(Uri uri) {
-        try (InputStream in = getContentResolver().openInputStream(uri);) {
-            Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+        try (InputStream in = getContentResolver().openInputStream(uri);
+             Cursor cursor = getContentResolver().query(uri, null, null, null, null);) {
             int nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
             int sizeIndex = cursor.getColumnIndex(OpenableColumns.SIZE);
             cursor.moveToFirst();
@@ -339,7 +340,7 @@ public class ImageListActivity extends AppCompatActivity {
     }
 
     /**
-     * Persist the name and filepath (of the encrypted ones) into the database.
+     * Persist the {@code Image} into the database (not the actual encrypted data).
      * <p>
      * This is a helper method, to undertake a series of operations involved for image encryption, consider using
      * {@code ImageListActivity#encryptImage(...)}
@@ -351,11 +352,13 @@ public class ImageListActivity extends AppCompatActivity {
         Image img = new Image();
         img.setName(filename);
         img.setPath(ImageListActivity.this.getFilesDir().getPath() + "//" + filename);
+        img.setThumbnailPath(img.getPath() + ImageUtil.THUMBNAIL_EXTENSION);
         db.imgDao().addImage(img);
     }
 
     /**
-     * Encrypt bytes from the input stream and write them to internal storage.
+     * Encrypt bytes from the input stream and write them to internal storage. Both the image and a
+     * downscaled thumbnail are encrypted and stored locally.
      * <p>
      * This is a helper method, to undertake a series of operations involved for image encryption, consider using
      * {@code ImageListActivity#encryptImage(...)}
@@ -369,9 +372,19 @@ public class ImageListActivity extends AppCompatActivity {
     private void encryptNWrite(InputStream in, String filename, int filesize) throws IOException {
         // read the image
         byte[] rawData = IOUtil.read(in, filesize);
-        // encrypt image
+
+        // downscale image for thumbnail
+        Bitmap bitmap = ImageUtil.decodeBitmap(rawData);
+        bitmap = ThumbnailUtils.extractThumbnail(bitmap, ImageUtil.THUMBNAIL_SIZE, ImageUtil.THUMBNAIL_SIZE);
+        byte[] thumbnail = ImageUtil.toBytes(bitmap);
+
+        // encrypt image & thumbnail
         byte[] encryptedData = CryptoUtil.encrypt(rawData, authService.getImgKey());
+        byte[] encryptedThumbnail = CryptoUtil.encrypt(thumbnail, authService.getImgKey());
+
         // write encrypted image to internal storage
         IOUtil.write(encryptedData, filename, this);
+        // write thumbnail to internal storage
+        IOUtil.write(encryptedThumbnail, filename + ImageUtil.THUMBNAIL_EXTENSION, this);
     }
 }

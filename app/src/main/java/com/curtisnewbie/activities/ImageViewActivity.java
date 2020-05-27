@@ -54,7 +54,6 @@ public class ImageViewActivity extends AppCompatActivity {
     protected AppLifeCycleManager lifeCycleManager;
 
     private PhotoView photoView;
-    private Bitmap bitmap;
     private String imageName;
     private byte[] decryptedData = null;
     private boolean waitingPermissionResult = false;
@@ -141,7 +140,7 @@ public class ImageViewActivity extends AppCompatActivity {
                 reqWidth = reqHeight = maxsize[0];
 
                 // decode and downscale if needed to avoid OutOfMemory exception
-                this.bitmap = ImageUtil.decodeBitmapWithScaling(decryptedData, reqWidth, reqHeight);
+                Bitmap bitmap = ImageUtil.decodeBitmapWithScaling(decryptedData, reqWidth, reqHeight);
                 runOnUiThread(() -> {
                     photoView.setScaleType(ImageView.ScaleType.FIT_CENTER);
                     photoView.setImageBitmap(bitmap);

@@ -40,4 +40,7 @@ public interface ImageDao {
 
     @Query("SELECT path FROM Image WHERE name = :imgName")
     String getImagePath(String imgName);
+
+    @Query("SELECT thumbnail_path FROM Image WHERE name = :imgName")
+    String getImageThumbnailPath(String imgName);
 }

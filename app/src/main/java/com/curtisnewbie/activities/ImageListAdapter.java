@@ -47,7 +47,6 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.View
      * string for Intent.putExtra() when navigating to imageViewActivity
      */
     public static final String IMG_NAME = "img_title";
-    public int THUMBNAIL_SIZE = 25;
     private List<String> imageNames = Collections.synchronizedList(new ArrayList<>());
     private Context context;
 
@@ -257,9 +256,9 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.View
         private void loadThumbnail() {
             es.submit(() -> {
                 try {
-                    String path = db.imgDao().getImagePath(getNameStr());
+                    String path = db.imgDao().getImageThumbnailPath(getNameStr());
                     byte[] decrypted = CryptoUtil.decrypt(IOUtil.read(new File(path)), auth.getImgKey());
-                    Bitmap bitmap = ImageUtil.decodeBitmapWithScaling(decrypted, THUMBNAIL_SIZE, THUMBNAIL_SIZE);
+                    Bitmap bitmap = ImageUtil.decodeBitmap(decrypted);
                     ((Activity) context).runOnUiThread(() -> {
                         thumbnailIv.setImageBitmap(bitmap);
                     });

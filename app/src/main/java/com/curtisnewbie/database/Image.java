@@ -24,7 +24,12 @@ public class Image {
     private String name;
 
     @ColumnInfo(name = "path")
+    @NonNull
     private String path;
+
+    @ColumnInfo(name = "thumbnail_path")
+    @NonNull
+    private String thumbnailPath;
 
     public String getName() {
         return name;
@@ -40,5 +45,13 @@ public class Image {
 
     public void setPath(String path) {
         this.path = path;
+    }
+
+    public String getThumbnailPath() {
+        return this.thumbnailPath;
+    }
+
+    public void setThumbnailPath(String thumbnailPath) {
+        this.thumbnailPath = thumbnailPath;
     }
 }
