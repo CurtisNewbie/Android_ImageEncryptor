@@ -4,9 +4,11 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -16,10 +18,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.curtisnewbie.database.AppDatabase;
 import com.curtisnewbie.database.Image;
 import com.curtisnewbie.services.App;
+import com.curtisnewbie.services.AuthService;
 import com.curtisnewbie.services.ExecService;
 import com.curtisnewbie.util.Callback;
+import com.curtisnewbie.util.CryptoUtil;
 import com.curtisnewbie.util.IOUtil;
+import com.curtisnewbie.util.ImageUtil;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -41,13 +47,16 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.View
      * string for Intent.putExtra() when navigating to imageViewActivity
      */
     public static final String IMG_NAME = "img_title";
+    public int THUMBNAIL_SIZE = 25;
     private List<String> imageNames = Collections.synchronizedList(new ArrayList<>());
-    ;
     private Context context;
+
     @Inject
     protected AppDatabase db;
     @Inject
     protected ExecService es;
+    @Inject
+    protected AuthService auth;
 
     public ImageListAdapter(Context context) {
         App.getAppComponent().inject(this);
@@ -69,7 +78,7 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.View
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
 
         // setup the name for each image item
-        holder.getName().setText(imageNames.get(position));
+        holder.setNameStr(imageNames.get(position));
 
         // setup the onClickListener for the layout of whole Recycler layout
         holder.getItem_layout().setOnClickListener(view -> {
@@ -224,11 +233,40 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.View
     public class ViewHolder extends RecyclerView.ViewHolder {
         private TextView name;
         private RelativeLayout item_layout;
+        private ImageView thumbnailIv;
 
         public ViewHolder(View itemView) {
             super(itemView);
             name = itemView.findViewById(R.id.nameTextView);
             item_layout = itemView.findViewById(R.id.item_layout);
+            thumbnailIv = itemView.findViewById(R.id.thumbnailIv);
+            thumbnailIv.setScaleType(ImageView.ScaleType.FIT_CENTER);
+        }
+
+        /**
+         * Set the name string to the textview {@code name} and init the operation to load thumbnail
+         *
+         * @param name
+         */
+        public void setNameStr(String name) {
+            this.getName().setText(name);
+            this.loadThumbnail();
+        }
+
+        // TODO very inefficient, can cause out-of-memory issue
+        private void loadThumbnail() {
+            es.submit(() -> {
+                try {
+                    String path = db.imgDao().getImagePath(getNameStr());
+                    byte[] decrypted = CryptoUtil.decrypt(IOUtil.read(new File(path)), auth.getImgKey());
+                    Bitmap bitmap = ImageUtil.decodeBitmapWithScaling(decrypted, THUMBNAIL_SIZE, THUMBNAIL_SIZE);
+                    ((Activity) context).runOnUiThread(() -> {
+                        thumbnailIv.setImageBitmap(bitmap);
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
         }
 
         public TextView getName() {

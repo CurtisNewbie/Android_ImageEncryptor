@@ -2,6 +2,13 @@ package com.curtisnewbie.util;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.opengl.GLES30;
+import android.widget.ImageView;
+
+import com.curtisnewbie.activities.MsgToaster;
+import com.curtisnewbie.activities.R;
+
+import java.io.File;
 
 /**
  * ------------------------------------
