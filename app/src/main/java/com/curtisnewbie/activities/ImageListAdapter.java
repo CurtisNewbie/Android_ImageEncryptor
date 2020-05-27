@@ -252,7 +252,6 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.View
             this.loadThumbnail();
         }
 
-        // TODO very inefficient, can cause out-of-memory issue
         private void loadThumbnail() {
             es.submit(() -> {
                 try {

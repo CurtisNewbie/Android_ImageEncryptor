@@ -2,6 +2,8 @@ package com.curtisnewbie.activities;
 
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.media.ThumbnailUtils;
@@ -33,6 +35,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -196,16 +199,15 @@ public class ImageListActivity extends AppCompatActivity {
      * pick an image
      */
     private void regAddImgBtnListener() {
-        Intent selectImageIntent = new Intent();
-        selectImageIntent.setAction(Intent.ACTION_PICK);
-        selectImageIntent.setDataAndType(EXTERNAL_CONTENT_URI, "image/*"); // Data is URI
-
         // verify that there is at least one activity that can respond to this intent
-        if (!hasIntentActivity(this, selectImageIntent))
+        if (!hasIntentActivity(this, new Intent(Intent.ACTION_PICK)))
             addImgBtnDisabled = true;
 
         addImgBtn.setOnClickListener(view -> {
             if (!addImgBtnDisabled) {
+                // do not reuse this intent, always create a new one
+                Intent selectImageIntent = new Intent(Intent.ACTION_PICK);
+                selectImageIntent.setDataAndType(EXTERNAL_CONTENT_URI, "image/*"); // Data is URI
                 startActivityForResult(Intent.createChooser(selectImageIntent, getString(R.string.image_chooser_title)), SELECT_IMAGE);
             } else {
                 MsgToaster.msgShort(this, R.string.operation_not_supported);
@@ -218,14 +220,13 @@ public class ImageListActivity extends AppCompatActivity {
      * take picture
      */
     private void regTakeImgBtnListener() {
-        Intent takePicIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-
-        if (!hasIntentActivity(this, takePicIntent))
+        if (!hasIntentActivity(this, new Intent(MediaStore.ACTION_IMAGE_CAPTURE)))
             takeImgBtnDisabled = true;
 
         takeImgBtn.setOnClickListener(view -> {
             if (!takeImgBtnDisabled) {
-                // there are packages that can resolve this intent (i.e., take picture)
+                // do not reuse this intent, always create a new one, as this can cause permission denial
+                Intent takePicIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 File tempFile = null;
                 try {
                     tempFile = IOUtil.createTempFile(this);
@@ -234,7 +235,7 @@ public class ImageListActivity extends AppCompatActivity {
                     ex.printStackTrace();
                 }
                 if (tempFile != null) {
-                    Uri tempUri = FileProvider.getUriForFile(this, "com.example.android.fileprovider", tempFile);
+                    Uri tempUri = FileProvider.getUriForFile(this, getString(R.string.fileprovider_auth), tempFile);
                     // write the image to the tempFile
                     takePicIntent.putExtra(MediaStore.EXTRA_OUTPUT, tempUri);
                     startActivityForResult(takePicIntent, CAPTURE_IMAGE);

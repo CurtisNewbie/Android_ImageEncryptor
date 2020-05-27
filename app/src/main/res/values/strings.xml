@@ -38,4 +38,7 @@
     <string name="permission_denied_to_recover_msg">Permission Denied. Cannot recover image.</string>
     <string name="operation_not_supported">Operation is not supported on this device</string>
     <string name="action_send_msg">Login to encrypt the image that you selected</string>
+
+    <!-- Config -->
+    <string name="fileprovider_auth">com.curtisnewbie.activities.fileprovider</string>
 </resources>
