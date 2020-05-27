@@ -34,9 +34,7 @@ public class IOUtil {
      */
     public static byte[] read(File file) throws IOException {
         try (InputStream in = new FileInputStream(file);) {
-            byte[] bytes = new byte[(int) file.length()]; // TODO repetitive code
-            in.read(bytes);
-            return bytes;
+            return read(in, (int) file.length());
         }
     }
 
@@ -101,12 +99,11 @@ public class IOUtil {
      * external storage public directory (DIRECTORY_PICTURES), thus it can be visible to the user
      * as well as other apps. This method requires {@code Manifest.permission.WRITE_EXTERNAL_STORAGE}
      *
-     * @param context
      * @param filename
      * @param fileExtension
      * @return a temp file
      */
-    public static File createExternalSharedFile(Context context, String filename, String fileExtension) throws IOException {
+    public static File createExternalSharedFile(String filename, String fileExtension) throws IOException {
         if (!fileExtension.startsWith("."))
             fileExtension = "." + fileExtension;
         if (filename.isEmpty())

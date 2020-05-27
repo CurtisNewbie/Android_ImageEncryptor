@@ -189,7 +189,7 @@ public class ImageViewActivity extends AppCompatActivity {
     private boolean recoverImage(Image image) {
         try {
             // create temp file
-            File file = IOUtil.createExternalSharedFile(this, image.getName(), ".jpg");
+            File file = IOUtil.createExternalSharedFile(image.getName(), ".jpg");
             if (file != null) {
                 if (decryptedData != null) {
                     IOUtil.write(decryptedData, file);

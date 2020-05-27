@@ -87,18 +87,6 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.View
             intent.putExtra(IMG_NAME, imageNames.get(holder.getAdapterPosition()));
             context.startActivity(intent);
         });
-
-        // TODO: since the drag and drop animation is used, long pressing the item must be disabled.
-        //  Consider whether this is still necessary
-        // long click (hold) to create dialog for deleting the encrypted image
-//        holder.getItem_layout().setOnLongClickListener(e -> {
-//            createDeleteDialog(() -> {
-//                es.submit(() -> {
-//                    deleteImageNameNFile(holder.getAdapterPosition());
-//                });
-//            }, null);
-//            return true;
-//        });
     }
 
     /**
@@ -155,25 +143,6 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.View
             this.imageNames.clear();
             this.imageNames.addAll(db.imgDao().getImageNames());
         });
-    }
-
-    /**
-     * TODO: This method can be removed
-     * Remove the image from recyclerview and delete the actual encrypted file. The recyclerview
-     * is updated only when the actual file is deleted. Regardless of whether the actual file is
-     * deleted, a message will be created to notify the user.
-     *
-     * @param index index in the {@code imageNames}
-     */
-    public boolean deleteImageNameNFile(int index) {
-        String name = imageNames.get(index);
-        if (deleteImageFile(name)) {
-            // only update the RecyclerView when the file is actually deleted
-            this.deleteImageName(index);
-            return true;
-        } else {
-            return false;
-        }
     }
 
     /**
