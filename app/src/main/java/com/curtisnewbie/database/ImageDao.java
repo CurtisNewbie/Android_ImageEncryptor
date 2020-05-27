@@ -35,7 +35,7 @@ public interface ImageDao {
     @Query("SELECT * FROM image")
     List<Image> getImages();
 
-    @Query("SELECT name FROM image")
+    @Query("SELECT name FROM image ORDER BY timestamp ASC")
     List<String> getImageNames();
 
     @Query("SELECT path FROM Image WHERE name = :imgName")

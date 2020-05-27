@@ -90,7 +90,7 @@ public class IOUtil {
      * @return a temp file
      */
     public static File createTempFile(Context context) throws IOException {
-        String filename = "PIC" + DateUtil.getDateTimeStr();
+        String filename = "PIC" + DateUtil.getDateStr();
         File storageDir = context.getExternalFilesDir(DIRECTORY_PICTURES);
         File tempFile = File.createTempFile(filename, ".t", storageDir);
         return tempFile;
@@ -110,7 +110,7 @@ public class IOUtil {
         if (!fileExtension.startsWith("."))
             fileExtension = "." + fileExtension;
         if (filename.isEmpty())
-            filename = "PIC" + DateUtil.getDateTimeStr();
+            filename = "PIC" + DateUtil.getDateStr();
         File storageDir = Environment.getExternalStoragePublicDirectory(DIRECTORY_PICTURES);
         File tempFile = File.createTempFile(filename, fileExtension, storageDir);
         return tempFile;

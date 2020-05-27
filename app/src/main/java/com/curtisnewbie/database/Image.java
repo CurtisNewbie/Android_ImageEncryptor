@@ -31,6 +31,10 @@ public class Image {
     @NonNull
     private String thumbnailPath;
 
+    @ColumnInfo
+    @NonNull
+    private Long timestamp;
+
     public String getName() {
         return name;
     }
@@ -53,5 +57,13 @@ public class Image {
 
     public void setThumbnailPath(String thumbnailPath) {
         this.thumbnailPath = thumbnailPath;
+    }
+
+    public Long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
     }
 }

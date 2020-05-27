@@ -22,12 +22,14 @@ import com.curtisnewbie.services.AuthService;
 import com.curtisnewbie.services.ExecService;
 import com.curtisnewbie.util.Callback;
 import com.curtisnewbie.util.CryptoUtil;
+import com.curtisnewbie.util.DateUtil;
 import com.curtisnewbie.util.IOUtil;
 import com.curtisnewbie.util.ImageUtil;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -233,6 +235,7 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.View
         private TextView name;
         private RelativeLayout item_layout;
         private ImageView thumbnailIv;
+        private TextView timestampTv;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -240,31 +243,38 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.View
             item_layout = itemView.findViewById(R.id.item_layout);
             thumbnailIv = itemView.findViewById(R.id.thumbnailIv);
             thumbnailIv.setScaleType(ImageView.ScaleType.FIT_CENTER);
+            timestampTv = itemView.findViewById(R.id.timestampTv);
         }
 
         /**
          * Set the name string to the textview {@code name} and init the operation to load thumbnail
+         * and timestamp
          *
          * @param name
          */
         public void setNameStr(String name) {
             this.getName().setText(name);
-            this.loadThumbnail();
+            es.submit(() -> {
+                Image img = db.imgDao().getImage(name);
+                this.setTimestamp(img.getTimestamp());
+                this.loadThumbnail(img.getThumbnailPath());
+            });
         }
 
-        private void loadThumbnail() {
-            es.submit(() -> {
-                try {
-                    String path = db.imgDao().getImageThumbnailPath(getNameStr());
-                    byte[] decrypted = CryptoUtil.decrypt(IOUtil.read(new File(path)), auth.getImgKey());
-                    Bitmap bitmap = ImageUtil.decodeBitmap(decrypted);
-                    ((Activity) context).runOnUiThread(() -> {
-                        thumbnailIv.setImageBitmap(bitmap);
-                    });
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            });
+        private void loadThumbnail(String path) {
+            try {
+                byte[] decrypted = CryptoUtil.decrypt(IOUtil.read(new File(path)), auth.getImgKey());
+                Bitmap bitmap = ImageUtil.decodeBitmap(decrypted);
+                ((Activity) context).runOnUiThread(() -> {
+                    thumbnailIv.setImageBitmap(bitmap);
+                });
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        private void setTimestamp(long timestamp) {
+            this.timestampTv.setText(String.format("Added on: %s", DateUtil.toDateStr(new Date(timestamp))));
         }
 
         public TextView getName() {

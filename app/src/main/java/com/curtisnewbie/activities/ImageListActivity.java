@@ -354,6 +354,7 @@ public class ImageListActivity extends AppCompatActivity {
         img.setName(filename);
         img.setPath(ImageListActivity.this.getFilesDir().getPath() + "//" + filename);
         img.setThumbnailPath(img.getPath() + ImageUtil.THUMBNAIL_EXTENSION);
+        img.setTimestamp(System.currentTimeMillis());
         db.imgDao().addImage(img);
     }
 

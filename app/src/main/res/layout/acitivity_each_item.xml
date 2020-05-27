@@ -43,6 +43,16 @@
                 android:clickable="false"
                 android:textAlignment="viewStart"
                 app:srcCompat="@android:drawable/ic_menu_report_image" />
+
+            <TextView
+                android:id="@+id/timestampTv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="5dp"
+                android:layout_marginBottom="5dp"
+                android:textSize="21sp" />
         </LinearLayout>
 
     </androidx.cardview.widget.CardView>
