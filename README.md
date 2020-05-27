@@ -11,11 +11,13 @@ This is a simple Android app that allows you to protect your images through encr
 **Some of the Features:**
 
 - Display the encrypted images on the fly.
-- Support *swipe* and *drag and drop* animations in the list.
+- Support thumbnails (thumbnails are also encrypted).
+- Support *swipe* and *drag-and-drop* gestures in the list.
 - Add images from Gallery (or other similar apps).
 - Take pictures using Camera (or other similar apps), original image is deleted once it's encrypted.
-- Display a zoomable view of the image
+- Display a zoomable view of the image (powered by PhotoView library).
 - Recover the encrypted image and expose it to other Gallery alike apps.
+- Support *Share* functionality, with which you can initiate this app to encrypt the image that you selected in other apps.
 
 ## Details of Implementation
 
@@ -32,7 +34,7 @@ This is a simple Android app that allows you to protect your images through encr
 ## Additional Hints For Usage
 
 - The first time you use this app, the app expects you to register. You simply enter the username and password that you want to use. Please make sure you remember it, since there is no way to recover it.
-- Once you have encryped some images, and you want to delete some of them. You just swipe the image name (from right to left) in the list, a dialog will pop up and ask you whether you want to delete it. Press "Yes" to delete it.
+- Once you have encrypted some images, and you want to delete some of them. You just swipe the image name (from right to left) in the list, a dialog will pop up and ask you whether you want to delete it. Press "Yes" to delete it.
 - In the image list, you can drag and drop (long press first then move it) the image names to change their positions.
 - When you are viewing an image, and you want to zoom in/out the image, you just do the gesture that you will normally do on any other apps.
 - When you are viewing an image, and you want to recover it back to your normal Gallery apps, you just long press the image, and a dialog will pop up and ask you whether you want to recover it. Notice that you will be asked to grant permission for this operation. It will fail, if you refuse to grant the permission.
